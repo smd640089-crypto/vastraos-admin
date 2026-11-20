@@ -436,6 +436,132 @@
               <button type="submit" id="save-system-btn" class="btn btn-primary">Save &amp; Sync System Controls</button>
             </div>
           </form>
+
+          <!-- TELEGRAM BOT 24/7 NOTIFICATIONS -->
+          <section class="panel telegram-section" aria-labelledby="tg-section-title">
+            <div class="panel-header">
+              <div>
+                <div class="tg-title-row">
+                  <h3 id="tg-section-title">Telegram Bot 24/7 Notifications</h3>
+                  <span id="tg-status-pill" class="pill pill-warning">Not Configured</span>
+                </div>
+                <p class="panel-desc">
+                  Receive instant 24/7 alerts in your existing Telegram Bot whenever a new account/shop is created or a UTR payment is submitted — with a direct <strong>Open Admin Panel</strong> button.
+                </p>
+              </div>
+            </div>
+
+            <div class="telegram-grid">
+              <!-- Left: Live Synced Webhook & Event Toggles -->
+              <form id="telegram-form" class="tg-subpanel">
+                <div class="tg-subpanel-title">1. Live Webhook &amp; Alert Triggers</div>
+                <p class="field-help">Only your Google Apps Script Web App URL &amp; toggles sync to Firestore. Your Bot Token stays 100% private.</p>
+
+                <div class="field">
+                  <label for="tg-webhook-url">Google Apps Script Webhook URL (24/7 Free Relay)</label>
+                  <input
+                    type="url"
+                    id="tg-webhook-url"
+                    class="input mono"
+                    maxlength="500"
+                    placeholder="https://script.google.com/macros/s/AKfycb.../exec"
+                  />
+                  <small class="field-help">Must start with <code>https://</code>. Leave blank to disable Telegram alerts.</small>
+                </div>
+
+                <div class="field">
+                  <label for="tg-admin-url">Admin Panel Live URL (For Telegram Inline Button)</label>
+                  <input
+                    type="url"
+                    id="tg-admin-url"
+                    class="input mono"
+                    maxlength="500"
+                    placeholder="https://your-username.github.io/vastraos-admin/"
+                  />
+                  <small class="field-help">Auto-detected from this website. Clicking the button in Telegram opens this exact link.</small>
+                </div>
+
+                <div class="tg-toggle-list">
+                  <div class="tg-toggle-row">
+                    <div>
+                      <div class="tg-toggle-title">New Account / Shop Created</div>
+                      <div class="field-help">Alerts you when a new shopkeeper registers or sets up a shop</div>
+                    </div>
+                    <label class="switch switch-primary">
+                      <input type="checkbox" id="tg-notify-new-account" checked />
+                      <span class="slider"></span>
+                    </label>
+                  </div>
+
+                  <div class="tg-toggle-row">
+                    <div>
+                      <div class="tg-toggle-title">Subscription UTR Payment Submitted</div>
+                      <div class="field-help">Instant alert with Shop, Owner, Amount, UTR &amp; Admin Panel link</div>
+                    </div>
+                    <label class="switch switch-primary">
+                      <input type="checkbox" id="tg-notify-utr-submit" checked />
+                      <span class="slider"></span>
+                    </label>
+                  </div>
+                </div>
+
+                <div class="tg-actions-row">
+                  <button type="button" id="tg-test-btn" class="btn btn-secondary">Send Test Telegram Alert</button>
+                  <button type="submit" id="save-telegram-btn" class="btn btn-primary">Save &amp; Sync Telegram Settings</button>
+                </div>
+              </form>
+
+              <!-- Right: Private Local 1-Click Apps Script Generator -->
+              <div class="tg-subpanel tg-generator-box">
+                <div class="tg-subpanel-title">2. Free 24/7 Google Apps Script Generator</div>
+                <div class="alert-box alert-privacy">
+                  <strong>Privacy Guaranteed:</strong> Your Bot Token &amp; Chat ID are used only inside your browser to generate <code>Code.gs</code> and are <strong>never</strong> uploaded to Firestore or the Android app.
+                </div>
+
+                <div class="field">
+                  <label for="tg-gen-token">Your Existing Telegram Bot Token (from @BotFather)</label>
+                  <div class="input-with-btn">
+                    <input
+                      type="password"
+                      id="tg-gen-token"
+                      class="input mono"
+                      autocomplete="off"
+                      placeholder="1234567890:AAHxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+                    />
+                    <button type="button" id="tg-toggle-token-btn" class="btn btn-secondary btn-sm">Show</button>
+                  </div>
+                </div>
+
+                <div class="field">
+                  <label for="tg-gen-chat-id">Your Telegram Chat ID</label>
+                  <input
+                    type="text"
+                    id="tg-gen-chat-id"
+                    class="input mono"
+                    autocomplete="off"
+                    placeholder="e.g. 5849201734"
+                  />
+                  <small class="field-help">Need your Chat ID? Message <code>@userinfobot</code> on Telegram (first send <code>/start</code> to your own bot!).</small>
+                </div>
+
+                <div class="tg-actions-row">
+                  <button type="button" id="tg-copy-script-btn" class="btn btn-emerald">Copy Ready-to-Paste Code.gs</button>
+                  <button type="button" id="tg-preview-script-btn" class="btn btn-secondary btn-sm">View Script</button>
+                </div>
+
+                <div id="tg-script-preview-wrap" class="tg-code-wrap hidden">
+                  <pre><code id="tg-script-preview"></code></pre>
+                </div>
+
+                <ol class="mini-steps tg-steps">
+                  <li>Open <a href="https://script.google.com" target="_blank" rel="noopener noreferrer">script.google.com</a> &rarr; click <strong>New project</strong>.</li>
+                  <li>Clear <code>Code.gs</code>, paste the copied script, and click <strong>Save</strong>.</li>
+                  <li>Click <strong>Deploy &rarr; New deployment &rarr; Web app</strong> &rarr; Execute as: <strong>Me</strong> &rarr; Who has access: <strong>Anyone</strong> &rarr; <strong>Deploy</strong> (allow permissions once).</li>
+                  <li>Copy the <strong>Web app URL</strong> (ends with <code>/exec</code>), paste it on the left, click <strong>Save &amp; Sync</strong>, and test!</li>
+                </ol>
+              </div>
+            </div>
+          </section>
         </section>
       </main>
     </div>

@@ -970,7 +970,110 @@ code, .mono {
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
 }
 .switch input:checked + .slider { background: var(--rose); }
+.switch.switch-primary input:checked + .slider { background: var(--primary); }
 .switch input:checked + .slider::before { transform: translateX(22px); }
+
+/* Telegram Bot 24/7 Notifications Section */
+.telegram-section {
+  margin-top: 20px;
+}
+.tg-title-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.telegram-grid {
+  display: grid;
+  grid-template-columns: 1.05fr 1fr;
+  gap: 18px;
+  align-items: start;
+}
+.tg-subpanel {
+  background: var(--surface-alt);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.tg-subpanel-title {
+  font-family: "Plus Jakarta Sans", "Inter", sans-serif;
+  font-size: 0.96rem;
+  font-weight: 800;
+  color: var(--text);
+}
+.tg-toggle-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.tg-toggle-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 14px;
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  border: 1px solid var(--border);
+}
+.tg-toggle-title {
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--text);
+}
+.tg-actions-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  padding-top: 4px;
+}
+.input-with-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.input-with-btn .input {
+  flex: 1;
+}
+.alert-privacy {
+  background: var(--primary-soft);
+  border-color: var(--primary-border);
+  color: var(--text);
+}
+.tg-code-wrap {
+  background: var(--bg);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-sm);
+  max-height: 240px;
+  overflow: auto;
+  padding: 12px;
+}
+.tg-code-wrap pre {
+  margin: 0;
+  white-space: pre;
+  font-size: 0.74rem;
+  line-height: 1.5;
+  color: var(--text);
+}
+.tg-steps {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  line-height: 1.55;
+}
+.tg-steps a {
+  color: var(--primary);
+  font-weight: 600;
+}
+
+@media (max-width: 1024px) {
+  .telegram-grid {
+    grid-template-columns: 1fr;
+  }
+}
 
 /* Empty State */
 .empty-state {
