@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>VastraOS Admin Panel — Live Subscription & App Control</title>
+  <meta name="description" content="Official VastraOS Admin Control Center for live UPI QR billing sync, UTR subscription approvals, shop management, maintenance mode, and app updates." />
+  <meta name="theme-color" content="#6D28D9" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet" />
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%236D28D9'/%3E%3Cpath d='M32 14a5 5 0 0 0-4.9 6h3.2a2 2 0 1 1 3.4 1.4l-2.3 2.1a3 3 0 0 0-1 2.2V27L14 37.5a3 3 0 0 0 1.6 5.5h32.8a3 3 0 0 0 1.6-5.5L33.6 27v-1.2l2.1-1.9A5 5 0 0 0 32 14zm0 16.5L43.5 38h-23L32 30.5z' fill='%23fff'/%3E%3C/svg%3E" />
+  <link rel="stylesheet" href="./styles.css" />
+  <script>
+    (function () {
+      try {
+        var saved = localStorage.getItem("vastraos_admin_theme");
+        if (saved === "dark" || saved === "light") {
+          document.documentElement.setAttribute("data-theme", saved);
+        } else if (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches) {
+          document.documentElement.setAttribute("data-theme", "dark");
+        }
+      } catch (e) {}
+    })();
+  </script>
+</head>
+<body>
+  <!-- Floating Top-Center Toast Stack -->
+  <div id="toast-container" class="toast-container" aria-live="polite"></div>
+
+  <!-- AUTH GATE VIEW -->
+  <main id="auth-view" class="auth-view">
+    <div class="auth-topbar">
+      <div class="brand-inline">
+        <div class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 32 32" fill="none">
+            <path d="M16 6a3 3 0 0 0-2.94 3.6h1.96a1.1 1.1 0 1 1 1.88.78l-1.4 1.3a2 2 0 0 0-.65 1.48v.84L6.2 19.6a2 2 0 0 0 1.1 3.68h17.4a2 2 0 0 0 1.1-3.68L17.15 14v-.65l1.28-1.18A3 3 0 0 0 16 6zm0 10.2 6.8 4.4H9.2l6.8-4.4z" fill="currentColor"/>
+          </svg>
+        </div>
+        <span>VastraOS Admin</span>
+      </div>
+      <button type="button" class="icon-btn theme-toggle-btn" title="Toggle light/dark theme" aria-label="Toggle theme">
+        <span class="theme-icon-sun" aria-hidden="true">&#9728;</span>
+        <span class="theme-icon-moon" aria-hidden="true">&#9790;</span>
+      </button>
+    </div>
+
+    <section class="auth-card">
+      <div class="auth-badge">RESTRICTED OWNER CONSOLE</div>
+      <div class="auth-logo-wrap">
+        <div class="brand-mark brand-mark-lg" aria-hidden="true">
+          <svg viewBox="0 0 32 32" fill="none">
+            <path d="M16 6a3 3 0 0 0-2.94 3.6h1.96a1.1 1.1 0 1 1 1.88.78l-1.4 1.3a2 2 0 0 0-.65 1.48v.84L6.2 19.6a2 2 0 0 0 1.1 3.68h17.4a2 2 0 0 0 1.1-3.68L17.15 14v-.65l1.28-1.18A3 3 0 0 0 16 6zm0 10.2 6.8 4.4H9.2l6.8-4.4z" fill="currentColor"/>
+          </svg>
+        </div>
+      </div>
+      <h1>VastraOS Admin Panel</h1>
+      <p class="auth-subtitle">
+        Live-sync UPI QR billing, approve or reject UTR renewals, manage shop subscriptions, and control app updates in real time.
+      </p>
+
+      <div id="auth-error-box" class="alert-box alert-danger hidden" role="alert"></div>
+
+      <div id="unauthorized-domain-guide" class="alert-box alert-warning hidden">
+        <div class="alert-title">One-Time Firebase Domain Setup Required</div>
+        <p>Firebase Auth blocked sign-in because this host is not yet listed under Authorized Domains:</p>
+        <div class="copy-row">
+          <code id="current-hostname-code"></code>
+          <button type="button" id="copy-hostname-btn" class="btn btn-sm btn-secondary">Copy Domain</button>
+        </div>
+        <ol class="mini-steps">
+          <li>Open <strong>Firebase Console</strong> &rarr; Project <code>gen-lang-client-0802920972</code></li>
+          <li>Go to <strong>Authentication &rarr; Settings &rarr; Authorized domains</strong></li>
+          <li>Click <strong>Add domain</strong>, paste the hostname above, and reload this page.</li>
+        </ol>
+      </div>
+
+      <button type="button" id="google-signin-btn" class="btn btn-primary btn-lg btn-full">
+        <svg class="google-g" viewBox="0 0 24 24" aria-hidden="true">
+          <path fill="#fff" d="M21.8 10.23h-9.6v3.72h5.52c-.24 1.32-.99 2.44-2.1 3.19v2.64h3.4c1.99-1.83 3.14-4.53 3.14-7.72 0-.63-.06-1.24-.16-1.83z"/>
+          <path fill="#fff" opacity=".88" d="M12.2 22c2.84 0 5.22-.94 6.96-2.55l-3.4-2.64c-.94.63-2.14 1.01-3.56 1.01-2.74 0-5.06-1.85-5.89-4.34H2.8v2.73C4.53 19.65 8.08 22 12.2 22z"/>
+          <path fill="#fff" opacity=".78" d="M6.31 13.48a6.06 6.06 0 0 1 0-3.84V6.91H2.8a10.17 10.17 0 0 0 0 9.3l3.51-2.73z"/>
+          <path fill="#fff" opacity=".95" d="M12.2 5.3c1.55 0 2.94.53 4.03 1.58l3.02-3.02C17.41 2.15 15.04 1.12 12.2 1.12 8.08 1.12 4.53 3.47 2.8 6.91l3.51 2.73c.83-2.49 3.15-4.34 5.89-4.34z"/>
+        </svg>
+        <span id="google-signin-label">Sign in with Google</span>
+      </button>
+
+      <div class="auth-meta">
+        <span>Authorized Admin:</span>
+        <code>smd640089@gmail.com</code>
+      </div>
+    </section>
+  </main>
+
+  <!-- MAIN ADMIN CONSOLE SHELL -->
+  <div id="app-shell" class="app-shell hidden">
+    <!-- Desktop Sidebar -->
+    <aside class="sidebar" aria-label="Admin navigation">
+      <div class="sidebar-header">
+        <div class="brand-inline">
+          <div class="brand-mark" aria-hidden="true">
+            <svg viewBox="0 0 32 32" fill="none">
+              <path d="M16 6a3 3 0 0 0-2.94 3.6h1.96a1.1 1.1 0 1 1 1.88.78l-1.4 1.3a2 2 0 0 0-.65 1.48v.84L6.2 19.6a2 2 0 0 0 1.1 3.68h17.4a2 2 0 0 0 1.1-3.68L17.15 14v-.65l1.28-1.18A3 3 0 0 0 16 6zm0 10.2 6.8 4.4H9.2l6.8-4.4z" fill="currentColor"/>
+            </svg>
+          </div>
+          <div>
+            <div class="brand-title">VastraOS</div>
+            <div class="brand-sub">Admin Console</div>
+          </div>
+        </div>
+      </div>
+
+      <nav class="sidebar-nav">
+        <button type="button" class="nav-item active" data-tab="overview">
+          <span class="nav-icon">&#9672;</span>
+          <span class="nav-label">Overview</span>
+        </button>
+        <button type="button" class="nav-item" data-tab="approvals">
+          <span class="nav-icon">&#10003;</span>
+          <span class="nav-label">UTR Approvals</span>
+          <span id="nav-pending-badge" class="nav-badge hidden">0</span>
+        </button>
+        <button type="button" class="nav-item" data-tab="billing">
+          <span class="nav-icon">&#9635;</span>
+          <span class="nav-label">Billing &amp; UPI QR</span>
+        </button>
+        <button type="button" class="nav-item" data-tab="shops">
+          <span class="nav-icon">&#9874;</span>
+          <span class="nav-label">All Shops</span>
+          <span id="nav-shops-count" class="nav-count">0</span>
+        </button>
+        <button type="button" class="nav-item" data-tab="system">
+          <span class="nav-icon">&#9881;</span>
+          <span class="nav-label">System &amp; Updates</span>
+          <span id="nav-maint-dot" class="status-dot-danger hidden" title="Maintenance Mode ON"></span>
+        </button>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="sync-pill">
+          <span class="pulse-dot"></span>
+          <span>Live Firestore Sync</span>
+        </div>
+        <div class="admin-chip">
+          <div class="admin-avatar" id="admin-avatar">S</div>
+          <div class="admin-info">
+            <div class="admin-name" id="admin-display-name">Admin</div>
+            <div class="admin-email" id="admin-email-label">smd640089@gmail.com</div>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Workspace Column -->
+    <div class="workspace">
+      <header class="topbar">
+        <div class="topbar-left">
+          <h2 id="page-title">Overview</h2>
+          <span id="live-status-chip" class="pill pill-success">
+            <span class="pulse-dot"></span>
+            Live Synced
+          </span>
+          <span id="topbar-maint-chip" class="pill pill-danger hidden">Maintenance Mode ON</span>
+        </div>
+        <div class="topbar-actions">
+          <button type="button" class="icon-btn theme-toggle-btn" title="Switch Light / Dark theme" aria-label="Toggle theme">
+            <span class="theme-icon-sun" aria-hidden="true">&#9728;</span>
+            <span class="theme-icon-moon" aria-hidden="true">&#9790;</span>
+          </button>
+          <button type="button" id="signout-btn" class="btn btn-secondary btn-sm">Sign Out</button>
+        </div>
+      </header>
+
+      <main class="content-area">
+        <!-- TAB 1: OVERVIEW -->
+        <section id="tab-overview" class="tab-panel active">
+          <div class="kpi-grid">
+            <article class="kpi-card kpi-amber">
+              <div class="kpi-label">Pending UTRs</div>
+              <div class="kpi-value" id="kpi-pending">0</div>
+              <div class="kpi-sub">Awaiting manual review</div>
+            </article>
+            <article class="kpi-card kpi-emerald">
+              <div class="kpi-label">Active Paid Shops</div>
+              <div class="kpi-value" id="kpi-active-paid">0</div>
+              <div class="kpi-sub">Paid cycle active</div>
+            </article>
+            <article class="kpi-card kpi-violet">
+              <div class="kpi-label">Active Trials</div>
+              <div class="kpi-value" id="kpi-active-trial">0</div>
+              <div class="kpi-sub">7-day trial running</div>
+            </article>
+            <article class="kpi-card kpi-rose">
+              <div class="kpi-label">Expired / Suspended</div>
+              <div class="kpi-value" id="kpi-expired">0</div>
+              <div class="kpi-sub">Renewal needed or paused</div>
+            </article>
+            <article class="kpi-card kpi-neutral">
+              <div class="kpi-label">Approved Revenue</div>
+              <div class="kpi-value" id="kpi-revenue">&#8377;0</div>
+              <div class="kpi-sub" id="kpi-revenue-sub">0 approved renewals</div>
+            </article>
+          </div>
+
+          <div class="overview-grid">
+            <section class="panel">
+              <div class="panel-header">
+                <div>
+                  <h3>Pending UTR Approvals</h3>
+                  <p class="panel-desc">Latest renewal requests waiting for your verification</p>
+                </div>
+                <button type="button" class="btn btn-ghost btn-sm" data-goto-tab="approvals">View All &rarr;</button>
+              </div>
+              <div id="overview-pending-list" class="stack-list"></div>
+            </section>
+
+            <section class="panel">
+              <div class="panel-header">
+                <div>
+                  <h3>Live App Configuration Snapshot</h3>
+                  <p class="panel-desc">Currently synced to all signed-in VastraOS Android apps</p>
+                </div>
+                <button type="button" class="btn btn-ghost btn-sm" data-goto-tab="billing">Edit &rarr;</button>
+              </div>
+              <div id="overview-config-summary" class="config-summary-list"></div>
+            </section>
+          </div>
+        </section>
+
+        <!-- TAB 2: UTR APPROVALS -->
+        <section id="tab-approvals" class="tab-panel">
+          <div class="toolbar">
+            <div class="filter-pills" id="utr-filter-pills">
+              <button type="button" class="filter-pill active" data-filter="PENDING">Pending <span id="count-req-pending">0</span></button>
+              <button type="button" class="filter-pill" data-filter="APPROVED">Approved <span id="count-req-approved">0</span></button>
+              <button type="button" class="filter-pill" data-filter="REJECTED">Rejected <span id="count-req-rejected">0</span></button>
+              <button type="button" class="filter-pill" data-filter="ALL">All <span id="count-req-all">0</span></button>
+            </div>
+            <div class="search-wrap">
+              <input type="search" id="utr-search-input" class="input" placeholder="Search UTR, shop, owner, or mobile..." />
+            </div>
+          </div>
+
+          <div id="utr-requests-list" class="request-grid"></div>
+        </section>
+
+        <!-- TAB 3: BILLING, PLAN & UPI QR -->
+        <section id="tab-billing" class="tab-panel">
+          <div class="billing-grid">
+            <form id="billing-form" class="panel">
+              <div class="panel-header">
+                <div>
+                  <h3>VastraOS Billing, UPI QR &amp; Plan Control</h3>
+                  <p class="panel-desc">Changes publish instantly to every shop's Subscription screen in the Android app.</p>
+                </div>
+              </div>
+
+              <div class="form-grid">
+                <div class="field">
+                  <label for="cfg-upi-id">Owner UPI ID *</label>
+                  <input type="text" id="cfg-upi-id" class="input mono" required minlength="3" maxlength="100" placeholder="e.g. vastraos.billing@okicici" />
+                </div>
+                <div class="field">
+                  <label for="cfg-upi-name">Beneficiary / Payee Name *</label>
+                  <input type="text" id="cfg-upi-name" class="input" required minlength="1" maxlength="100" placeholder="e.g. VastraOS Software Technologies" />
+                </div>
+                <div class="field">
+                  <label for="cfg-plan-price">Plan Price (&#8377; INR) *</label>
+                  <input type="number" id="cfg-plan-price" class="input mono" required min="1" max="100000" step="1" />
+                </div>
+                <div class="field">
+                  <label for="cfg-plan-days">Validity Cycle (Days) *</label>
+                  <input type="number" id="cfg-plan-days" class="input mono" required min="1" max="3650" step="1" />
+                </div>
+              </div>
+
+              <div class="field">
+                <label for="cfg-instructions">Payment Instructions (Shown in App) *</label>
+                <textarea id="cfg-instructions" class="input textarea" rows="3" required minlength="1" maxlength="600" placeholder="Enter payment & UTR verification instructions..."></textarea>
+              </div>
+
+              <div class="field">
+                <label>Subscription UPI QR Image (Auto-Compressed for Android App)</label>
+                <div id="qr-dropzone" class="dropzone">
+                  <input type="file" id="qr-file-input" accept="image/*" class="sr-only" />
+                  <div id="qr-upload-preview-wrap" class="qr-upload-preview hidden">
+                    <img id="qr-upload-preview-img" alt="Uploaded VastraOS UPI QR" />
+                  </div>
+                  <div class="dropzone-body">
+                    <div class="dropzone-title">Drop UPI QR image here or browse</div>
+                    <div class="dropzone-sub" id="qr-size-hint">PNG/JPG auto-resized to &le;512px &amp; saved as raw Base64 (Android compatible)</div>
+                    <div class="dropzone-actions">
+                      <button type="button" id="qr-pick-btn" class="btn btn-secondary btn-sm">Choose QR Image</button>
+                      <button type="button" id="qr-clear-btn" class="btn btn-ghost-danger btn-sm hidden">Remove QR</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="panel-footer">
+                <span class="muted-note" id="billing-last-updated">Not saved yet</span>
+                <button type="submit" id="save-billing-btn" class="btn btn-primary">
+                  Publish Live to All Apps
+                </button>
+              </div>
+            </form>
+
+            <!-- Live Mobile App Preview -->
+            <aside class="panel preview-panel">
+              <div class="panel-header">
+                <div>
+                  <h3>Live Android Screen Preview</h3>
+                  <p class="panel-desc">Exactly how shopkeepers see your Subscription QR card</p>
+                </div>
+              </div>
+              <div class="phone-frame">
+                <div class="phone-notch"></div>
+                <div class="phone-screen">
+                  <div class="phone-pill">VASTRAOS SOFTWARE BILLING ONLY</div>
+                  <div class="phone-price" id="preview-price-title">Pay &#8377;299 for 28 Days</div>
+                  <div class="phone-payee" id="preview-payee-name">VastraOS Software Technologies</div>
+                  <div class="phone-upi mono" id="preview-upi-id">UPI ID: vastraos.billing@upi</div>
+                  <div class="phone-qr-box" id="preview-qr-box">
+                    <img id="preview-qr-img" class="hidden" alt="Preview QR" />
+                    <div id="preview-qr-empty" class="phone-qr-empty">
+                      <span>No QR Uploaded</span>
+                      <small>Shopkeepers will see UPI ID fallback</small>
+                    </div>
+                  </div>
+                  <p class="phone-instructions" id="preview-instructions"></p>
+                  <div class="phone-fake-btn">Submit Renewal Request for Admin Approval</div>
+                </div>
+              </div>
+            </aside>
+          </div>
+        </section>
+
+        <!-- TAB 4: ALL SHOPS -->
+        <section id="tab-shops" class="tab-panel">
+          <div class="toolbar">
+            <div class="filter-pills" id="shop-filter-pills">
+              <button type="button" class="filter-pill active" data-shop-filter="ALL">All <span id="count-shop-all">0</span></button>
+              <button type="button" class="filter-pill" data-shop-filter="ACTIVE">Active Paid <span id="count-shop-active">0</span></button>
+              <button type="button" class="filter-pill" data-shop-filter="TRIAL">Trial <span id="count-shop-trial">0</span></button>
+              <button type="button" class="filter-pill" data-shop-filter="PAYMENT_PENDING">Pending <span id="count-shop-pending">0</span></button>
+              <button type="button" class="filter-pill" data-shop-filter="EXPIRED">Expired <span id="count-shop-expired">0</span></button>
+              <button type="button" class="filter-pill" data-shop-filter="SUSPENDED">Suspended <span id="count-shop-suspended">0</span></button>
+            </div>
+            <div class="search-wrap">
+              <input type="search" id="shop-search-input" class="input" placeholder="Search shop name, owner, mobile, or ID..." />
+            </div>
+          </div>
+
+          <div class="panel table-panel">
+            <div class="table-scroll">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Shop &amp; ID</th>
+                    <th>Owner &amp; Contact</th>
+                    <th>Status</th>
+                    <th>Plan Expiry</th>
+                    <th>Last UTR</th>
+                    <th class="text-right">Controls</th>
+                  </tr>
+                </thead>
+                <tbody id="shops-table-body"></tbody>
+              </table>
+            </div>
+            <div id="shops-empty-state" class="empty-state hidden">No shops match the current filter.</div>
+          </div>
+        </section>
+
+        <!-- TAB 5: SYSTEM, MAINTENANCE & UPDATES -->
+        <section id="tab-system" class="tab-panel">
+          <form id="system-form" class="system-grid">
+            <section class="panel">
+              <div class="panel-header">
+                <div>
+                  <h3>Maintenance Mode Control</h3>
+                  <p class="panel-desc">Instantly pause all live VastraOS apps during server or database maintenance.</p>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="sys-maint-toggle" />
+                  <span class="slider"></span>
+                </label>
+              </div>
+
+              <div id="maint-warning-banner" class="alert-box alert-danger hidden">
+                <strong>Maintenance Mode is ON:</strong> All online VastraOS Android users will see the maintenance lock screen immediately upon saving.
+              </div>
+
+              <div class="field">
+                <label for="sys-maint-msg">Maintenance Message (Shown in App)</label>
+                <textarea id="sys-maint-msg" class="input textarea" rows="3" maxlength="400" placeholder="e.g. VastraOS is upgrading servers. We will be back in 15 minutes."></textarea>
+              </div>
+            </section>
+
+            <section class="panel">
+              <div class="panel-header">
+                <div>
+                  <h3>App Version &amp; Update Control</h3>
+                  <p class="panel-desc">Current Android APK build is <code>versionCode = 1</code> (<code>v1.0</code>). Set minimum version higher to force an update.</p>
+                </div>
+              </div>
+
+              <div class="form-grid">
+                <div class="field">
+                  <label for="sys-latest-code">Latest Version Code *</label>
+                  <input type="number" id="sys-latest-code" class="input mono" required min="1" max="100000" step="1" />
+                  <small class="field-help">Shows optional update banner if &gt; installed versionCode</small>
+                </div>
+                <div class="field">
+                  <label for="sys-latest-name">Latest Version Name *</label>
+                  <input type="text" id="sys-latest-name" class="input mono" required maxlength="40" placeholder="e.g. 1.1" />
+                </div>
+                <div class="field">
+                  <label for="sys-min-code">Minimum Supported Version Code *</label>
+                  <input type="number" id="sys-min-code" class="input mono" required min="1" max="100000" step="1" />
+                  <small class="field-help">Blocks app with Force Update screen if &gt; installed versionCode</small>
+                </div>
+                <div class="field">
+                  <label for="sys-update-url">APK / Store Download URL</label>
+                  <input type="url" id="sys-update-url" class="input" maxlength="500" placeholder="https://github.com/.../releases/latest" />
+                </div>
+              </div>
+
+              <div class="field">
+                <label for="sys-update-notes">Release Notes / What's New</label>
+                <textarea id="sys-update-notes" class="input textarea" rows="3" maxlength="500" placeholder="e.g. Faster barcode billing, bug fixes, and smoother inventory sync."></textarea>
+              </div>
+            </section>
+
+            <div class="system-save-bar">
+              <span class="muted-note">Published atomically to <code>appConfig/vastraos_billing</code></span>
+              <button type="submit" id="save-system-btn" class="btn btn-primary">Save &amp; Sync System Controls</button>
+            </div>
+          </form>
+        </section>
+      </main>
+    </div>
+
+    <!-- Mobile Bottom Navigation -->
+    <nav class="mobile-nav" aria-label="Mobile admin navigation">
+      <button type="button" class="mobile-nav-item active" data-tab="overview">
+        <span>&#9672;</span>
+        <small>Overview</small>
+      </button>
+      <button type="button" class="mobile-nav-item" data-tab="approvals">
+        <span>&#10003;</span>
+        <small>UTRs</small>
+        <span id="mobile-pending-badge" class="mobile-badge hidden">0</span>
+      </button>
+      <button type="button" class="mobile-nav-item" data-tab="billing">
+        <span>&#9635;</span>
+        <small>UPI QR</small>
+      </button>
+      <button type="button" class="mobile-nav-item" data-tab="shops">
+        <span>&#9874;</span>
+        <small>Shops</small>
+      </button>
+      <button type="button" class="mobile-nav-item" data-tab="system">
+        <span>&#9881;</span>
+        <small>System</small>
+      </button>
+    </nav>
+  </div>
+
+  <!-- MODAL: Receipt Image Lightbox -->
+  <div id="receipt-modal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="receipt-modal-title">
+    <div class="modal-card modal-lg">
+      <div class="modal-header">
+        <h3 id="receipt-modal-title">Payment Receipt Screenshot</h3>
+        <button type="button" class="icon-btn modal-close" data-close-modal="receipt-modal" aria-label="Close">&times;</button>
+      </div>
+      <div class="modal-body receipt-body">
+        <img id="receipt-modal-img" alt="Payment receipt proof" />
+        <div id="receipt-modal-meta" class="receipt-meta"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: Extend / Activate Shop Subscription -->
+  <div id="extend-modal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="extend-modal-title">
+    <form id="extend-shop-form" class="modal-card">
+      <div class="modal-header">
+        <h3 id="extend-modal-title">Activate / Extend Subscription</h3>
+        <button type="button" class="icon-btn modal-close" data-close-modal="extend-modal" aria-label="Close">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p class="modal-sub" id="extend-shop-desc"></p>
+        <div class="quick-day-chips">
+          <button type="button" class="btn btn-secondary btn-sm quick-days-btn" data-days="7">+7 Days</button>
+          <button type="button" class="btn btn-secondary btn-sm quick-days-btn" data-days="28">+28 Days</button>
+          <button type="button" class="btn btn-secondary btn-sm quick-days-btn" data-days="30">+30 Days</button>
+          <button type="button" class="btn btn-secondary btn-sm quick-days-btn" data-days="90">+90 Days</button>
+        </div>
+        <div class="field">
+          <label for="extend-days-input">Days to Add *</label>
+          <input type="number" id="extend-days-input" class="input mono" required min="1" max="3650" value="28" />
+        </div>
+        <div class="field">
+          <label for="extend-note-input">Reference / Admin Note (Optional)</label>
+          <input type="text" id="extend-note-input" class="input" maxlength="64" placeholder="e.g. ADMIN_MANUAL or Cash Paid" />
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-close-modal="extend-modal">Cancel</button>
+        <button type="submit" id="confirm-extend-btn" class="btn btn-primary">Activate / Extend Now</button>
+      </div>
+    </form>
+  </div>
+
+  <!-- MODAL: Confirm Sensitive Action -->
+  <div id="confirm-modal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="confirm-modal-title">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 id="confirm-modal-title">Confirm Action</h3>
+        <button type="button" class="icon-btn modal-close" data-close-modal="confirm-modal" aria-label="Close">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p id="confirm-modal-message"></p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-close-modal="confirm-modal">Cancel</button>
+        <button type="button" id="confirm-modal-ok" class="btn btn-danger">Confirm</button>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="./app.js"></script>
+</body>
+</html>
