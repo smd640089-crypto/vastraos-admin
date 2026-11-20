@@ -146,7 +146,12 @@ const els = {
   sysUpdateNotes: $("sys-update-notes"),
   saveSystemBtn: $("save-system-btn"),
 
-  // Telegram Bot 24/7 Alerts
+  // Telegram Bot 24/7 Alerts (Slide-Up Drawer + Trigger Badges)
+  heroTelegramChip: $("hero-telegram-chip"),
+  heroTgDot: $("hero-tg-dot"),
+  heroTgLabel: $("hero-tg-label"),
+  tgTriggerStatusPill: $("tg-trigger-status-pill"),
+  tgDrawerTabs: $("tg-drawer-tabs"),
   telegramForm: $("telegram-form"),
   tgStatusPill: $("tg-status-pill"),
   tgWebhookUrl: $("tg-webhook-url"),
@@ -334,6 +339,10 @@ function switchTab(tab) {
   document.querySelectorAll("[data-tab]").forEach((btn) => {
     btn.classList.toggle("active", btn.dataset.tab === tab);
   });
+
+  if (window.innerWidth <= 820) {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
 }
 
 document.querySelectorAll("[data-tab]").forEach((btn) => {
@@ -344,15 +353,85 @@ document.querySelectorAll("[data-goto-tab]").forEach((btn) => {
   btn.addEventListener("click", () => switchTab(btn.dataset.gotoTab));
 });
 
+// Interactive Overview KPI tiles jump straight to filtered tabs
+document.querySelectorAll("[data-kpi-jump]").forEach((btn) => {
+  btn.addEventListener("click", () => {
+    const [tab, filter] = String(btn.dataset.kpiJump || "").split(":");
+    if (tab === "approvals" && filter) {
+      state.utrFilter = filter;
+      state.utrSearch = "";
+      els.utrSearchInput.value = "";
+      syncUtrFilterPills();
+      renderUtrRequests();
+      switchTab("approvals");
+    } else if (tab === "shops" && filter) {
+      state.shopFilter = filter;
+      state.shopSearch = "";
+      els.shopSearchInput.value = "";
+      els.shopFilterPills.querySelectorAll(".filter-pill").forEach((b) => {
+        b.classList.toggle("active", b.dataset.shopFilter === state.shopFilter);
+      });
+      renderShops();
+      switchTab("shops");
+    }
+  });
+});
+
+function syncBodyModalLock() {
+  const anyOpen = Array.from(document.querySelectorAll(".modal-backdrop")).some(
+    (el) => !el.classList.contains("hidden")
+  );
+  document.body.classList.toggle("modal-open", anyOpen);
+}
+
 function openModal(id) {
   const el = $(id);
-  if (el) el.classList.remove("hidden");
+  if (el) {
+    el.classList.remove("hidden");
+    syncBodyModalLock();
+  }
 }
 
 function closeModal(id) {
   const el = $(id);
-  if (el) el.classList.add("hidden");
+  if (el) {
+    el.classList.add("hidden");
+    syncBodyModalLock();
+  }
 }
+
+function switchTelegramDrawerTab(subTab = "settings") {
+  if (!els.tgDrawerTabs) return;
+  els.tgDrawerTabs.querySelectorAll("[data-tg-tab]").forEach((btn) => {
+    const active = btn.dataset.tgTab === subTab;
+    btn.classList.toggle("active", active);
+    btn.setAttribute("aria-selected", active ? "true" : "false");
+  });
+  document.querySelectorAll("[data-tg-pane]").forEach((pane) => {
+    pane.classList.toggle("active", pane.dataset.tgPane === subTab);
+  });
+}
+
+function openTelegramDrawer(subTab = "settings") {
+  switchTelegramDrawerTab(subTab);
+  openModal("telegram-modal");
+}
+
+document.querySelectorAll("[data-open-telegram]").forEach((btn) => {
+  btn.addEventListener("click", () => openTelegramDrawer("settings"));
+});
+
+els.heroTelegramChip.addEventListener("click", () => {
+  const connected = Boolean(
+    state.appConfig.telegramWebhookUrl &&
+      state.appConfig.telegramWebhookUrl.trim().startsWith("https://")
+  );
+  openTelegramDrawer(connected ? "settings" : "script");
+});
+
+els.tgDrawerTabs.querySelectorAll("[data-tg-tab]").forEach((btn) => {
+  btn.addEventListener("click", () => switchTelegramDrawerTab(btn.dataset.tgTab));
+});
 
 document.querySelectorAll("[data-close-modal]").forEach((btn) => {
   btn.addEventListener("click", () => closeModal(btn.dataset.closeModal));
@@ -360,8 +439,20 @@ document.querySelectorAll("[data-close-modal]").forEach((btn) => {
 
 document.querySelectorAll(".modal-backdrop").forEach((backdrop) => {
   backdrop.addEventListener("click", (e) => {
-    if (e.target === backdrop) backdrop.classList.add("hidden");
+    if (e.target === backdrop) {
+      backdrop.classList.add("hidden");
+      syncBodyModalLock();
+    }
   });
+});
+
+document.addEventListener("keydown", (e) => {
+  if (e.key === "Escape") {
+    document.querySelectorAll(".modal-backdrop:not(.hidden)").forEach((el) => {
+      el.classList.add("hidden");
+    });
+    syncBodyModalLock();
+  }
 });
 
 function askConfirm({ title, message, okLabel = "Confirm", okClass = "btn-danger", onConfirm }) {
@@ -667,9 +758,13 @@ function renderOverview() {
     <div class="config-row"><span>UPI QR Code</span><strong>${cfg.ownerUpiQrBase64 ? "Uploaded &amp; Live ✓" : "Not uploaded (UPI ID fallback)"}</strong></div>
     <div class="config-row"><span>Plan Price &amp; Cycle</span><strong>${formatInr(cfg.planPriceInr)} / ${Number(cfg.planDays) || 28} days</strong></div>
     <div class="config-row"><span>Maintenance Mode</span><strong>${cfg.maintenanceMode ? '<span class="pill pill-danger">ON</span>' : '<span class="pill pill-success">OFF</span>'}</strong></div>
-    <div class="config-row"><span>Telegram 24/7 Alerts</span><strong>${tgConnected ? '<span class="pill pill-success">Connected 24/7 ✓</span>' : '<span class="pill pill-warning">Not Configured</span>'}</strong></div>
+    <div class="config-row config-row-clickable" data-open-tg-row="true" role="button" tabindex="0"><span>Telegram 24/7 Alerts</span><strong>${tgConnected ? '<span class="pill pill-success">Connected 24/7 ✓</span>' : '<span class="pill pill-warning">Not Configured</span>'}</strong></div>
     <div class="config-row"><span>App Version Policy</span><strong class="mono">Latest v${escapeHtml(cfg.latestAppVersionName || "1.0")} (#${Number(cfg.latestAppVersionCode || 1)}) &middot; Min #${Number(cfg.minSupportedVersionCode || 1)}</strong></div>
   `;
+  const tgRow = els.overviewConfigSummary.querySelector("[data-open-tg-row]");
+  if (tgRow) {
+    tgRow.addEventListener("click", () => openTelegramDrawer("settings"));
+  }
 }
 
 // ============================================================================
@@ -1034,8 +1129,15 @@ function syncFormIndicators() {
     state.appConfig.telegramWebhookUrl &&
       state.appConfig.telegramWebhookUrl.trim().startsWith("https://")
   );
-  els.tgStatusPill.textContent = tgLive ? "Connected (24/7 Live)" : "Not Configured";
-  els.tgStatusPill.className = `pill ${tgLive ? "pill-success" : "pill-warning"}`;
+  const pillText = tgLive ? "Connected (24/7 Live)" : "Not Configured";
+  const pillCls = `pill pill-compact ${tgLive ? "pill-success" : "pill-warning"}`;
+  els.tgStatusPill.textContent = pillText;
+  els.tgStatusPill.className = pillCls;
+  els.tgTriggerStatusPill.textContent = tgLive ? "Connected 24/7" : "Not Configured";
+  els.tgTriggerStatusPill.className = pillCls;
+
+  els.heroTgDot.className = tgLive ? "status-dot-emerald" : "status-dot-amber";
+  els.heroTgLabel.textContent = tgLive ? "Telegram 24/7" : "Setup Telegram";
 }
 
 function updateBillingPreview() {

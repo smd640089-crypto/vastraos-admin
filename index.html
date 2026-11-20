@@ -2,9 +2,9 @@
 <html lang="en" data-theme="light">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>VastraOS Admin Panel — Live Subscription & App Control</title>
-  <meta name="description" content="Official VastraOS Admin Control Center for live UPI QR billing sync, UTR subscription approvals, shop management, maintenance mode, and app updates." />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>VastraOS Admin Panel — Live Subscription &amp; App Control</title>
+  <meta name="description" content="Official VastraOS Admin Control Center for live UPI QR billing sync, UTR subscription approvals, shop management, maintenance mode, Telegram alerts, and app updates." />
   <meta name="theme-color" content="#6D28D9" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -40,8 +40,13 @@
         <span>VastraOS Admin</span>
       </div>
       <button type="button" class="icon-btn theme-toggle-btn" title="Toggle light/dark theme" aria-label="Toggle theme">
-        <span class="theme-icon-sun" aria-hidden="true">&#9728;</span>
-        <span class="theme-icon-moon" aria-hidden="true">&#9790;</span>
+        <svg class="theme-icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <circle cx="12" cy="12" r="4"></circle>
+          <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"></path>
+        </svg>
+        <svg class="theme-icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+        </svg>
       </button>
     </div>
 
@@ -112,25 +117,68 @@
 
       <nav class="sidebar-nav">
         <button type="button" class="nav-item active" data-tab="overview">
-          <span class="nav-icon">&#9672;</span>
+          <span class="nav-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="3" width="7" height="7" rx="1.5"></rect>
+              <rect x="14" y="3" width="7" height="7" rx="1.5"></rect>
+              <rect x="3" y="14" width="7" height="7" rx="1.5"></rect>
+              <rect x="14" y="14" width="7" height="7" rx="1.5"></rect>
+            </svg>
+          </span>
           <span class="nav-label">Overview</span>
         </button>
+
         <button type="button" class="nav-item" data-tab="approvals">
-          <span class="nav-icon">&#10003;</span>
+          <span class="nav-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+              <path d="m9 12 2 2 4-4"></path>
+            </svg>
+          </span>
           <span class="nav-label">UTR Approvals</span>
           <span id="nav-pending-badge" class="nav-badge hidden">0</span>
         </button>
+
         <button type="button" class="nav-item" data-tab="billing">
-          <span class="nav-icon">&#9635;</span>
+          <span class="nav-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="3" width="7" height="7" rx="1"></rect>
+              <rect x="14" y="3" width="7" height="7" rx="1"></rect>
+              <rect x="3" y="14" width="7" height="7" rx="1"></rect>
+              <path d="M14 14h3v3h-3zM20 14v3h-3M14 20h3M20 20h.01"></path>
+            </svg>
+          </span>
           <span class="nav-label">Billing &amp; UPI QR</span>
         </button>
+
         <button type="button" class="nav-item" data-tab="shops">
-          <span class="nav-icon">&#9874;</span>
+          <span class="nav-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="m2 7 4.41-4.41A2 2 0 0 1 7.83 2h8.34a2 2 0 0 1 1.42.59L22 7"></path>
+              <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"></path>
+              <path d="M15 22v-4a2 2 0 0 0-2-2h-2a2 2 0 0 0-2 2v4"></path>
+              <path d="M2 7h20"></path>
+              <path d="M22 7v3a2 2 0 0 1-2 2a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 16 12a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 12 12a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 8 12a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 4 12a2 2 0 0 1-2-2V7"></path>
+            </svg>
+          </span>
           <span class="nav-label">All Shops</span>
           <span id="nav-shops-count" class="nav-count">0</span>
         </button>
+
         <button type="button" class="nav-item" data-tab="system">
-          <span class="nav-icon">&#9881;</span>
+          <span class="nav-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="4" y1="21" x2="4" y2="14"></line>
+              <line x1="4" y1="10" x2="4" y2="3"></line>
+              <line x1="12" y1="21" x2="12" y2="12"></line>
+              <line x1="12" y1="8" x2="12" y2="3"></line>
+              <line x1="20" y1="21" x2="20" y2="16"></line>
+              <line x1="20" y1="12" x2="20" y2="3"></line>
+              <line x1="1" y1="14" x2="7" y2="14"></line>
+              <line x1="9" y1="8" x2="15" y2="8"></line>
+              <line x1="17" y1="16" x2="23" y2="16"></line>
+            </svg>
+          </span>
           <span class="nav-label">System &amp; Updates</span>
           <span id="nav-maint-dot" class="status-dot-danger hidden" title="Maintenance Mode ON"></span>
         </button>
@@ -155,55 +203,151 @@
     <div class="workspace">
       <header class="topbar">
         <div class="topbar-left">
-          <h2 id="page-title">Overview</h2>
-          <span id="live-status-chip" class="pill pill-success">
-            <span class="pulse-dot"></span>
-            Live Synced
-          </span>
-          <span id="topbar-maint-chip" class="pill pill-danger hidden">Maintenance Mode ON</span>
+          <div class="mobile-brand-dot" aria-hidden="true">
+            <svg viewBox="0 0 32 32" fill="none">
+              <path d="M16 6a3 3 0 0 0-2.94 3.6h1.96a1.1 1.1 0 1 1 1.88.78l-1.4 1.3a2 2 0 0 0-.65 1.48v.84L6.2 19.6a2 2 0 0 0 1.1 3.68h17.4a2 2 0 0 0 1.1-3.68L17.15 14v-.65l1.28-1.18A3 3 0 0 0 16 6zm0 10.2 6.8 4.4H9.2l6.8-4.4z" fill="currentColor"/>
+            </svg>
+          </div>
+          <div class="topbar-title-group">
+            <h2 id="page-title">Overview</h2>
+            <div class="topbar-pills">
+              <span id="live-status-chip" class="pill pill-success pill-compact">
+                <span class="pulse-dot"></span>
+                Live Synced
+              </span>
+              <span id="topbar-maint-chip" class="pill pill-danger pill-compact hidden">Maintenance ON</span>
+            </div>
+          </div>
         </div>
         <div class="topbar-actions">
           <button type="button" class="icon-btn theme-toggle-btn" title="Switch Light / Dark theme" aria-label="Toggle theme">
-            <span class="theme-icon-sun" aria-hidden="true">&#9728;</span>
-            <span class="theme-icon-moon" aria-hidden="true">&#9790;</span>
+            <svg class="theme-icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <circle cx="12" cy="12" r="4"></circle>
+              <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"></path>
+            </svg>
+            <svg class="theme-icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+            </svg>
           </button>
-          <button type="button" id="signout-btn" class="btn btn-secondary btn-sm">Sign Out</button>
+          <button type="button" id="signout-btn" class="btn btn-secondary btn-sm signout-btn" title="Sign out">
+            <svg class="btn-svg-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+              <polyline points="16 17 21 12 16 7"></polyline>
+              <line x1="21" y1="12" x2="9" y2="12"></line>
+            </svg>
+            <span class="signout-label">Sign Out</span>
+          </button>
         </div>
       </header>
 
       <main class="content-area">
         <!-- TAB 1: OVERVIEW -->
         <section id="tab-overview" class="tab-panel active">
-          <div class="kpi-grid">
-            <article class="kpi-card kpi-amber">
-              <div class="kpi-label">Pending UTRs</div>
+          <!-- Executive Revenue Hero Card -->
+          <section class="revenue-hero anim-rise">
+            <div class="revenue-hero-top">
+              <div>
+                <div class="hero-eyebrow">APPROVED SUBSCRIPTION REVENUE</div>
+                <div class="hero-value" id="kpi-revenue">&#8377;0</div>
+                <div class="hero-sub" id="kpi-revenue-sub">0 approved renewals</div>
+              </div>
+              <button type="button" id="hero-telegram-chip" class="hero-status-chip" title="Open Telegram Bot settings">
+                <span id="hero-tg-dot" class="status-dot-amber"></span>
+                <span id="hero-tg-label">Telegram Setup</span>
+              </button>
+            </div>
+            <div class="hero-quick-actions">
+              <button type="button" class="hero-action-btn" data-goto-tab="approvals">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                  <path d="m9 12 2 2 4-4"></path>
+                </svg>
+                <span>Review UTRs</span>
+              </button>
+              <button type="button" class="hero-action-btn" data-goto-tab="billing">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <rect x="3" y="3" width="7" height="7" rx="1"></rect>
+                  <rect x="14" y="3" width="7" height="7" rx="1"></rect>
+                  <rect x="3" y="14" width="7" height="7" rx="1"></rect>
+                  <path d="M14 14h3v3h-3zM20 14v3h-3"></path>
+                </svg>
+                <span>UPI QR &amp; Plan</span>
+              </button>
+              <button type="button" class="hero-action-btn" data-open-telegram="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="m22 2-7 20-4-9-9-4Z"></path>
+                  <path d="M22 2 11 13"></path>
+                </svg>
+                <span>Telegram Bot</span>
+              </button>
+            </div>
+          </section>
+
+          <!-- Compact 2x2 KPI Bento Grid (Mobile) / 4-Up Row (Desktop) -->
+          <div class="kpi-bento-grid">
+            <button type="button" class="kpi-card kpi-amber kpi-interactive anim-rise" style="--delay: 40ms" data-kpi-jump="approvals:PENDING">
+              <div class="kpi-card-head">
+                <span class="kpi-icon-badge kpi-icon-amber" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <polyline points="12 6 12 12 16 14"></polyline>
+                  </svg>
+                </span>
+                <span class="kpi-arrow" aria-hidden="true">&rsaquo;</span>
+              </div>
               <div class="kpi-value" id="kpi-pending">0</div>
-              <div class="kpi-sub">Awaiting manual review</div>
-            </article>
-            <article class="kpi-card kpi-emerald">
-              <div class="kpi-label">Active Paid Shops</div>
+              <div class="kpi-label">Pending UTRs</div>
+              <div class="kpi-sub">Awaiting review</div>
+            </button>
+
+            <button type="button" class="kpi-card kpi-emerald kpi-interactive anim-rise" style="--delay: 80ms" data-kpi-jump="shops:ACTIVE">
+              <div class="kpi-card-head">
+                <span class="kpi-icon-badge kpi-icon-emerald" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                    <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                  </svg>
+                </span>
+                <span class="kpi-arrow" aria-hidden="true">&rsaquo;</span>
+              </div>
               <div class="kpi-value" id="kpi-active-paid">0</div>
+              <div class="kpi-label">Active Paid</div>
               <div class="kpi-sub">Paid cycle active</div>
-            </article>
-            <article class="kpi-card kpi-violet">
-              <div class="kpi-label">Active Trials</div>
+            </button>
+
+            <button type="button" class="kpi-card kpi-violet kpi-interactive anim-rise" style="--delay: 120ms" data-kpi-jump="shops:TRIAL">
+              <div class="kpi-card-head">
+                <span class="kpi-icon-badge kpi-icon-violet" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"></path>
+                  </svg>
+                </span>
+                <span class="kpi-arrow" aria-hidden="true">&rsaquo;</span>
+              </div>
               <div class="kpi-value" id="kpi-active-trial">0</div>
-              <div class="kpi-sub">7-day trial running</div>
-            </article>
-            <article class="kpi-card kpi-rose">
-              <div class="kpi-label">Expired / Suspended</div>
+              <div class="kpi-label">Active Trials</div>
+              <div class="kpi-sub">7-day trial live</div>
+            </button>
+
+            <button type="button" class="kpi-card kpi-rose kpi-interactive anim-rise" style="--delay: 160ms" data-kpi-jump="shops:EXPIRED">
+              <div class="kpi-card-head">
+                <span class="kpi-icon-badge kpi-icon-rose" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <line x1="15" y1="9" x2="9" y2="15"></line>
+                    <line x1="9" y1="9" x2="15" y2="15"></line>
+                  </svg>
+                </span>
+                <span class="kpi-arrow" aria-hidden="true">&rsaquo;</span>
+              </div>
               <div class="kpi-value" id="kpi-expired">0</div>
-              <div class="kpi-sub">Renewal needed or paused</div>
-            </article>
-            <article class="kpi-card kpi-neutral">
-              <div class="kpi-label">Approved Revenue</div>
-              <div class="kpi-value" id="kpi-revenue">&#8377;0</div>
-              <div class="kpi-sub" id="kpi-revenue-sub">0 approved renewals</div>
-            </article>
+              <div class="kpi-label">Expired / Paused</div>
+              <div class="kpi-sub">Needs renewal</div>
+            </button>
           </div>
 
           <div class="overview-grid">
-            <section class="panel">
+            <section class="panel anim-rise" style="--delay: 190ms">
               <div class="panel-header">
                 <div>
                   <h3>Pending UTR Approvals</h3>
@@ -214,7 +358,7 @@
               <div id="overview-pending-list" class="stack-list"></div>
             </section>
 
-            <section class="panel">
+            <section class="panel anim-rise" style="--delay: 220ms">
               <div class="panel-header">
                 <div>
                   <h3>Live App Configuration Snapshot</h3>
@@ -276,7 +420,7 @@
 
               <div class="field">
                 <label for="cfg-instructions">Payment Instructions (Shown in App) *</label>
-                <textarea id="cfg-instructions" class="input textarea" rows="3" required minlength="1" maxlength="600" placeholder="Enter payment & UTR verification instructions..."></textarea>
+                <textarea id="cfg-instructions" class="input textarea" rows="3" required minlength="1" maxlength="600" placeholder="Enter payment &amp; UTR verification instructions..."></textarea>
               </div>
 
               <div class="field">
@@ -373,6 +517,30 @@
 
         <!-- TAB 5: SYSTEM, MAINTENANCE & UPDATES -->
         <section id="tab-system" class="tab-panel">
+          <!-- Compact One-Tap Telegram Integration Row -->
+          <button type="button" id="open-telegram-drawer-btn" class="integration-trigger-card" data-open-telegram="true">
+            <div class="integration-trigger-left">
+              <div class="telegram-icon-badge" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="m22 2-7 20-4-9-9-4Z"></path>
+                  <path d="M22 2 11 13"></path>
+                </svg>
+              </div>
+              <div class="integration-trigger-text">
+                <div class="integration-trigger-title-row">
+                  <span class="integration-trigger-title">Telegram Bot Alerts</span>
+                  <span id="tg-trigger-status-pill" class="pill pill-warning pill-compact">Not Configured</span>
+                </div>
+                <div class="integration-trigger-sub">Webhook URL, event toggles, test alert &amp; Apps Script setup</div>
+              </div>
+            </div>
+            <span class="integration-chevron" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="9 18 15 12 9 6"></polyline>
+              </svg>
+            </span>
+          </button>
+
           <form id="system-form" class="system-grid">
             <section class="panel">
               <div class="panel-header">
@@ -436,160 +604,222 @@
               <button type="submit" id="save-system-btn" class="btn btn-primary">Save &amp; Sync System Controls</button>
             </div>
           </form>
-
-          <!-- TELEGRAM BOT 24/7 NOTIFICATIONS -->
-          <section class="panel telegram-section" aria-labelledby="tg-section-title">
-            <div class="panel-header">
-              <div>
-                <div class="tg-title-row">
-                  <h3 id="tg-section-title">Telegram Bot 24/7 Notifications</h3>
-                  <span id="tg-status-pill" class="pill pill-warning">Not Configured</span>
-                </div>
-                <p class="panel-desc">
-                  Receive instant 24/7 alerts in your existing Telegram Bot whenever a new account/shop is created or a UTR payment is submitted — with a direct <strong>Open Admin Panel</strong> button.
-                </p>
-              </div>
-            </div>
-
-            <div class="telegram-grid">
-              <!-- Left: Live Synced Webhook & Event Toggles -->
-              <form id="telegram-form" class="tg-subpanel">
-                <div class="tg-subpanel-title">1. Live Webhook &amp; Alert Triggers</div>
-                <p class="field-help">Only your Google Apps Script Web App URL &amp; toggles sync to Firestore. Your Bot Token stays 100% private.</p>
-
-                <div class="field">
-                  <label for="tg-webhook-url">Google Apps Script Webhook URL (24/7 Free Relay)</label>
-                  <input
-                    type="url"
-                    id="tg-webhook-url"
-                    class="input mono"
-                    maxlength="500"
-                    placeholder="https://script.google.com/macros/s/AKfycb.../exec"
-                  />
-                  <small class="field-help">Must start with <code>https://</code>. Leave blank to disable Telegram alerts.</small>
-                </div>
-
-                <div class="field">
-                  <label for="tg-admin-url">Admin Panel Live URL (For Telegram Inline Button)</label>
-                  <input
-                    type="url"
-                    id="tg-admin-url"
-                    class="input mono"
-                    maxlength="500"
-                    placeholder="https://your-username.github.io/vastraos-admin/"
-                  />
-                  <small class="field-help">Auto-detected from this website. Clicking the button in Telegram opens this exact link.</small>
-                </div>
-
-                <div class="tg-toggle-list">
-                  <div class="tg-toggle-row">
-                    <div>
-                      <div class="tg-toggle-title">New Account / Shop Created</div>
-                      <div class="field-help">Alerts you when a new shopkeeper registers or sets up a shop</div>
-                    </div>
-                    <label class="switch switch-primary">
-                      <input type="checkbox" id="tg-notify-new-account" checked />
-                      <span class="slider"></span>
-                    </label>
-                  </div>
-
-                  <div class="tg-toggle-row">
-                    <div>
-                      <div class="tg-toggle-title">Subscription UTR Payment Submitted</div>
-                      <div class="field-help">Instant alert with Shop, Owner, Amount, UTR &amp; Admin Panel link</div>
-                    </div>
-                    <label class="switch switch-primary">
-                      <input type="checkbox" id="tg-notify-utr-submit" checked />
-                      <span class="slider"></span>
-                    </label>
-                  </div>
-                </div>
-
-                <div class="tg-actions-row">
-                  <button type="button" id="tg-test-btn" class="btn btn-secondary">Send Test Telegram Alert</button>
-                  <button type="submit" id="save-telegram-btn" class="btn btn-primary">Save &amp; Sync Telegram Settings</button>
-                </div>
-              </form>
-
-              <!-- Right: Private Local 1-Click Apps Script Generator -->
-              <div class="tg-subpanel tg-generator-box">
-                <div class="tg-subpanel-title">2. Free 24/7 Google Apps Script Generator</div>
-                <div class="alert-box alert-privacy">
-                  <strong>Privacy Guaranteed:</strong> Your Bot Token &amp; Chat ID are used only inside your browser to generate <code>Code.gs</code> and are <strong>never</strong> uploaded to Firestore or the Android app.
-                </div>
-
-                <div class="field">
-                  <label for="tg-gen-token">Your Existing Telegram Bot Token (from @BotFather)</label>
-                  <div class="input-with-btn">
-                    <input
-                      type="password"
-                      id="tg-gen-token"
-                      class="input mono"
-                      autocomplete="off"
-                      placeholder="1234567890:AAHxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
-                    />
-                    <button type="button" id="tg-toggle-token-btn" class="btn btn-secondary btn-sm">Show</button>
-                  </div>
-                </div>
-
-                <div class="field">
-                  <label for="tg-gen-chat-id">Your Telegram Chat ID</label>
-                  <input
-                    type="text"
-                    id="tg-gen-chat-id"
-                    class="input mono"
-                    autocomplete="off"
-                    placeholder="e.g. 5849201734"
-                  />
-                  <small class="field-help">Need your Chat ID? Message <code>@userinfobot</code> on Telegram (first send <code>/start</code> to your own bot!).</small>
-                </div>
-
-                <div class="tg-actions-row">
-                  <button type="button" id="tg-copy-script-btn" class="btn btn-emerald">Copy Ready-to-Paste Code.gs</button>
-                  <button type="button" id="tg-preview-script-btn" class="btn btn-secondary btn-sm">View Script</button>
-                </div>
-
-                <div id="tg-script-preview-wrap" class="tg-code-wrap hidden">
-                  <pre><code id="tg-script-preview"></code></pre>
-                </div>
-
-                <ol class="mini-steps tg-steps">
-                  <li>Open <a href="https://script.google.com" target="_blank" rel="noopener noreferrer">script.google.com</a> &rarr; click <strong>New project</strong>.</li>
-                  <li>Clear <code>Code.gs</code>, paste the copied script, and click <strong>Save</strong>.</li>
-                  <li>Click <strong>Deploy &rarr; New deployment &rarr; Web app</strong> &rarr; Execute as: <strong>Me</strong> &rarr; Who has access: <strong>Anyone</strong> &rarr; <strong>Deploy</strong> (allow permissions once).</li>
-                  <li>Copy the <strong>Web app URL</strong> (ends with <code>/exec</code>), paste it on the left, click <strong>Save &amp; Sync</strong>, and test!</li>
-                </ol>
-              </div>
-            </div>
-          </section>
         </section>
       </main>
     </div>
 
-    <!-- Mobile Bottom Navigation -->
+    <!-- Floating Frosted-Glass Mobile Bottom Navigation Dock -->
     <nav class="mobile-nav" aria-label="Mobile admin navigation">
       <button type="button" class="mobile-nav-item active" data-tab="overview">
-        <span>&#9672;</span>
+        <span class="mobile-nav-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="3" width="7" height="7" rx="1.5"></rect>
+            <rect x="14" y="3" width="7" height="7" rx="1.5"></rect>
+            <rect x="3" y="14" width="7" height="7" rx="1.5"></rect>
+            <rect x="14" y="14" width="7" height="7" rx="1.5"></rect>
+          </svg>
+        </span>
         <small>Overview</small>
       </button>
+
       <button type="button" class="mobile-nav-item" data-tab="approvals">
-        <span>&#10003;</span>
+        <span class="mobile-nav-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+            <path d="m9 12 2 2 4-4"></path>
+          </svg>
+        </span>
         <small>UTRs</small>
         <span id="mobile-pending-badge" class="mobile-badge hidden">0</span>
       </button>
+
       <button type="button" class="mobile-nav-item" data-tab="billing">
-        <span>&#9635;</span>
+        <span class="mobile-nav-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="3" width="7" height="7" rx="1"></rect>
+            <rect x="14" y="3" width="7" height="7" rx="1"></rect>
+            <rect x="3" y="14" width="7" height="7" rx="1"></rect>
+            <path d="M14 14h3v3h-3zM20 14v3h-3M14 20h3M20 20h.01"></path>
+          </svg>
+        </span>
         <small>UPI QR</small>
       </button>
+
       <button type="button" class="mobile-nav-item" data-tab="shops">
-        <span>&#9874;</span>
+        <span class="mobile-nav-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="m2 7 4.41-4.41A2 2 0 0 1 7.83 2h8.34a2 2 0 0 1 1.42.59L22 7"></path>
+            <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"></path>
+            <path d="M15 22v-4a2 2 0 0 0-2-2h-2a2 2 0 0 0-2 2v4"></path>
+            <path d="M2 7h20"></path>
+          </svg>
+        </span>
         <small>Shops</small>
       </button>
+
       <button type="button" class="mobile-nav-item" data-tab="system">
-        <span>&#9881;</span>
+        <span class="mobile-nav-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="4" y1="21" x2="4" y2="14"></line>
+            <line x1="4" y1="10" x2="4" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="12"></line>
+            <line x1="12" y1="8" x2="12" y2="3"></line>
+            <line x1="20" y1="21" x2="20" y2="16"></line>
+            <line x1="20" y1="12" x2="20" y2="3"></line>
+            <line x1="1" y1="14" x2="7" y2="14"></line>
+            <line x1="9" y1="8" x2="15" y2="8"></line>
+            <line x1="17" y1="16" x2="23" y2="16"></line>
+          </svg>
+        </span>
         <small>System</small>
       </button>
     </nav>
+  </div>
+
+  <!-- DRAWER / MODAL: Telegram Bot 24/7 Notifications -->
+  <div id="telegram-modal" class="modal-backdrop drawer-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="tg-modal-title">
+    <div class="modal-card modal-drawer">
+      <div class="drawer-handle-wrap" aria-hidden="true">
+        <span class="drawer-handle"></span>
+      </div>
+      <div class="modal-header">
+        <div class="drawer-header-left">
+          <div class="telegram-icon-badge telegram-icon-sm" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="m22 2-7 20-4-9-9-4Z"></path>
+              <path d="M22 2 11 13"></path>
+            </svg>
+          </div>
+          <div>
+            <div class="tg-title-row">
+              <h3 id="tg-modal-title">Telegram Bot Alerts</h3>
+              <span id="tg-status-pill" class="pill pill-warning pill-compact">Not Configured</span>
+            </div>
+            <p class="drawer-sub">24/7 private webhook relay with Admin Panel button</p>
+          </div>
+        </div>
+        <button type="button" class="icon-btn modal-close" data-close-modal="telegram-modal" aria-label="Close Telegram settings">&times;</button>
+      </div>
+
+      <!-- Clean Segmented Tabs inside Drawer -->
+      <div class="drawer-tabs-wrap">
+        <div class="segmented-tabs" id="tg-drawer-tabs" role="tablist">
+          <button type="button" class="segmented-tab active" data-tg-tab="settings" role="tab" aria-selected="true">
+            Settings &amp; Test
+          </button>
+          <button type="button" class="segmented-tab" data-tg-tab="script" role="tab" aria-selected="false">
+            Script Setup (Code.gs)
+          </button>
+        </div>
+      </div>
+
+      <div class="modal-body drawer-scroll-body">
+        <!-- Pane 1: Webhook, Toggles & Test -->
+        <form id="telegram-form" class="tg-pane active" data-tg-pane="settings">
+          <div class="field">
+            <label for="tg-webhook-url">Google Apps Script Webhook URL</label>
+            <input
+              type="url"
+              id="tg-webhook-url"
+              class="input mono"
+              maxlength="500"
+              placeholder="https://script.google.com/macros/s/AKfycb.../exec"
+            />
+            <small class="field-help">Must start with <code>https://</code>. Leave blank to pause Telegram alerts.</small>
+          </div>
+
+          <div class="field">
+            <label for="tg-admin-url">Admin Panel Live URL (Inline Button Link)</label>
+            <input
+              type="url"
+              id="tg-admin-url"
+              class="input mono"
+              maxlength="500"
+              placeholder="https://your-username.github.io/vastraos-admin/"
+            />
+            <small class="field-help">Auto-detected from this site. Opens directly when tapped in Telegram.</small>
+          </div>
+
+          <div class="tg-toggle-list">
+            <div class="tg-toggle-row">
+              <div>
+                <div class="tg-toggle-title">New Account / Shop Created</div>
+                <div class="field-help">Alerts when a shopkeeper registers or sets up a shop</div>
+              </div>
+              <label class="switch switch-primary">
+                <input type="checkbox" id="tg-notify-new-account" checked />
+                <span class="slider"></span>
+              </label>
+            </div>
+
+            <div class="tg-toggle-row">
+              <div>
+                <div class="tg-toggle-title">Subscription UTR Payment Submitted</div>
+                <div class="field-help">Instant alert with Shop, Owner, Amount &amp; UTR</div>
+              </div>
+              <label class="switch switch-primary">
+                <input type="checkbox" id="tg-notify-utr-submit" checked />
+                <span class="slider"></span>
+              </label>
+            </div>
+          </div>
+
+          <div class="tg-drawer-footer">
+            <button type="button" id="tg-test-btn" class="btn btn-secondary">Send Test Alert</button>
+            <button type="submit" id="save-telegram-btn" class="btn btn-primary">Save &amp; Sync</button>
+          </div>
+        </form>
+
+        <!-- Pane 2: Private 1-Click Apps Script Generator -->
+        <div class="tg-pane" data-tg-pane="script">
+          <div class="alert-box alert-privacy">
+            <strong>100% Private:</strong> Your Bot Token &amp; Chat ID stay only inside your browser to generate <code>Code.gs</code> and are <strong>never</strong> uploaded to Firestore or the Android app.
+          </div>
+
+          <div class="field">
+            <label for="tg-gen-token">Your Existing Telegram Bot Token (@BotFather)</label>
+            <div class="input-with-btn">
+              <input
+                type="password"
+                id="tg-gen-token"
+                class="input mono"
+                autocomplete="off"
+                placeholder="1234567890:AAHxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+              />
+              <button type="button" id="tg-toggle-token-btn" class="btn btn-secondary btn-sm">Show</button>
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="tg-gen-chat-id">Your Telegram Chat ID</label>
+            <input
+              type="text"
+              id="tg-gen-chat-id"
+              class="input mono"
+              autocomplete="off"
+              placeholder="e.g. 5849201734"
+            />
+            <small class="field-help">Message <code>@userinfobot</code> on Telegram (first send <code>/start</code> to your own bot).</small>
+          </div>
+
+          <div class="tg-actions-row">
+            <button type="button" id="tg-copy-script-btn" class="btn btn-emerald">Copy Ready-to-Paste Code.gs</button>
+            <button type="button" id="tg-preview-script-btn" class="btn btn-secondary btn-sm">View Script</button>
+          </div>
+
+          <div id="tg-script-preview-wrap" class="tg-code-wrap hidden">
+            <pre><code id="tg-script-preview"></code></pre>
+          </div>
+
+          <ol class="mini-steps tg-steps">
+            <li>Open <a href="https://script.google.com" target="_blank" rel="noopener noreferrer">script.google.com</a> &rarr; click <strong>New project</strong>.</li>
+            <li>Clear <code>Code.gs</code>, paste the copied script, and click <strong>Save</strong>.</li>
+            <li>Click <strong>Deploy &rarr; New deployment &rarr; Web app</strong> &rarr; Execute as: <strong>Me</strong> &rarr; Who has access: <strong>Anyone</strong> &rarr; <strong>Deploy</strong>.</li>
+            <li>Copy the <code>/exec</code> URL, switch to <strong>Settings &amp; Test</strong> above, paste, save &amp; test!</li>
+          </ol>
+        </div>
+      </div>
+    </div>
   </div>
 
   <!-- MODAL: Receipt Image Lightbox -->
