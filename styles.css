@@ -2313,6 +2313,41 @@ code, .mono {
   gap: 10px;
   flex-wrap: wrap;
 }
+.apk-uploaded-pill {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  flex-wrap: wrap;
+  padding: 10px 12px;
+  border-radius: var(--radius-sm);
+  background: var(--emerald-soft);
+  border: 1px solid var(--emerald-border);
+  color: var(--emerald);
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+.store-dl-progress {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.store-dl-progress-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.76rem;
+  font-weight: 700;
+  color: var(--primary);
+}
+.hint-success {
+  color: var(--emerald) !important;
+  font-weight: 600;
+}
+.hint-warn {
+  color: var(--amber-text) !important;
+  font-weight: 600;
+}
 .upload-progress-wrap {
   display: flex;
   align-items: center;

@@ -1029,19 +1029,19 @@
                 </div>
               </div>
 
-              <!-- APK Delivery Box: Direct Upload OR Instant Link -->
+              <!-- Direct In-Panel APK Upload (Up to 150 MB — Zero External Tools Needed) -->
               <div class="apk-upload-box">
                 <div class="apk-upload-head">
                   <div>
-                    <div class="apk-upload-title">APK File Upload or Direct Download Link *</div>
-                    <div class="field-help">Upload an <code>.apk</code> file directly (via Firebase Storage) OR paste any HTTPS link (GitHub Releases / Google Drive auto-converted).</div>
+                    <div class="apk-upload-title">Upload .APK File Directly Inside Sarfu Admin *</div>
+                    <div class="field-help">Pick any Android <code>.apk</code> file (up to 150 MB) from your phone or computer — uploads right here with live progress and instant 1-tap visitor downloads.</div>
                   </div>
                 </div>
 
                 <div class="apk-upload-actions">
                   <input type="file" id="rel-apk-file-input" accept=".apk,application/vnd.android.package-archive" class="sr-only" />
-                  <button type="button" id="rel-apk-pick-btn" class="btn btn-secondary btn-sm">
-                    <svg class="btn-svg-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <button type="button" id="rel-apk-pick-btn" class="btn btn-primary btn-sm">
+                    <svg class="btn-svg-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                       <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
                       <polyline points="17 8 12 3 7 8"></polyline>
                       <line x1="12" y1="3" x2="12" y2="15"></line>
@@ -1049,7 +1049,7 @@
                     <span>Upload .APK File</span>
                   </button>
                   <button type="button" id="rel-apk-cancel-btn" class="btn btn-ghost-danger btn-sm hidden">Cancel Upload</button>
-                  <span id="rel-apk-file-status" class="muted-note">No file selected</span>
+                  <span id="rel-apk-file-status" class="muted-note">No APK uploaded yet</span>
                 </div>
 
                 <div id="rel-upload-progress-wrap" class="upload-progress-wrap hidden">
@@ -1059,14 +1059,15 @@
                   <span id="rel-upload-progress-text" class="mono">0%</span>
                 </div>
 
-                <div id="rel-storage-help" class="alert-box alert-warning hidden">
-                  <div class="alert-title">Firebase Storage Not Enabled Yet?</div>
-                  <p>To upload large <code>.apk</code> files directly here, enable <strong>Storage</strong> once in Firebase Console (Project <code>gen-lang-client-0802920972</code>). Or right now, upload your APK to <strong>GitHub Releases</strong> or <strong>Google Drive</strong> (Anyone with link) and paste the link below — it auto-converts to 1-tap instant download!</p>
+                <div id="rel-apk-ready-pill" class="apk-uploaded-pill hidden">
+                  <span id="rel-apk-ready-text" class="mono"></span>
+                  <button type="button" id="rel-apk-clear-btn" class="btn btn-ghost-danger btn-sm">Remove APK</button>
                 </div>
 
-                <div class="field" style="margin-top:10px">
-                  <label for="rel-download-url">Direct HTTPS APK Download URL *</label>
-                  <input type="url" id="rel-download-url" class="input mono" required maxlength="1000" placeholder="https://github.com/.../releases/download/v1.2/app.apk or Google Drive link" />
+                <div class="field" style="margin-top:6px;margin-bottom:0">
+                  <label for="rel-download-url">External HTTPS APK URL (Optional — leave empty if uploaded above)</label>
+                  <input type="url" id="rel-download-url" class="input mono" maxlength="1000" placeholder="Optional: https://... (not needed when .apk is uploaded above)" />
+                  <small id="rel-url-hint" class="field-help">Leave blank when uploading an <code>.apk</code> directly above. External HTTPS / Google Drive links are also supported.</small>
                 </div>
               </div>
 
