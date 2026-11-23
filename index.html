@@ -3,13 +3,13 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <title>VastraOS Admin Panel — Live Subscription &amp; App Control</title>
-  <meta name="description" content="Official VastraOS Admin Control Center for live UPI QR billing sync, UTR subscription approvals, shop management, maintenance mode, Telegram alerts, and app updates." />
+  <title>Sarfu Techno — Official App &amp; Game Downloads • Sarfu Admin</title>
+  <meta name="description" content="Download official latest Android APK updates for VastraOS and Sarfu Techno apps &amp; games, and access the Sarfu Admin multi-project owner console." />
   <meta name="theme-color" content="#6D28D9" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet" />
-  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%236D28D9'/%3E%3Cpath d='M32 14a5 5 0 0 0-4.9 6h3.2a2 2 0 1 1 3.4 1.4l-2.3 2.1a3 3 0 0 0-1 2.2V27L14 37.5a3 3 0 0 0 1.6 5.5h32.8a3 3 0 0 0 1.6-5.5L33.6 27v-1.2l2.1-1.9A5 5 0 0 0 32 14zm0 16.5L43.5 38h-23L32 30.5z' fill='%23fff'/%3E%3C/svg%3E" />
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%236D28D9'/%3E%3Cpath d='M32 14L48 23V41L32 50L16 41V23L32 14ZM32 22.5L23.5 27.3V36.7L32 41.5L40.5 36.7V27.3L32 22.5Z' fill='%23fff'/%3E%3C/svg%3E" />
   <link rel="stylesheet" href="./styles.css" />
   <script>
     (function () {
@@ -28,40 +28,117 @@
   <!-- Floating Top-Center Toast Stack -->
   <div id="toast-container" class="toast-container" aria-live="polite"></div>
 
-  <!-- AUTH GATE VIEW -->
-  <main id="auth-view" class="auth-view">
-    <div class="auth-topbar">
-      <div class="brand-inline">
-        <div class="brand-mark" aria-hidden="true">
-          <svg viewBox="0 0 32 32" fill="none">
-            <path d="M16 6a3 3 0 0 0-2.94 3.6h1.96a1.1 1.1 0 1 1 1.88.78l-1.4 1.3a2 2 0 0 0-.65 1.48v.84L6.2 19.6a2 2 0 0 0 1.1 3.68h17.4a2 2 0 0 0 1.1-3.68L17.15 14v-.65l1.28-1.18A3 3 0 0 0 16 6zm0 10.2 6.8 4.4H9.2l6.8-4.4z" fill="currentColor"/>
-          </svg>
+  <!-- ===================================================================== -->
+  <!-- PUBLIC STOREFRONT VIEW (Top-First Downloads — Zero Login Required)    -->
+  <!-- ===================================================================== -->
+  <main id="public-view" class="public-view">
+    <header class="public-topbar">
+      <div class="public-topbar-inner">
+        <div class="brand-inline">
+          <div class="brand-mark" aria-hidden="true">
+            <svg viewBox="0 0 32 32" fill="none">
+              <path d="M16 4.5 26 10.2v11.6L16 27.5 6 21.8V10.2L16 4.5Zm0 4.6-6 3.4v7l6 3.4 6-3.4v-7l-6-3.4Z" fill="currentColor"/>
+            </svg>
+          </div>
+          <div>
+            <div class="brand-title">Sarfu Techno</div>
+            <div class="brand-sub">Official App &amp; Game Store</div>
+          </div>
         </div>
-        <span>VastraOS Admin</span>
-      </div>
-      <button type="button" class="icon-btn theme-toggle-btn" title="Toggle light/dark theme" aria-label="Toggle theme">
-        <svg class="theme-icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-          <circle cx="12" cy="12" r="4"></circle>
-          <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"></path>
-        </svg>
-        <svg class="theme-icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
-        </svg>
-      </button>
-    </div>
 
-    <section class="auth-card">
+        <div class="public-topbar-actions">
+          <button type="button" class="icon-btn theme-toggle-btn" title="Toggle light/dark theme" aria-label="Toggle theme">
+            <svg class="theme-icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <circle cx="12" cy="12" r="4"></circle>
+              <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"></path>
+            </svg>
+            <svg class="theme-icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+            </svg>
+          </button>
+
+          <button type="button" id="return-admin-btn" class="btn btn-emerald btn-sm hidden">
+            Back to Sarfu Admin
+          </button>
+
+          <button type="button" id="open-admin-login-btn" class="btn btn-primary btn-sm">
+            <svg class="btn-svg-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+              <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+            </svg>
+            <span>Admin Login</span>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <div class="public-container">
+      <!-- Storefront Hero Banner -->
+      <section class="store-hero anim-rise">
+        <div class="store-hero-content">
+          <div class="store-hero-badge">
+            <span class="pulse-dot"></span>
+            <span>OFFICIAL SARFU TECHNO RELEASES</span>
+          </div>
+          <h1>Download Latest Apps &amp; Games</h1>
+          <p class="store-hero-sub">
+            Get verified, up-to-date Android APKs for VastraOS and upcoming Sarfu Techno apps &amp; games — direct 1-tap download with no sign-in required.
+          </p>
+        </div>
+        <div class="store-hero-stats">
+          <div class="store-stat-pill">
+            <strong id="store-total-count">0</strong>
+            <span>Live Releases</span>
+          </div>
+          <div class="store-stat-pill">
+            <strong>Direct APK</strong>
+            <span>Instant Download</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Storefront Filters & Search -->
+      <div class="toolbar store-toolbar">
+        <div class="filter-pills" id="store-filter-pills">
+          <button type="button" class="filter-pill active" data-store-filter="ALL">All <span id="store-count-all">0</span></button>
+          <button type="button" class="filter-pill" data-store-filter="APP">Apps <span id="store-count-app">0</span></button>
+          <button type="button" class="filter-pill" data-store-filter="GAME">Games <span id="store-count-game">0</span></button>
+          <button type="button" class="filter-pill" data-store-filter="TOOL">Tools <span id="store-count-tool">0</span></button>
+        </div>
+        <div class="search-wrap">
+          <input type="search" id="store-search-input" class="input" placeholder="Search app, game, or version..." />
+        </div>
+      </div>
+
+      <!-- Public Releases Grid -->
+      <section id="public-releases-grid" class="store-grid" aria-live="polite">
+        <div class="panel empty-state" style="grid-column:1/-1">Loading official releases...</div>
+      </section>
+
+      <footer class="store-footer">
+        <div>&copy; <span id="store-year">2026</span> <strong>Sarfu Techno</strong> &middot; Official verified releases only.</div>
+        <div class="muted-note">Install directly on Android &bull; Owner console restricted to authorized Sarfu Techno admin.</div>
+      </footer>
+    </div>
+  </main>
+
+  <!-- ===================================================================== -->
+  <!-- SARFU ADMIN LOGIN MODAL (Authorized Admin: Sarfu Techno)              -->
+  <!-- ===================================================================== -->
+  <div id="admin-login-modal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="admin-login-title">
+    <section class="auth-card auth-modal-card">
+      <button type="button" class="icon-btn modal-close auth-modal-close" data-close-modal="admin-login-modal" aria-label="Close login modal">&times;</button>
       <div class="auth-badge">RESTRICTED OWNER CONSOLE</div>
       <div class="auth-logo-wrap">
         <div class="brand-mark brand-mark-lg" aria-hidden="true">
           <svg viewBox="0 0 32 32" fill="none">
-            <path d="M16 6a3 3 0 0 0-2.94 3.6h1.96a1.1 1.1 0 1 1 1.88.78l-1.4 1.3a2 2 0 0 0-.65 1.48v.84L6.2 19.6a2 2 0 0 0 1.1 3.68h17.4a2 2 0 0 0 1.1-3.68L17.15 14v-.65l1.28-1.18A3 3 0 0 0 16 6zm0 10.2 6.8 4.4H9.2l6.8-4.4z" fill="currentColor"/>
+            <path d="M16 4.5 26 10.2v11.6L16 27.5 6 21.8V10.2L16 4.5Zm0 4.6-6 3.4v7l6 3.4 6-3.4v-7l-6-3.4Z" fill="currentColor"/>
           </svg>
         </div>
       </div>
-      <h1>VastraOS Admin Panel</h1>
+      <h1 id="admin-login-title">Sarfu Admin</h1>
       <p class="auth-subtitle">
-        Live-sync UPI QR billing, approve or reject UTR renewals, manage shop subscriptions, and control app updates in real time.
+        Unified multi-project owner console for VastraOS, live APK releases, future apps &amp; games, and shared 24/7 Telegram alerts.
       </p>
 
       <div id="auth-error-box" class="alert-box alert-danger hidden" role="alert"></div>
@@ -92,31 +169,70 @@
 
       <div class="auth-meta">
         <span>Authorized Admin:</span>
-        <code>smd640089@gmail.com</code>
+        <code>Sarfu Techno</code>
       </div>
     </section>
-  </main>
+  </div>
 
-  <!-- MAIN ADMIN CONSOLE SHELL -->
+  <!-- ===================================================================== -->
+  <!-- SARFU ADMIN — UNIFIED MULTI-PROJECT OWNER SHELL                       -->
+  <!-- ===================================================================== -->
   <div id="app-shell" class="app-shell hidden">
     <!-- Desktop Sidebar -->
-    <aside class="sidebar" aria-label="Admin navigation">
+    <aside class="sidebar" aria-label="Sarfu Admin navigation">
       <div class="sidebar-header">
         <div class="brand-inline">
           <div class="brand-mark" aria-hidden="true">
             <svg viewBox="0 0 32 32" fill="none">
-              <path d="M16 6a3 3 0 0 0-2.94 3.6h1.96a1.1 1.1 0 1 1 1.88.78l-1.4 1.3a2 2 0 0 0-.65 1.48v.84L6.2 19.6a2 2 0 0 0 1.1 3.68h17.4a2 2 0 0 0 1.1-3.68L17.15 14v-.65l1.28-1.18A3 3 0 0 0 16 6zm0 10.2 6.8 4.4H9.2l6.8-4.4z" fill="currentColor"/>
+              <path d="M16 4.5 26 10.2v11.6L16 27.5 6 21.8V10.2L16 4.5Zm0 4.6-6 3.4v7l6 3.4 6-3.4v-7l-6-3.4Z" fill="currentColor"/>
             </svg>
           </div>
           <div>
-            <div class="brand-title">VastraOS</div>
-            <div class="brand-sub">Admin Console</div>
+            <div class="brand-title">Sarfu Admin</div>
+            <div class="brand-sub">Sarfu Techno Hub</div>
           </div>
         </div>
       </div>
 
       <nav class="sidebar-nav">
-        <button type="button" class="nav-item active" data-tab="overview">
+        <div class="nav-section-label">COMMAND CENTER</div>
+
+        <button type="button" class="nav-item active" data-tab="hub">
+          <span class="nav-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+              <polyline points="9 22 9 12 15 12 15 22"></polyline>
+            </svg>
+          </span>
+          <span class="nav-label">Sarfu Hub</span>
+        </button>
+
+        <button type="button" class="nav-item" data-tab="releases">
+          <span class="nav-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+              <polyline points="17 8 12 3 7 8"></polyline>
+              <line x1="12" y1="3" x2="12" y2="15"></line>
+            </svg>
+          </span>
+          <span class="nav-label">Releases &amp; APKs</span>
+          <span id="nav-releases-count" class="nav-count">0</span>
+        </button>
+
+        <button type="button" class="nav-item" data-open-telegram="true">
+          <span class="nav-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="m22 2-7 20-4-9-9-4Z"></path>
+              <path d="M22 2 11 13"></path>
+            </svg>
+          </span>
+          <span class="nav-label">Telegram 24/7</span>
+          <span id="nav-tg-dot" class="status-dot-amber" title="Telegram status"></span>
+        </button>
+
+        <div class="nav-section-label">VASTRAOS PROJECT</div>
+
+        <button type="button" class="nav-item" data-tab="overview">
           <span class="nav-icon" aria-hidden="true">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <rect x="3" y="3" width="7" height="7" rx="1.5"></rect>
@@ -125,7 +241,7 @@
               <rect x="14" y="14" width="7" height="7" rx="1.5"></rect>
             </svg>
           </span>
-          <span class="nav-label">Overview</span>
+          <span class="nav-label">VastraOS Overview</span>
         </button>
 
         <button type="button" class="nav-item" data-tab="approvals">
@@ -148,7 +264,7 @@
               <path d="M14 14h3v3h-3zM20 14v3h-3M14 20h3M20 20h.01"></path>
             </svg>
           </span>
-          <span class="nav-label">Billing &amp; UPI QR</span>
+          <span class="nav-label">Billing, Trial &amp; QR</span>
         </button>
 
         <button type="button" class="nav-item" data-tab="shops">
@@ -158,7 +274,6 @@
               <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"></path>
               <path d="M15 22v-4a2 2 0 0 0-2-2h-2a2 2 0 0 0-2 2v4"></path>
               <path d="M2 7h20"></path>
-              <path d="M22 7v3a2 2 0 0 1-2 2a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 16 12a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 12 12a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 8 12a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 4 12a2 2 0 0 1-2-2V7"></path>
             </svg>
           </span>
           <span class="nav-label">All Shops</span>
@@ -182,18 +297,44 @@
           <span class="nav-label">System &amp; Updates</span>
           <span id="nav-maint-dot" class="status-dot-danger hidden" title="Maintenance Mode ON"></span>
         </button>
+
+        <div class="nav-section-label">FUTURE PROJECT SLOTS</div>
+
+        <button type="button" class="nav-item" data-tab="future-apps">
+          <span class="nav-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect>
+              <line x1="12" y1="18" x2="12.01" y2="18"></line>
+            </svg>
+          </span>
+          <span class="nav-label">Future Apps</span>
+          <span class="nav-slot-tag">Slot</span>
+        </button>
+
+        <button type="button" class="nav-item" data-tab="future-games">
+          <span class="nav-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="6" y1="11" x2="10" y2="11"></line>
+              <line x1="8" y1="9" x2="8" y2="13"></line>
+              <line x1="15" y1="12" x2="15.01" y2="12"></line>
+              <line x1="18" y1="10" x2="18.01" y2="10"></line>
+              <path d="M17.32 5H6.68a4 4 0 0 0-3.978 3.59c-.006.052-.01.101-.017.152C2.604 9.416 2 14.456 2 16a3 3 0 0 0 3 3c1 0 1.5-.5 2-1l1.414-1.414A2 2 0 0 1 9.828 16h4.344a2 2 0 0 1 1.414.586L17 18c.5.5 1 1 2 1a3 3 0 0 0 3-3c0-1.545-.604-6.584-.685-7.258-.007-.05-.011-.1-.017-.151A4 4 0 0 0 17.32 5z"></path>
+            </svg>
+          </span>
+          <span class="nav-label">Future Games</span>
+          <span class="nav-slot-tag">Slot</span>
+        </button>
       </nav>
 
       <div class="sidebar-footer">
-        <div class="sync-pill">
-          <span class="pulse-dot"></span>
-          <span>Live Firestore Sync</span>
-        </div>
+        <button type="button" id="sidebar-view-store-btn" class="btn btn-secondary btn-sm btn-full">
+          View Public Storefront
+        </button>
         <div class="admin-chip">
           <div class="admin-avatar" id="admin-avatar">S</div>
           <div class="admin-info">
-            <div class="admin-name" id="admin-display-name">Admin</div>
-            <div class="admin-email" id="admin-email-label">smd640089@gmail.com</div>
+            <div class="admin-name" id="admin-display-name">Sarfu Techno</div>
+            <div class="admin-email" id="admin-email-label">Authorized Owner</div>
           </div>
         </div>
       </div>
@@ -203,13 +344,16 @@
     <div class="workspace">
       <header class="topbar">
         <div class="topbar-left">
-          <div class="mobile-brand-dot" aria-hidden="true">
+          <button type="button" id="topbar-back-hub-btn" class="btn btn-secondary btn-sm hidden" title="Return to Sarfu Hub">
+            &larr; Hub
+          </button>
+          <div id="topbar-brand-dot" class="mobile-brand-dot" aria-hidden="true">
             <svg viewBox="0 0 32 32" fill="none">
-              <path d="M16 6a3 3 0 0 0-2.94 3.6h1.96a1.1 1.1 0 1 1 1.88.78l-1.4 1.3a2 2 0 0 0-.65 1.48v.84L6.2 19.6a2 2 0 0 0 1.1 3.68h17.4a2 2 0 0 0 1.1-3.68L17.15 14v-.65l1.28-1.18A3 3 0 0 0 16 6zm0 10.2 6.8 4.4H9.2l6.8-4.4z" fill="currentColor"/>
+              <path d="M16 4.5 26 10.2v11.6L16 27.5 6 21.8V10.2L16 4.5Zm0 4.6-6 3.4v7l6 3.4 6-3.4v-7l-6-3.4Z" fill="currentColor"/>
             </svg>
           </div>
           <div class="topbar-title-group">
-            <h2 id="page-title">Overview</h2>
+            <h2 id="page-title">Sarfu Hub</h2>
             <div class="topbar-pills">
               <span id="live-status-chip" class="pill pill-success pill-compact">
                 <span class="pulse-dot"></span>
@@ -220,6 +364,13 @@
           </div>
         </div>
         <div class="topbar-actions">
+          <button type="button" id="topbar-view-store-btn" class="icon-btn" title="Preview Public Downloads Store" aria-label="View Public Downloads">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width:17px;height:17px">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+              <polyline points="7 10 12 15 17 10"></polyline>
+              <line x1="12" y1="15" x2="12" y2="3"></line>
+            </svg>
+          </button>
           <button type="button" class="icon-btn theme-toggle-btn" title="Switch Light / Dark theme" aria-label="Toggle theme">
             <svg class="theme-icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
               <circle cx="12" cy="12" r="4"></circle>
@@ -240,18 +391,209 @@
         </div>
       </header>
 
+      <!-- VastraOS Sub-Navigation Bar (visible when inside VastraOS project tabs) -->
+      <div id="vastraos-subnav" class="project-subnav hidden">
+        <div class="project-subnav-inner">
+          <button type="button" class="subnav-pill active" data-tab="overview">Overview</button>
+          <button type="button" class="subnav-pill" data-tab="approvals">UTR Approvals <span id="subnav-pending-badge" class="subnav-badge hidden">0</span></button>
+          <button type="button" class="subnav-pill" data-tab="billing">Billing &amp; Trial</button>
+          <button type="button" class="subnav-pill" data-tab="shops">All Shops</button>
+          <button type="button" class="subnav-pill" data-tab="system">System &amp; Updates</button>
+        </div>
+      </div>
+
       <main class="content-area">
-        <!-- TAB 1: OVERVIEW -->
-        <section id="tab-overview" class="tab-panel active">
+        <!-- =============================================================== -->
+        <!-- TAB 0: SARFU HUB (Earnings ON TOP -> Clickable Project Slots)   -->
+        <!-- =============================================================== -->
+        <section id="tab-hub" class="tab-panel active">
+          <!-- TOP: UNIFIED TOTAL EARNINGS HERO -->
+          <section class="revenue-hero hub-earnings-hero anim-rise">
+            <div class="revenue-hero-top">
+              <div>
+                <div class="hero-eyebrow">SARFU TECHNO &bull; TOTAL EARNINGS (ALL PROJECTS)</div>
+                <div class="hero-value" id="hub-total-earnings">&#8377;0</div>
+                <div class="hero-sub" id="hub-earnings-sub">0 approved payments across all active projects</div>
+              </div>
+              <button type="button" id="hub-telegram-chip" class="hero-status-chip" title="Open Shared Global Telegram 24/7 Engine">
+                <span id="hub-tg-dot" class="status-dot-amber"></span>
+                <span id="hub-tg-label">Global Telegram</span>
+              </button>
+            </div>
+
+            <div class="hub-hero-metrics">
+              <div class="hub-metric-pill">
+                <span class="hub-metric-label">Pending UTRs</span>
+                <strong id="hub-metric-pending">0</strong>
+              </div>
+              <div class="hub-metric-pill">
+                <span class="hub-metric-label">Active Paid</span>
+                <strong id="hub-metric-paid">0</strong>
+              </div>
+              <div class="hub-metric-pill">
+                <span class="hub-metric-label">Active Trials</span>
+                <strong id="hub-metric-trial">0</strong>
+              </div>
+              <div class="hub-metric-pill">
+                <span class="hub-metric-label">Public APKs</span>
+                <strong id="hub-metric-releases">0</strong>
+              </div>
+            </div>
+
+            <div class="hero-quick-actions">
+              <button type="button" class="hero-action-btn" data-goto-tab="releases">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                  <polyline points="17 8 12 3 7 8"></polyline>
+                  <line x1="12" y1="3" x2="12" y2="15"></line>
+                </svg>
+                <span>Upload / Publish APK</span>
+              </button>
+              <button type="button" class="hero-action-btn" data-goto-tab="approvals">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                  <path d="m9 12 2 2 4-4"></path>
+                </svg>
+                <span>Approve UTRs</span>
+              </button>
+              <button type="button" class="hero-action-btn" data-open-telegram="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="m22 2-7 20-4-9-9-4Z"></path>
+                  <path d="M22 2 11 13"></path>
+                </svg>
+                <span>Shared Telegram Bot</span>
+              </button>
+            </div>
+          </section>
+
+          <!-- DIRECTLY BELOW EARNINGS: CLICKABLE PROJECT CONTROL SLOTS -->
+          <div class="section-heading-row">
+            <div>
+              <h3 class="section-heading">Your Project Control Slots</h3>
+              <p class="panel-desc">Tap any project below to manage its live users, billing, trials, updates, and shared Telegram alerts.</p>
+            </div>
+          </div>
+
+          <div class="project-slots-grid">
+            <!-- SLOT 1: VastraOS (Active Full Control) -->
+            <button type="button" class="project-slot-card slot-active anim-rise" style="--delay: 40ms" data-goto-tab="overview">
+              <div class="slot-card-top">
+                <div class="slot-icon slot-icon-vastra" aria-hidden="true">
+                  <svg viewBox="0 0 32 32" fill="none">
+                    <path d="M16 6a3 3 0 0 0-2.94 3.6h1.96a1.1 1.1 0 1 1 1.88.78l-1.4 1.3a2 2 0 0 0-.65 1.48v.84L6.2 19.6a2 2 0 0 0 1.1 3.68h17.4a2 2 0 0 0 1.1-3.68L17.15 14v-.65l1.28-1.18A3 3 0 0 0 16 6zm0 10.2 6.8 4.4H9.2l6.8-4.4z" fill="currentColor"/>
+                  </svg>
+                </div>
+                <span class="pill pill-success pill-compact">LIVE ACTIVE</span>
+              </div>
+              <div class="slot-card-body">
+                <h4>VastraOS POS</h4>
+                <p>Garment store POS &amp; inventory — live UTR approvals, UPI QR, dynamic trial days, shop day controls &amp; maintenance.</p>
+              </div>
+              <div class="slot-mini-stats">
+                <span><strong id="slot-vastra-shops">0</strong> Shops</span>
+                <span><strong id="slot-vastra-pending">0</strong> Pending</span>
+                <span><strong id="slot-vastra-trial">7d</strong> Trial</span>
+              </div>
+              <div class="slot-card-footer">
+                <span>Open VastraOS Control</span>
+                <span aria-hidden="true">&rarr;</span>
+              </div>
+            </button>
+
+            <!-- SLOT 2: App & Game Releases Publisher (Active Global Storefront) -->
+            <button type="button" class="project-slot-card slot-releases anim-rise" style="--delay: 80ms" data-goto-tab="releases">
+              <div class="slot-card-top">
+                <div class="slot-icon slot-icon-releases" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                    <polyline points="17 8 12 3 7 8"></polyline>
+                    <line x1="12" y1="3" x2="12" y2="15"></line>
+                  </svg>
+                </div>
+                <span class="pill pill-primary pill-compact">PUBLIC STORE</span>
+              </div>
+              <div class="slot-card-body">
+                <h4>App &amp; Game Releases</h4>
+                <p>Upload new APKs or publish direct download links to the public Sarfu Techno storefront — visitors download with 1 tap.</p>
+              </div>
+              <div class="slot-mini-stats">
+                <span><strong id="slot-releases-live">0</strong> Published</span>
+                <span><strong>Direct APK</strong></span>
+              </div>
+              <div class="slot-card-footer">
+                <span>Upload &amp; Manage APKs</span>
+                <span aria-hidden="true">&rarr;</span>
+              </div>
+            </button>
+
+            <!-- SLOT 3: Future Apps (Ready Modular Slot) -->
+            <button type="button" class="project-slot-card slot-future anim-rise" style="--delay: 120ms" data-goto-tab="future-apps">
+              <div class="slot-card-top">
+                <div class="slot-icon slot-icon-apps" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect>
+                    <line x1="12" y1="18" x2="12.01" y2="18"></line>
+                  </svg>
+                </div>
+                <span class="pill pill-neutral pill-compact">READY SLOT</span>
+              </div>
+              <div class="slot-card-body">
+                <h4>Future Apps</h4>
+                <p>Modular admin control slot prepared for your upcoming Android apps — shares the same Telegram Bot &amp; Download Storefront.</p>
+              </div>
+              <div class="slot-mini-stats">
+                <span><strong id="slot-apps-releases">0</strong> App Builds</span>
+                <span><strong>Shared Telegram</strong></span>
+              </div>
+              <div class="slot-card-footer">
+                <span>Open Future Apps Slot</span>
+                <span aria-hidden="true">&rarr;</span>
+              </div>
+            </button>
+
+            <!-- SLOT 4: Future Games (Ready Modular Slot) -->
+            <button type="button" class="project-slot-card slot-future anim-rise" style="--delay: 160ms" data-goto-tab="future-games">
+              <div class="slot-card-top">
+                <div class="slot-icon slot-icon-games" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="6" y1="11" x2="10" y2="11"></line>
+                    <line x1="8" y1="9" x2="8" y2="13"></line>
+                    <line x1="15" y1="12" x2="15.01" y2="12"></line>
+                    <line x1="18" y1="10" x2="18.01" y2="10"></line>
+                    <path d="M17.32 5H6.68a4 4 0 0 0-3.978 3.59c-.006.052-.01.101-.017.152C2.604 9.416 2 14.456 2 16a3 3 0 0 0 3 3c1 0 1.5-.5 2-1l1.414-1.414A2 2 0 0 1 9.828 16h4.344a2 2 0 0 1 1.414.586L17 18c.5.5 1 1 2 1a3 3 0 0 0 3-3c0-1.545-.604-6.584-.685-7.258-.007-.05-.011-.1-.017-.151A4 4 0 0 0 17.32 5z"></path>
+                  </svg>
+                </div>
+                <span class="pill pill-neutral pill-compact">READY SLOT</span>
+              </div>
+              <div class="slot-card-body">
+                <h4>Future Games</h4>
+                <p>Modular game-ops slot prepared for upcoming Android games — instant APK patches, live events &amp; shared Telegram alerts.</p>
+              </div>
+              <div class="slot-mini-stats">
+                <span><strong id="slot-games-releases">0</strong> Game Builds</span>
+                <span><strong>Shared Telegram</strong></span>
+              </div>
+              <div class="slot-card-footer">
+                <span>Open Future Games Slot</span>
+                <span aria-hidden="true">&rarr;</span>
+              </div>
+            </button>
+          </div>
+        </section>
+
+        <!-- =============================================================== -->
+        <!-- TAB 1: VASTRAOS OVERVIEW                                        -->
+        <!-- =============================================================== -->
+        <section id="tab-overview" class="tab-panel">
           <!-- Executive Revenue Hero Card -->
           <section class="revenue-hero anim-rise">
             <div class="revenue-hero-top">
               <div>
-                <div class="hero-eyebrow">APPROVED SUBSCRIPTION REVENUE</div>
+                <div class="hero-eyebrow">VASTRAOS APPROVED SUBSCRIPTION REVENUE</div>
                 <div class="hero-value" id="kpi-revenue">&#8377;0</div>
                 <div class="hero-sub" id="kpi-revenue-sub">0 approved renewals</div>
               </div>
-              <button type="button" id="hero-telegram-chip" class="hero-status-chip" title="Open Telegram Bot settings">
+              <button type="button" id="hero-telegram-chip" class="hero-status-chip" title="Open Shared Telegram Bot settings">
                 <span id="hero-tg-dot" class="status-dot-amber"></span>
                 <span id="hero-tg-label">Telegram Setup</span>
               </button>
@@ -271,7 +613,7 @@
                   <rect x="3" y="14" width="7" height="7" rx="1"></rect>
                   <path d="M14 14h3v3h-3zM20 14v3h-3"></path>
                 </svg>
-                <span>UPI QR &amp; Plan</span>
+                <span>Billing &amp; Trial</span>
               </button>
               <button type="button" class="hero-action-btn" data-open-telegram="true">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -283,7 +625,7 @@
             </div>
           </section>
 
-          <!-- Compact 2x2 KPI Bento Grid (Mobile) / 4-Up Row (Desktop) -->
+          <!-- Compact 2x2 KPI Bento Grid -->
           <div class="kpi-bento-grid">
             <button type="button" class="kpi-card kpi-amber kpi-interactive anim-rise" style="--delay: 40ms" data-kpi-jump="approvals:PENDING">
               <div class="kpi-card-head">
@@ -312,7 +654,7 @@
               </div>
               <div class="kpi-value" id="kpi-active-paid">0</div>
               <div class="kpi-label">Active Paid</div>
-              <div class="kpi-sub">Paid cycle active</div>
+              <div class="kpi-sub">1st-of-month cycle</div>
             </button>
 
             <button type="button" class="kpi-card kpi-violet kpi-interactive anim-rise" style="--delay: 120ms" data-kpi-jump="shops:TRIAL">
@@ -326,7 +668,7 @@
               </div>
               <div class="kpi-value" id="kpi-active-trial">0</div>
               <div class="kpi-label">Active Trials</div>
-              <div class="kpi-sub">7-day trial live</div>
+              <div class="kpi-sub" id="kpi-trial-sub">7-day default trial</div>
             </button>
 
             <button type="button" class="kpi-card kpi-rose kpi-interactive anim-rise" style="--delay: 160ms" data-kpi-jump="shops:EXPIRED">
@@ -342,7 +684,7 @@
               </div>
               <div class="kpi-value" id="kpi-expired">0</div>
               <div class="kpi-label">Expired / Paused</div>
-              <div class="kpi-sub">Needs renewal</div>
+              <div class="kpi-sub">Locked till renewal</div>
             </button>
           </div>
 
@@ -361,7 +703,7 @@
             <section class="panel anim-rise" style="--delay: 220ms">
               <div class="panel-header">
                 <div>
-                  <h3>Live App Configuration Snapshot</h3>
+                  <h3>Live VastraOS Configuration Snapshot</h3>
                   <p class="panel-desc">Currently synced to all signed-in VastraOS Android apps</p>
                 </div>
                 <button type="button" class="btn btn-ghost btn-sm" data-goto-tab="billing">Edit &rarr;</button>
@@ -371,7 +713,9 @@
           </div>
         </section>
 
-        <!-- TAB 2: UTR APPROVALS -->
+        <!-- =============================================================== -->
+        <!-- TAB 2: VASTRAOS UTR APPROVALS                                   -->
+        <!-- =============================================================== -->
         <section id="tab-approvals" class="tab-panel">
           <div class="toolbar">
             <div class="filter-pills" id="utr-filter-pills">
@@ -388,14 +732,16 @@
           <div id="utr-requests-list" class="request-grid"></div>
         </section>
 
-        <!-- TAB 3: BILLING, PLAN & UPI QR -->
+        <!-- =============================================================== -->
+        <!-- TAB 3: VASTRAOS BILLING, TRIAL DAYS & UPI QR                    -->
+        <!-- =============================================================== -->
         <section id="tab-billing" class="tab-panel">
           <div class="billing-grid">
             <form id="billing-form" class="panel">
               <div class="panel-header">
                 <div>
-                  <h3>VastraOS Billing, UPI QR &amp; Plan Control</h3>
-                  <p class="panel-desc">Changes publish instantly to every shop's Subscription screen in the Android app.</p>
+                  <h3>VastraOS Billing, Free Trial &amp; UPI QR</h3>
+                  <p class="panel-desc">Changes publish instantly to all VastraOS Android apps. Adjust default Free Trial days anytime.</p>
                 </div>
               </div>
 
@@ -415,6 +761,26 @@
                 <div class="field">
                   <label for="cfg-billing-cycle">Billing Cycle (Calendar IST)</label>
                   <input type="text" id="cfg-billing-cycle" class="input" value="Monthly — Renews on 1st (IST)" readonly />
+                </div>
+              </div>
+
+              <!-- Dynamic Free Trial Control -->
+              <div class="trial-control-box">
+                <div class="trial-control-head">
+                  <div>
+                    <label for="cfg-trial-days">Default New Shop Free Trial (Days) *</label>
+                    <div class="field-help">Increase or decrease trial duration (0 = no trial, up to 90 days). Applies automatically to all new shops.</div>
+                  </div>
+                </div>
+                <div class="trial-control-row">
+                  <input type="number" id="cfg-trial-days" class="input mono" required min="0" max="90" step="1" value="7" style="max-width:130px" />
+                  <div class="quick-day-chips">
+                    <button type="button" class="btn btn-secondary btn-sm cfg-trial-chip" data-trial-days="0">0d (Off)</button>
+                    <button type="button" class="btn btn-secondary btn-sm cfg-trial-chip" data-trial-days="3">3 Days</button>
+                    <button type="button" class="btn btn-secondary btn-sm cfg-trial-chip" data-trial-days="7">7 Days</button>
+                    <button type="button" class="btn btn-secondary btn-sm cfg-trial-chip" data-trial-days="14">14 Days</button>
+                    <button type="button" class="btn btn-secondary btn-sm cfg-trial-chip" data-trial-days="30">30 Days</button>
+                  </div>
                 </div>
               </div>
 
@@ -462,6 +828,7 @@
                 <div class="phone-screen">
                   <div class="phone-pill">VASTRAOS PLAN RENEWAL</div>
                   <div class="phone-price" id="preview-price-title">Pay &#8377;299 &bull; Monthly Plan</div>
+                  <div class="phone-trial-badge" id="preview-trial-label">New shops get 7-day free trial</div>
                   <div class="phone-payee" id="preview-payee-name">VastraOS Software Technologies</div>
                   <div class="phone-upi mono" id="preview-upi-id">UPI ID: vastraos.billing@upi</div>
                   <div class="phone-qr-box" id="preview-qr-box">
@@ -479,7 +846,9 @@
           </div>
         </section>
 
-        <!-- TAB 4: ALL SHOPS -->
+        <!-- =============================================================== -->
+        <!-- TAB 4: VASTRAOS ALL SHOPS (Extend, Reduce Days, Trial Control)  -->
+        <!-- =============================================================== -->
         <section id="tab-shops" class="tab-panel">
           <div class="toolbar">
             <div class="filter-pills" id="shop-filter-pills">
@@ -496,14 +865,14 @@
           </div>
 
           <div class="panel table-panel">
-            <div class="table-scroll">
+            <div class="table-wrap">
               <table class="data-table">
                 <thead>
                   <tr>
                     <th>Shop &amp; ID</th>
                     <th>Owner &amp; Contact</th>
                     <th>Status</th>
-                    <th>Plan Expiry</th>
+                    <th>Plan / Trial Expiry</th>
                     <th>Last UTR</th>
                     <th class="text-right">Controls</th>
                   </tr>
@@ -515,9 +884,11 @@
           </div>
         </section>
 
-        <!-- TAB 5: SYSTEM, MAINTENANCE & UPDATES -->
+        <!-- =============================================================== -->
+        <!-- TAB 5: VASTRAOS SYSTEM, MAINTENANCE & UPDATES                   -->
+        <!-- =============================================================== -->
         <section id="tab-system" class="tab-panel">
-          <!-- Compact One-Tap Telegram Integration Row -->
+          <!-- Compact One-Tap Shared Telegram Integration Row -->
           <button type="button" id="open-telegram-drawer-btn" class="integration-trigger-card" data-open-telegram="true">
             <div class="integration-trigger-left">
               <div class="telegram-icon-badge" aria-hidden="true">
@@ -528,10 +899,10 @@
               </div>
               <div class="integration-trigger-text">
                 <div class="integration-trigger-title-row">
-                  <span class="integration-trigger-title">Telegram Bot Alerts</span>
+                  <span class="integration-trigger-title">Shared Global Telegram Bot (All Projects)</span>
                   <span id="tg-trigger-status-pill" class="pill pill-warning pill-compact">Not Configured</span>
                 </div>
-                <div class="integration-trigger-sub">Webhook URL, event toggles, test alert &amp; Apps Script setup</div>
+                <div class="integration-trigger-sub">Unified webhook for Sign-In &amp; Payment alerts across VastraOS, future Apps &amp; Games</div>
               </div>
             </div>
             <span class="integration-chevron" aria-hidden="true">
@@ -567,7 +938,7 @@
             <section class="panel">
               <div class="panel-header">
                 <div>
-                  <h3>App Version &amp; Update Control</h3>
+                  <h3>VastraOS In-App Version &amp; Force Update</h3>
                   <p class="panel-desc">Current Android APK build is <code>versionCode = 1</code> (<code>v1.0</code>). Set minimum version higher to force an update.</p>
                 </div>
               </div>
@@ -589,7 +960,7 @@
                 </div>
                 <div class="field">
                   <label for="sys-update-url">APK / Store Download URL</label>
-                  <input type="url" id="sys-update-url" class="input" maxlength="500" placeholder="https://github.com/.../releases/latest" />
+                  <input type="url" id="sys-update-url" class="input" maxlength="500" placeholder="https://..." />
                 </div>
               </div>
 
@@ -605,12 +976,275 @@
             </div>
           </form>
         </section>
+
+        <!-- =============================================================== -->
+        <!-- TAB 6: GLOBAL RELEASES & APK UPLOAD PUBLISHER                   -->
+        <!-- =============================================================== -->
+        <section id="tab-releases" class="tab-panel">
+          <div class="releases-layout">
+            <!-- Release Upload / Publish Form -->
+            <form id="release-form" class="panel">
+              <div class="panel-header">
+                <div>
+                  <h3 id="release-form-title">Publish New App / Game Update</h3>
+                  <p class="panel-desc">Appears live at the top of the public Sarfu Techno Downloads page so anyone can download immediately without login.</p>
+                </div>
+                <button type="button" id="release-reset-btn" class="btn btn-secondary btn-sm hidden">New Release</button>
+              </div>
+
+              <input type="hidden" id="rel-edit-id" value="" />
+
+              <div class="form-grid">
+                <div class="field">
+                  <label for="rel-project-slot">Project Slot *</label>
+                  <select id="rel-project-slot" class="input">
+                    <option value="VASTRAOS">VastraOS</option>
+                    <option value="APPS">Future Apps</option>
+                    <option value="GAMES">Future Games</option>
+                  </select>
+                </div>
+                <div class="field">
+                  <label for="rel-category">Store Category *</label>
+                  <select id="rel-category" class="input">
+                    <option value="APP">Android App</option>
+                    <option value="GAME">Android Game</option>
+                    <option value="TOOL">Utility / Tool</option>
+                  </select>
+                </div>
+                <div class="field">
+                  <label for="rel-app-name">App / Game Name *</label>
+                  <input type="text" id="rel-app-name" class="input" required maxlength="100" placeholder="e.g. VastraOS POS" />
+                </div>
+                <div class="field">
+                  <label for="rel-file-size">File Size Label (Optional)</label>
+                  <input type="text" id="rel-file-size" class="input mono" maxlength="40" placeholder="e.g. 14.8 MB" />
+                </div>
+                <div class="field">
+                  <label for="rel-version-name">Version Name *</label>
+                  <input type="text" id="rel-version-name" class="input mono" required maxlength="40" placeholder="e.g. 1.2.0" />
+                </div>
+                <div class="field">
+                  <label for="rel-version-code">Version Code (Build #) *</label>
+                  <input type="number" id="rel-version-code" class="input mono" required min="1" max="100000" value="2" />
+                </div>
+              </div>
+
+              <!-- APK Delivery Box: Direct Upload OR Instant Link -->
+              <div class="apk-upload-box">
+                <div class="apk-upload-head">
+                  <div>
+                    <div class="apk-upload-title">APK File Upload or Direct Download Link *</div>
+                    <div class="field-help">Upload an <code>.apk</code> file directly (via Firebase Storage) OR paste any HTTPS link (GitHub Releases / Google Drive auto-converted).</div>
+                  </div>
+                </div>
+
+                <div class="apk-upload-actions">
+                  <input type="file" id="rel-apk-file-input" accept=".apk,application/vnd.android.package-archive" class="sr-only" />
+                  <button type="button" id="rel-apk-pick-btn" class="btn btn-secondary btn-sm">
+                    <svg class="btn-svg-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                      <polyline points="17 8 12 3 7 8"></polyline>
+                      <line x1="12" y1="3" x2="12" y2="15"></line>
+                    </svg>
+                    <span>Upload .APK File</span>
+                  </button>
+                  <button type="button" id="rel-apk-cancel-btn" class="btn btn-ghost-danger btn-sm hidden">Cancel Upload</button>
+                  <span id="rel-apk-file-status" class="muted-note">No file selected</span>
+                </div>
+
+                <div id="rel-upload-progress-wrap" class="upload-progress-wrap hidden">
+                  <div class="upload-progress-track">
+                    <div id="rel-upload-progress-bar" class="upload-progress-bar" style="width:0%"></div>
+                  </div>
+                  <span id="rel-upload-progress-text" class="mono">0%</span>
+                </div>
+
+                <div id="rel-storage-help" class="alert-box alert-warning hidden">
+                  <div class="alert-title">Firebase Storage Not Enabled Yet?</div>
+                  <p>To upload large <code>.apk</code> files directly here, enable <strong>Storage</strong> once in Firebase Console (Project <code>gen-lang-client-0802920972</code>). Or right now, upload your APK to <strong>GitHub Releases</strong> or <strong>Google Drive</strong> (Anyone with link) and paste the link below — it auto-converts to 1-tap instant download!</p>
+                </div>
+
+                <div class="field" style="margin-top:10px">
+                  <label for="rel-download-url">Direct HTTPS APK Download URL *</label>
+                  <input type="url" id="rel-download-url" class="input mono" required maxlength="1000" placeholder="https://github.com/.../releases/download/v1.2/app.apk or Google Drive link" />
+                </div>
+              </div>
+
+              <!-- Optional App Icon Upload -->
+              <div class="field">
+                <label>App / Game Icon (Optional — Auto-Compressed)</label>
+                <div class="icon-upload-row">
+                  <input type="file" id="rel-icon-file-input" accept="image/*" class="sr-only" />
+                  <div id="rel-icon-preview" class="rel-icon-preview">
+                    <span>No Icon</span>
+                  </div>
+                  <div class="icon-upload-btns">
+                    <button type="button" id="rel-icon-pick-btn" class="btn btn-secondary btn-sm">Choose App Icon</button>
+                    <button type="button" id="rel-icon-clear-btn" class="btn btn-ghost-danger btn-sm hidden">Remove</button>
+                    <small class="field-help">Square PNG/JPG resized to 192px for crisp storefront cards.</small>
+                  </div>
+                </div>
+              </div>
+
+              <div class="field">
+                <label for="rel-notes">What's New / Release Notes</label>
+                <textarea id="rel-notes" class="input textarea" rows="3" maxlength="1000" placeholder="e.g. New 1st-of-month billing, faster barcode scanning, and performance fixes."></textarea>
+              </div>
+
+              <div class="tg-toggle-list">
+                <div class="tg-toggle-row">
+                  <div>
+                    <div class="tg-toggle-title">Visible on Public Downloads Storefront</div>
+                    <div class="field-help">Turn off to keep as draft without showing to visitors</div>
+                  </div>
+                  <label class="switch switch-primary">
+                    <input type="checkbox" id="rel-published-toggle" checked />
+                    <span class="slider"></span>
+                  </label>
+                </div>
+
+                <div class="tg-toggle-row" id="rel-sync-vastra-row">
+                  <div>
+                    <div class="tg-toggle-title">Also Sync to VastraOS In-App Updater</div>
+                    <div class="field-help">Updates VastraOS Latest Version &amp; APK link so existing users get the in-app Update prompt</div>
+                  </div>
+                  <label class="switch switch-primary">
+                    <input type="checkbox" id="rel-sync-vastra-toggle" checked />
+                    <span class="slider"></span>
+                  </label>
+                </div>
+              </div>
+
+              <div class="panel-footer">
+                <span class="muted-note">Synced live to Public Storefront</span>
+                <button type="submit" id="rel-save-btn" class="btn btn-primary">Publish Release Live</button>
+              </div>
+            </form>
+
+            <!-- Live Published Releases List -->
+            <section class="panel">
+              <div class="panel-header">
+                <div>
+                  <h3>Published App &amp; Game Releases</h3>
+                  <p class="panel-desc">Manage everything shown on your public Sarfu Techno downloads page.</p>
+                </div>
+              </div>
+              <div id="admin-releases-list" class="stack-list"></div>
+            </section>
+          </div>
+        </section>
+
+        <!-- =============================================================== -->
+        <!-- TAB 7: FUTURE APPS READY SLOT                                   -->
+        <!-- =============================================================== -->
+        <section id="tab-future-apps" class="tab-panel">
+          <section class="slot-hero-banner slot-hero-apps anim-rise">
+            <div>
+              <div class="hero-eyebrow">SARFU ADMIN &bull; MODULAR PROJECT SLOT</div>
+              <h3>Future Apps Control Deck</h3>
+              <p class="panel-desc" style="color:rgba(255,255,255,0.88);margin-top:4px">
+                Ready-made admin workspace for your upcoming Android apps. Publish App APKs today and reuse your shared 24/7 Telegram notification system automatically.
+              </p>
+            </div>
+            <div class="slot-hero-actions">
+              <button type="button" class="btn btn-primary" data-quick-release="APPS:APP">+ Publish App APK</button>
+              <button type="button" class="btn btn-secondary" data-open-telegram="true">Shared Telegram Bot</button>
+            </div>
+          </section>
+
+          <div class="modular-cards-grid">
+            <div class="panel modular-card">
+              <span class="pill pill-success pill-compact">CONNECTED</span>
+              <h4>Shared Telegram Sign-In &amp; Payment Flow</h4>
+              <p class="panel-desc">Your single Sarfu Admin Telegram Bot automatically receives tagged sign-in, registration &amp; payment alerts from every new app you connect.</p>
+            </div>
+            <div class="panel modular-card">
+              <span class="pill pill-primary pill-compact">LIVE READY</span>
+              <h4>Public App Downloads Storefront</h4>
+              <p class="panel-desc">Any APK published under the Future Apps slot appears live under the <strong>Apps</strong> tab on your public download page.</p>
+            </div>
+            <div class="panel modular-card">
+              <span class="pill pill-neutral pill-compact">PLUG-IN READY</span>
+              <h4>Subscriptions, Trials &amp; Maintenance</h4>
+              <p class="panel-desc">Ready architecture to attach per-app UPI QR billing, trial control, and maintenance lock screens whenever your next app launches.</p>
+            </div>
+          </div>
+
+          <section class="panel" style="margin-top:16px">
+            <div class="panel-header">
+              <div>
+                <h3>Published Releases in Future Apps Slot</h3>
+                <p class="panel-desc">Live builds published under your Future Apps slot</p>
+              </div>
+              <button type="button" class="btn btn-ghost btn-sm" data-quick-release="APPS:APP">+ Add Build &rarr;</button>
+            </div>
+            <div id="future-apps-releases-list" class="stack-list"></div>
+          </section>
+        </section>
+
+        <!-- =============================================================== -->
+        <!-- TAB 8: FUTURE GAMES READY SLOT                                  -->
+        <!-- =============================================================== -->
+        <section id="tab-future-games" class="tab-panel">
+          <section class="slot-hero-banner slot-hero-games anim-rise">
+            <div>
+              <div class="hero-eyebrow">SARFU ADMIN &bull; MODULAR PROJECT SLOT</div>
+              <h3>Future Games Control Deck</h3>
+              <p class="panel-desc" style="color:rgba(255,255,255,0.88);margin-top:4px">
+                Ready-made game-ops workspace for your upcoming Android games. Push game APKs/patches live to the public Games tab and receive player sign-in &amp; payment alerts in your shared Telegram Bot.
+              </p>
+            </div>
+            <div class="slot-hero-actions">
+              <button type="button" class="btn btn-primary" data-quick-release="GAMES:GAME">+ Publish Game APK</button>
+              <button type="button" class="btn btn-secondary" data-open-telegram="true">Shared Telegram Bot</button>
+            </div>
+          </section>
+
+          <div class="modular-cards-grid">
+            <div class="panel modular-card">
+              <span class="pill pill-success pill-compact">CONNECTED</span>
+              <h4>Shared Telegram Player &amp; Payment Alerts</h4>
+              <p class="panel-desc">Player sign-ins and in-game purchases/UTRs route directly into your existing Sarfu Admin Telegram Bot tagged with your Game Name.</p>
+            </div>
+            <div class="panel modular-card">
+              <span class="pill pill-primary pill-compact">LIVE READY</span>
+              <h4>Direct Game APK &amp; Patch Distribution</h4>
+              <p class="panel-desc">Upload new game builds or paste direct APK links — players download updates instantly from the <strong>Games</strong> filter on the storefront.</p>
+            </div>
+            <div class="panel modular-card">
+              <span class="pill pill-neutral pill-compact">PLUG-IN READY</span>
+              <h4>Events, Leaderboards &amp; Maintenance</h4>
+              <p class="panel-desc">Prepared control slot for remote game events, tournament toggles, and maintenance locks when your first game launches.</p>
+            </div>
+          </div>
+
+          <section class="panel" style="margin-top:16px">
+            <div class="panel-header">
+              <div>
+                <h3>Published Releases in Future Games Slot</h3>
+                <p class="panel-desc">Live builds published under your Future Games slot</p>
+              </div>
+              <button type="button" class="btn btn-ghost btn-sm" data-quick-release="GAMES:GAME">+ Add Game Build &rarr;</button>
+            </div>
+            <div id="future-games-releases-list" class="stack-list"></div>
+          </section>
+        </section>
       </main>
     </div>
 
     <!-- Floating Frosted-Glass Mobile Bottom Navigation Dock -->
     <nav class="mobile-nav" aria-label="Mobile admin navigation">
-      <button type="button" class="mobile-nav-item active" data-tab="overview">
+      <button type="button" class="mobile-nav-item active" data-tab="hub">
+        <span class="mobile-nav-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+            <polyline points="9 22 9 12 15 12 15 22"></polyline>
+          </svg>
+        </span>
+        <small>Hub</small>
+      </button>
+
+      <button type="button" class="mobile-nav-item" data-tab="overview">
         <span class="mobile-nav-icon" aria-hidden="true">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <rect x="3" y="3" width="7" height="7" rx="1.5"></rect>
@@ -619,30 +1253,19 @@
             <rect x="14" y="14" width="7" height="7" rx="1.5"></rect>
           </svg>
         </span>
-        <small>Overview</small>
-      </button>
-
-      <button type="button" class="mobile-nav-item" data-tab="approvals">
-        <span class="mobile-nav-icon" aria-hidden="true">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
-            <path d="m9 12 2 2 4-4"></path>
-          </svg>
-        </span>
-        <small>UTRs</small>
+        <small>VastraOS</small>
         <span id="mobile-pending-badge" class="mobile-badge hidden">0</span>
       </button>
 
-      <button type="button" class="mobile-nav-item" data-tab="billing">
+      <button type="button" class="mobile-nav-item" data-tab="releases">
         <span class="mobile-nav-icon" aria-hidden="true">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <rect x="3" y="3" width="7" height="7" rx="1"></rect>
-            <rect x="14" y="3" width="7" height="7" rx="1"></rect>
-            <rect x="3" y="14" width="7" height="7" rx="1"></rect>
-            <path d="M14 14h3v3h-3zM20 14v3h-3M14 20h3M20 20h.01"></path>
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+            <polyline points="17 8 12 3 7 8"></polyline>
+            <line x1="12" y1="3" x2="12" y2="15"></line>
           </svg>
         </span>
-        <small>UPI QR</small>
+        <small>APKs</small>
       </button>
 
       <button type="button" class="mobile-nav-item" data-tab="shops">
@@ -650,33 +1273,27 @@
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <path d="m2 7 4.41-4.41A2 2 0 0 1 7.83 2h8.34a2 2 0 0 1 1.42.59L22 7"></path>
             <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"></path>
-            <path d="M15 22v-4a2 2 0 0 0-2-2h-2a2 2 0 0 0-2 2v4"></path>
             <path d="M2 7h20"></path>
           </svg>
         </span>
         <small>Shops</small>
       </button>
 
-      <button type="button" class="mobile-nav-item" data-tab="system">
+      <button type="button" class="mobile-nav-item" data-open-telegram="true">
         <span class="mobile-nav-icon" aria-hidden="true">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <line x1="4" y1="21" x2="4" y2="14"></line>
-            <line x1="4" y1="10" x2="4" y2="3"></line>
-            <line x1="12" y1="21" x2="12" y2="12"></line>
-            <line x1="12" y1="8" x2="12" y2="3"></line>
-            <line x1="20" y1="21" x2="20" y2="16"></line>
-            <line x1="20" y1="12" x2="20" y2="3"></line>
-            <line x1="1" y1="14" x2="7" y2="14"></line>
-            <line x1="9" y1="8" x2="15" y2="8"></line>
-            <line x1="17" y1="16" x2="23" y2="16"></line>
+            <path d="m22 2-7 20-4-9-9-4Z"></path>
+            <path d="M22 2 11 13"></path>
           </svg>
         </span>
-        <small>System</small>
+        <small>Telegram</small>
       </button>
     </nav>
   </div>
 
-  <!-- DRAWER / MODAL: Telegram Bot 24/7 Notifications -->
+  <!-- ===================================================================== -->
+  <!-- DRAWER / MODAL: Shared Global Telegram Bot 24/7 Notifications         -->
+  <!-- ===================================================================== -->
   <div id="telegram-modal" class="modal-backdrop drawer-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="tg-modal-title">
     <div class="modal-card modal-drawer">
       <div class="drawer-handle-wrap" aria-hidden="true">
@@ -692,10 +1309,10 @@
           </div>
           <div>
             <div class="tg-title-row">
-              <h3 id="tg-modal-title">Telegram Bot Alerts</h3>
+              <h3 id="tg-modal-title">Shared Telegram Bot (All Projects)</h3>
               <span id="tg-status-pill" class="pill pill-warning pill-compact">Not Configured</span>
             </div>
-            <p class="drawer-sub">24/7 private webhook relay with Admin Panel button</p>
+            <p class="drawer-sub">One unified 24/7 webhook for Sign-Ins, Payments &amp; Releases across VastraOS + future Apps &amp; Games</p>
           </div>
         </div>
         <button type="button" class="icon-btn modal-close" data-close-modal="telegram-modal" aria-label="Close Telegram settings">&times;</button>
@@ -708,7 +1325,7 @@
             Settings &amp; Test
           </button>
           <button type="button" class="segmented-tab" data-tg-tab="script" role="tab" aria-selected="false">
-            Script Setup (Code.gs)
+            Multi-Project Code.gs
           </button>
         </div>
       </div>
@@ -717,7 +1334,7 @@
         <!-- Pane 1: Webhook, Toggles & Test -->
         <form id="telegram-form" class="tg-pane active" data-tg-pane="settings">
           <div class="field">
-            <label for="tg-webhook-url">Google Apps Script Webhook URL</label>
+            <label for="tg-webhook-url">Shared Google Apps Script Webhook URL</label>
             <input
               type="url"
               id="tg-webhook-url"
@@ -725,26 +1342,26 @@
               maxlength="500"
               placeholder="https://script.google.com/macros/s/AKfycb.../exec"
             />
-            <small class="field-help">Must start with <code>https://</code>. Leave blank to pause Telegram alerts.</small>
+            <small class="field-help">Used across VastraOS and all future Sarfu Techno apps &amp; games. Must start with <code>https://</code>.</small>
           </div>
 
           <div class="field">
-            <label for="tg-admin-url">Admin Panel Live URL (Inline Button Link)</label>
+            <label for="tg-admin-url">Sarfu Admin Live URL (Inline Button Link)</label>
             <input
               type="url"
               id="tg-admin-url"
               class="input mono"
               maxlength="500"
-              placeholder="https://your-username.github.io/vastraos-admin/"
+              placeholder="https://your-username.github.io/..."
             />
-            <small class="field-help">Auto-detected from this site. Opens directly when tapped in Telegram.</small>
+            <small class="field-help">Auto-detected from this site. Opens Sarfu Admin directly when tapped in Telegram.</small>
           </div>
 
           <div class="tg-toggle-list">
             <div class="tg-toggle-row">
               <div>
-                <div class="tg-toggle-title">New Account / Shop Created</div>
-                <div class="field-help">Alerts when a shopkeeper registers or sets up a shop</div>
+                <div class="tg-toggle-title">New Sign-In / Account / Shop Alerts (All Projects)</div>
+                <div class="field-help">Instant Telegram message tagged with the project name</div>
               </div>
               <label class="switch switch-primary">
                 <input type="checkbox" id="tg-notify-new-account" checked />
@@ -754,8 +1371,8 @@
 
             <div class="tg-toggle-row">
               <div>
-                <div class="tg-toggle-title">Subscription UTR Payment Submitted</div>
-                <div class="field-help">Instant alert with Shop, Owner, Amount &amp; UTR</div>
+                <div class="tg-toggle-title">Payment / UTR Submission Alerts (All Projects)</div>
+                <div class="field-help">Instant alert with Project, User, Amount &amp; UTR reference</div>
               </div>
               <label class="switch switch-primary">
                 <input type="checkbox" id="tg-notify-utr-submit" checked />
@@ -770,10 +1387,10 @@
           </div>
         </form>
 
-        <!-- Pane 2: Private 1-Click Apps Script Generator -->
+        <!-- Pane 2: Private Multi-Project Apps Script Generator -->
         <div class="tg-pane" data-tg-pane="script">
           <div class="alert-box alert-privacy">
-            <strong>100% Private:</strong> Your Bot Token &amp; Chat ID stay only inside your browser to generate <code>Code.gs</code> and are <strong>never</strong> uploaded to Firestore or the Android app.
+            <strong>100% Private &amp; Multi-Project Ready:</strong> Your Bot Token &amp; Chat ID stay only in your browser to generate <code>Code.gs</code>. Every alert from VastraOS or any future App/Game automatically includes its <strong>Project Badge</strong>.
           </div>
 
           <div class="field">
@@ -803,7 +1420,7 @@
           </div>
 
           <div class="tg-actions-row">
-            <button type="button" id="tg-copy-script-btn" class="btn btn-emerald">Copy Ready-to-Paste Code.gs</button>
+            <button type="button" id="tg-copy-script-btn" class="btn btn-emerald">Copy Multi-Project Code.gs</button>
             <button type="button" id="tg-preview-script-btn" class="btn btn-secondary btn-sm">View Script</button>
           </div>
 
@@ -812,10 +1429,10 @@
           </div>
 
           <ol class="mini-steps tg-steps">
-            <li>Open <a href="https://script.google.com" target="_blank" rel="noopener noreferrer">script.google.com</a> &rarr; click <strong>New project</strong>.</li>
-            <li>Clear <code>Code.gs</code>, paste the copied script, and click <strong>Save</strong>.</li>
-            <li>Click <strong>Deploy &rarr; New deployment &rarr; Web app</strong> &rarr; Execute as: <strong>Me</strong> &rarr; Who has access: <strong>Anyone</strong> &rarr; <strong>Deploy</strong>.</li>
-            <li>Copy the <code>/exec</code> URL, switch to <strong>Settings &amp; Test</strong> above, paste, save &amp; test!</li>
+            <li>Open <a href="https://script.google.com" target="_blank" rel="noopener noreferrer">script.google.com</a> &rarr; open your existing relay (or click <strong>New project</strong>).</li>
+            <li>Replace <code>Code.gs</code> with the copied multi-project script and click <strong>Save</strong>.</li>
+            <li>Deploy &rarr; <strong>Web app</strong> (Execute as: <strong>Me</strong>, Who has access: <strong>Anyone</strong>).</li>
+            <li>Paste the <code>/exec</code> URL in <strong>Settings &amp; Test</strong> above, save &amp; test!</li>
           </ol>
         </div>
       </div>
@@ -836,35 +1453,85 @@
     </div>
   </div>
 
-  <!-- MODAL: Extend / Activate Shop Subscription -->
+  <!-- ===================================================================== -->
+  <!-- MODAL: 3-Mode Shop Manage (Monthly 1st / Paid Days ± / Trial Days)    -->
+  <!-- ===================================================================== -->
   <div id="extend-modal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="extend-modal-title">
     <form id="extend-shop-form" class="modal-card">
       <div class="modal-header">
-        <h3 id="extend-modal-title">Activate / Extend Subscription</h3>
+        <h3 id="extend-modal-title">Manage Shop Plan &amp; Days</h3>
         <button type="button" class="icon-btn modal-close" data-close-modal="extend-modal" aria-label="Close">&times;</button>
       </div>
       <div class="modal-body">
         <p class="modal-sub" id="extend-shop-desc"></p>
-        <div class="quick-day-chips">
-          <button type="button" class="btn btn-secondary btn-sm quick-months-btn" data-months="1">1 Month (Till 1st)</button>
-          <button type="button" class="btn btn-secondary btn-sm quick-months-btn" data-months="2">2 Months</button>
-          <button type="button" class="btn btn-secondary btn-sm quick-months-btn" data-months="3">3 Months</button>
-          <button type="button" class="btn btn-secondary btn-sm quick-months-btn" data-months="6">6 Months</button>
-          <button type="button" class="btn btn-secondary btn-sm quick-months-btn" data-months="12">12 Months</button>
+        <div id="extend-current-summary" class="shop-current-box"></div>
+
+        <!-- 3-Mode Segmented Control -->
+        <div class="segmented-tabs shop-mode-tabs" id="shop-manage-tabs" role="tablist">
+          <button type="button" class="segmented-tab active" data-manage-mode="monthly" role="tab">Monthly (1st)</button>
+          <button type="button" class="segmented-tab" data-manage-mode="paid-days" role="tab">Paid Days &plusmn;</button>
+          <button type="button" class="segmented-tab" data-manage-mode="trial-days" role="tab">Trial Days</button>
         </div>
-        <div class="field">
-          <label for="extend-months-input">Months to Activate (Expires 1st of Month IST) *</label>
-          <input type="number" id="extend-months-input" class="input mono" required min="1" max="36" value="1" />
-          <div id="extend-expiry-preview" class="muted-note" style="margin-top:6px;font-weight:600;color:var(--primary)"></div>
+
+        <!-- MODE 1: Monthly Plan (Till 1st IST) -->
+        <div class="manage-pane active" data-manage-pane="monthly">
+          <div class="quick-day-chips">
+            <button type="button" class="btn btn-secondary btn-sm quick-months-btn" data-months="1">1 Month (Till 1st)</button>
+            <button type="button" class="btn btn-secondary btn-sm quick-months-btn" data-months="2">2 Months</button>
+            <button type="button" class="btn btn-secondary btn-sm quick-months-btn" data-months="3">3 Months</button>
+            <button type="button" class="btn btn-secondary btn-sm quick-months-btn" data-months="6">6 Months</button>
+            <button type="button" class="btn btn-secondary btn-sm quick-months-btn" data-months="12">12 Months</button>
+          </div>
+          <div class="field">
+            <label for="extend-months-input">Months to Activate (Expires 1st of Month IST)</label>
+            <input type="number" id="extend-months-input" class="input mono" min="1" max="36" value="1" />
+          </div>
         </div>
+
+        <!-- MODE 2: Adjust Paid Days (Increase OR Decrease / Expire Now) -->
+        <div class="manage-pane" data-manage-pane="paid-days">
+          <div class="quick-day-chips">
+            <button type="button" class="btn btn-ghost-danger btn-sm paid-delta-btn" data-delta="-7">-7 Days</button>
+            <button type="button" class="btn btn-ghost-danger btn-sm paid-delta-btn" data-delta="-3">-3 Days</button>
+            <button type="button" class="btn btn-ghost-danger btn-sm paid-delta-btn" data-delta="-1">-1 Day</button>
+            <button type="button" class="btn btn-secondary btn-sm paid-delta-btn" data-delta="1">+1 Day</button>
+            <button type="button" class="btn btn-secondary btn-sm paid-delta-btn" data-delta="3">+3 Days</button>
+            <button type="button" class="btn btn-secondary btn-sm paid-delta-btn" data-delta="7">+7 Days</button>
+            <button type="button" class="btn btn-danger btn-sm" id="paid-expire-now-btn">Expire Paid Now (0d)</button>
+          </div>
+          <div class="field">
+            <label for="paid-exact-days-input">Remaining Paid Days From Today (0 = Lock / Expired)</label>
+            <input type="number" id="paid-exact-days-input" class="input mono" min="0" max="3650" value="0" />
+            <small class="field-help">Use minus buttons to reduce days, plus buttons to add days, or type exact remaining days.</small>
+          </div>
+        </div>
+
+        <!-- MODE 3: Edit Free Trial Days (Increase OR Decrease / End Trial) -->
+        <div class="manage-pane" data-manage-pane="trial-days">
+          <div class="quick-day-chips">
+            <button type="button" class="btn btn-danger btn-sm trial-quick-btn" data-trial="0">End Trial (0d)</button>
+            <button type="button" class="btn btn-secondary btn-sm trial-quick-btn" data-trial="3">3 Days</button>
+            <button type="button" class="btn btn-secondary btn-sm trial-quick-btn" data-trial="7">7 Days</button>
+            <button type="button" class="btn btn-secondary btn-sm trial-quick-btn" data-trial="14">14 Days</button>
+            <button type="button" class="btn btn-secondary btn-sm trial-quick-btn" data-trial="30">30 Days</button>
+          </div>
+          <div class="field">
+            <label for="trial-exact-days-input">Remaining Free Trial Days From Today (0–90)</label>
+            <input type="number" id="trial-exact-days-input" class="input mono" min="0" max="90" value="7" />
+            <small class="field-help">Updates this shop's trial expiry live on their Android phone.</small>
+          </div>
+        </div>
+
+        <div id="extend-expiry-preview" class="preview-callout"></div>
+
         <div class="field">
           <label for="extend-note-input">Reference / Admin Note (Optional)</label>
-          <input type="text" id="extend-note-input" class="input" maxlength="64" placeholder="e.g. ADMIN_MANUAL or Cash Paid" />
+          <input type="text" id="extend-note-input" class="input" maxlength="64" placeholder="e.g. ADMIN_ADJUSTED or Cash Paid" />
         </div>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-close-modal="extend-modal">Cancel</button>
-        <button type="submit" id="confirm-extend-btn" class="btn btn-primary">Activate / Extend Now</button>
+        <button type="submit" id="confirm-extend-btn" class="btn btn-primary">Apply Changes Now</button>
       </div>
     </form>
   </div>
