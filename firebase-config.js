@@ -23,9 +23,9 @@ export const DEFAULT_APP_CONFIG = {
   ownerUpiName: "VastraOS Software Technologies",
   ownerUpiQrBase64: "",
   planPriceInr: 299,
-  planDays: 28,
+  planDays: 30,
   instructions:
-    "Pay ₹299 to VastraOS UPI ID using any UPI app, then enter the 12-digit UTR / Reference number below. Admin verification activates 28 days of access.",
+    "Pay ₹299 to VastraOS UPI ID using any UPI app, then enter the 12-digit UTR / Reference number below. Admin verification activates your plan until the 1st of next month.",
   maintenanceMode: false,
   maintenanceMessage:
     "VastraOS is currently undergoing scheduled maintenance. Please check back shortly.",

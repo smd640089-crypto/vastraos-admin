@@ -27,6 +27,7 @@ import {
 } from "./firebase-config.js";
 
 const DAY_MS = 86_400_000;
+const IST_OFFSET_MS = 330 * 60 * 1000; // UTC+05:30 (Asia/Kolkata)
 const MAX_QR_BASE64_LEN = 340_000; // Safely below 450,000 firestore.rules cap
 
 // Initialize Firebase App + Named Firestore Database
@@ -104,7 +105,6 @@ const els = {
   cfgUpiId: $("cfg-upi-id"),
   cfgUpiName: $("cfg-upi-name"),
   cfgPlanPrice: $("cfg-plan-price"),
-  cfgPlanDays: $("cfg-plan-days"),
   cfgInstructions: $("cfg-instructions"),
   qrDropzone: $("qr-dropzone"),
   qrFileInput: $("qr-file-input"),
@@ -175,7 +175,8 @@ const els = {
   extendModal: $("extend-modal"),
   extendShopForm: $("extend-shop-form"),
   extendShopDesc: $("extend-shop-desc"),
-  extendDaysInput: $("extend-days-input"),
+  extendMonthsInput: $("extend-months-input"),
+  extendExpiryPreview: $("extend-expiry-preview"),
   extendNoteInput: $("extend-note-input"),
   confirmExtendBtn: $("confirm-extend-btn"),
   confirmModal: $("confirm-modal"),
@@ -253,6 +254,33 @@ function formatDateShort(ms) {
   } catch {
     return "—";
   }
+}
+
+function formatDateShortIst(ms) {
+  if (!ms) return "—";
+  try {
+    return new Date(ms).toLocaleDateString("en-IN", {
+      timeZone: "Asia/Kolkata",
+      day: "2-digit",
+      month: "short",
+      year: "numeric",
+    });
+  } catch {
+    return "—";
+  }
+}
+
+/**
+ * Returns 00:00:00.000 IST on the 1st of the calendar month `monthsToAdd` months
+ * after `baseMillis`.
+ * - Mid-month renewal (e.g., 23 Nov, 1 month) -> 01 Dec 00:00 IST
+ * - On the 1st (e.g., 01 Dec, 1 month)        -> 01 Jan 00:00 IST
+ * - Early renewal stacked on 01 Dec (1 month) -> 01 Jan 00:00 IST
+ */
+function nextFirstOfMonthIstMillis(baseMillis = Date.now(), monthsToAdd = 1) {
+  const safeMonths = Math.max(1, Math.min(120, Math.round(Number(monthsToAdd) || 1)));
+  const ist = new Date(baseMillis + IST_OFFSET_MS);
+  return Date.UTC(ist.getUTCFullYear(), ist.getUTCMonth() + safeMonths, 1, 0, 0, 0) - IST_OFFSET_MS;
 }
 
 function formatInr(amount) {
@@ -756,7 +784,7 @@ function renderOverview() {
     <div class="config-row"><span>Owner UPI ID</span><strong class="mono">${escapeHtml(cfg.ownerUpiId)}</strong></div>
     <div class="config-row"><span>Payee Name</span><strong>${escapeHtml(cfg.ownerUpiName)}</strong></div>
     <div class="config-row"><span>UPI QR Code</span><strong>${cfg.ownerUpiQrBase64 ? "Uploaded &amp; Live ✓" : "Not uploaded (UPI ID fallback)"}</strong></div>
-    <div class="config-row"><span>Plan Price &amp; Cycle</span><strong>${formatInr(cfg.planPriceInr)} / ${Number(cfg.planDays) || 28} days</strong></div>
+    <div class="config-row"><span>Plan Price &amp; Cycle</span><strong>${formatInr(cfg.planPriceInr)} / month (renews on 1st)</strong></div>
     <div class="config-row"><span>Maintenance Mode</span><strong>${cfg.maintenanceMode ? '<span class="pill pill-danger">ON</span>' : '<span class="pill pill-success">OFF</span>'}</strong></div>
     <div class="config-row config-row-clickable" data-open-tg-row="true" role="button" tabindex="0"><span>Telegram 24/7 Alerts</span><strong>${tgConnected ? '<span class="pill pill-success">Connected 24/7 ✓</span>' : '<span class="pill pill-warning">Not Configured</span>'}</strong></div>
     <div class="config-row"><span>App Version Policy</span><strong class="mono">Latest v${escapeHtml(cfg.latestAppVersionName || "1.0")} (#${Number(cfg.latestAppVersionCode || 1)}) &middot; Min #${Number(cfg.minSupportedVersionCode || 1)}</strong></div>
@@ -821,11 +849,18 @@ function renderUtrRequests() {
     return;
   }
 
-  const liveDays = Number(state.appConfig.planDays) || 28;
+  const now = Date.now();
   els.utrRequestsList.innerHTML = filtered
     .map((req) => {
       const receiptSrc = toBase64ImageSrc(req.receiptBase64);
       const isPending = req.status === "PENDING";
+      const sub = state.subscriptions.get(req.shopId) || null;
+      const baseMs = Math.max(
+        now,
+        Number(sub?.paidExpiryMillis || 0),
+        Number(sub?.trialExpiryMillis || 0)
+      );
+      const targetExpiryMs = nextFirstOfMonthIstMillis(baseMs, 1);
       return `
       <article class="req-card" data-req-card="${escapeHtml(req.id)}">
         <div class="req-head">
@@ -867,7 +902,7 @@ function renderUtrRequests() {
                  <input type="text" class="input" data-note-for="${escapeHtml(req.id)}" maxlength="240" placeholder="Optional admin note (shown to shopkeeper)..." />
                </div>
                <div class="req-actions">
-                 <button type="button" class="btn btn-emerald" data-approve-req="${escapeHtml(req.id)}">Approve (+${liveDays}d)</button>
+                 <button type="button" class="btn btn-emerald" data-approve-req="${escapeHtml(req.id)}">Approve (Till ${escapeHtml(formatDateShortIst(targetExpiryMs))})</button>
                  <button type="button" class="btn btn-ghost-danger" data-reject-req="${escapeHtml(req.id)}">Reject</button>
                </div>`
             : req.adminNote
@@ -926,10 +961,9 @@ async function approveUtrRequest(req, note, btn) {
   btn.disabled = true;
   btn.textContent = "Approving...";
 
-  const planDays = Math.max(1, Math.min(3650, Math.round(Number(state.appConfig.planDays) || 28)));
   const planPrice = Math.max(1, Math.min(100000, Math.round(Number(state.appConfig.planPriceInr) || 299)));
-  const cleanNote = (note || `Approved (+${planDays} days)`).slice(0, 240);
   const now = Date.now();
+  let approvedUntilLabel = "";
 
   try {
     await runTransaction(db, async (tx) => {
@@ -956,7 +990,10 @@ async function approveUtrRequest(req, note, btn) {
       const currentPaidExp = Number(existingSub?.paidExpiryMillis || 0);
       const currentTrialExp = Number(existingSub?.trialExpiryMillis || 0);
       const baseMillis = Math.max(now, currentPaidExp, currentTrialExp);
-      const newExpiryMillis = baseMillis + planDays * DAY_MS;
+      const newExpiryMillis = nextFirstOfMonthIstMillis(baseMillis, 1);
+      const effectiveDays = Math.max(1, Math.min(3650, Math.round((newExpiryMillis - now) / DAY_MS)));
+      approvedUntilLabel = formatDateShortIst(newExpiryMillis);
+      const cleanNote = (note || `Approved — Valid until ${approvedUntilLabel}`).slice(0, 240);
 
       tx.update(reqRef, {
         status: "APPROVED",
@@ -969,7 +1006,7 @@ async function approveUtrRequest(req, note, btn) {
         tx.update(subRef, {
           status: "ACTIVE",
           planPriceInr: planPrice,
-          planDays: planDays,
+          planDays: effectiveDays,
           paidStartMillis: Number(existingSub.paidStartMillis || 0) > 0 ? existingSub.paidStartMillis : now,
           paidExpiryMillis: newExpiryMillis,
           lastApprovedUtr: String(req.utrNumber || "").slice(0, 64),
@@ -982,7 +1019,7 @@ async function approveUtrRequest(req, note, btn) {
           memberUids,
           status: "ACTIVE",
           planPriceInr: planPrice,
-          planDays: planDays,
+          planDays: effectiveDays,
           trialStartMillis: now,
           trialExpiryMillis: now,
           paidStartMillis: now,
@@ -1000,7 +1037,7 @@ async function approveUtrRequest(req, note, btn) {
         memberUids,
         type: "SUBSCRIPTION_APPROVED",
         title: "Subscription Activated!",
-        message: `Your payment (UTR ${req.utrNumber}) is verified. +${planDays} days added — valid until ${formatDateShort(newExpiryMillis)}.`.slice(
+        message: `Your payment (UTR ${req.utrNumber}) is verified. Monthly plan active until ${approvedUntilLabel} (1st of month).`.slice(
           0,
           400
         ),
@@ -1010,7 +1047,7 @@ async function approveUtrRequest(req, note, btn) {
       });
     });
 
-    showToast(`Approved ${req.shopName}! +${planDays} days synced live.`);
+    showToast(`Approved ${req.shopName}! Active until ${approvedUntilLabel}.`);
   } catch (err) {
     showToast(`Approve failed: ${err.message}`, "error");
     btn.disabled = false;
@@ -1090,7 +1127,6 @@ function populateConfigForms() {
   els.cfgUpiId.value = cfg.ownerUpiId || "";
   els.cfgUpiName.value = cfg.ownerUpiName || "";
   els.cfgPlanPrice.value = Number(cfg.planPriceInr) || 299;
-  els.cfgPlanDays.value = Number(cfg.planDays) || 28;
   els.cfgInstructions.value = cfg.instructions || "";
   state.pendingQrBase64 = cfg.ownerUpiQrBase64 || "";
 
@@ -1144,11 +1180,11 @@ function updateBillingPreview() {
   const upiId = els.cfgUpiId.value.trim() || "vastraos.billing@upi";
   const upiName = els.cfgUpiName.value.trim() || "VastraOS Software Technologies";
   const price = Math.max(1, Math.round(Number(els.cfgPlanPrice.value) || 299));
-  const days = Math.max(1, Math.round(Number(els.cfgPlanDays.value) || 28));
+  const nextFirstLabel = formatDateShortIst(nextFirstOfMonthIstMillis(Date.now(), 1));
   const instructions = els.cfgInstructions.value.trim();
   const qrSrc = toBase64ImageSrc(state.pendingQrBase64);
 
-  els.previewPriceTitle.textContent = `Pay ₹${price} for ${days} Days`;
+  els.previewPriceTitle.textContent = `Pay ₹${price} • Monthly (Till ${nextFirstLabel})`;
   els.previewPayeeName.textContent = upiName;
   els.previewUpiId.textContent = `UPI ID: ${upiId}`;
   els.previewInstructions.textContent = instructions;
@@ -1171,7 +1207,7 @@ function updateBillingPreview() {
   }
 }
 
-[els.cfgUpiId, els.cfgUpiName, els.cfgPlanPrice, els.cfgPlanDays, els.cfgInstructions].forEach((input) => {
+[els.cfgUpiId, els.cfgUpiName, els.cfgPlanPrice, els.cfgInstructions].forEach((input) => {
   input.addEventListener("input", updateBillingPreview);
 });
 
@@ -1275,7 +1311,7 @@ function buildFullAppConfigPayload(overrides = {}) {
     ownerUpiName: String(overrides.ownerUpiName ?? cur.ownerUpiName ?? DEFAULT_APP_CONFIG.ownerUpiName).trim().slice(0, 100),
     ownerUpiQrBase64: String(overrides.ownerUpiQrBase64 ?? cur.ownerUpiQrBase64 ?? ""),
     planPriceInr: Math.max(1, Math.min(100000, Math.round(Number(overrides.planPriceInr ?? cur.planPriceInr ?? 299)))),
-    planDays: Math.max(1, Math.min(3650, Math.round(Number(overrides.planDays ?? cur.planDays ?? 28)))),
+    planDays: Math.max(1, Math.min(3650, Math.round(Number(overrides.planDays ?? cur.planDays ?? 30)))),
     instructions: String(overrides.instructions ?? cur.instructions ?? DEFAULT_APP_CONFIG.instructions).trim().slice(0, 600),
     maintenanceMode: Boolean(overrides.maintenanceMode ?? cur.maintenanceMode ?? false),
     maintenanceMessage: String(overrides.maintenanceMessage ?? cur.maintenanceMessage ?? DEFAULT_APP_CONFIG.maintenanceMessage).trim().slice(0, 400),
@@ -1298,13 +1334,11 @@ els.billingForm.addEventListener("submit", async (e) => {
   const upiId = els.cfgUpiId.value.trim();
   const upiName = els.cfgUpiName.value.trim();
   const price = Math.round(Number(els.cfgPlanPrice.value));
-  const days = Math.round(Number(els.cfgPlanDays.value));
   const instructions = els.cfgInstructions.value.trim();
 
   if (upiId.length < 3) return showToast("UPI ID must be at least 3 characters.", "error");
   if (!upiName) return showToast("Beneficiary name is required.", "error");
   if (!Number.isInteger(price) || price < 1 || price > 100000) return showToast("Plan price must be between ₹1 and ₹100,000.", "error");
-  if (!Number.isInteger(days) || days < 1 || days > 3650) return showToast("Validity days must be between 1 and 3650.", "error");
   if (!instructions) return showToast("Payment instructions are required.", "error");
 
   els.saveBillingBtn.disabled = true;
@@ -1315,11 +1349,11 @@ els.billingForm.addEventListener("submit", async (e) => {
       ownerUpiName: upiName,
       ownerUpiQrBase64: state.pendingQrBase64,
       planPriceInr: price,
-      planDays: days,
+      planDays: 30,
       instructions,
     });
     await setDoc(doc(db, "appConfig", APP_CONFIG_DOC_ID), payload);
-    showToast("Billing UPI, QR & plan synced live to all VastraOS apps!");
+    showToast("Billing UPI, QR & monthly plan synced live to all VastraOS apps!");
   } catch (err) {
     showToast(`Failed to publish: ${err.message}`, "error");
   } finally {
@@ -1418,7 +1452,7 @@ function renderShops() {
         </td>
         <td>${statusPillHtml(effStatus)}</td>
         <td>
-          <div class="cell-title">${expiryMs ? formatDateShort(expiryMs) : "—"}</div>
+          <div class="cell-title">${expiryMs ? formatDateShortIst(expiryMs) : "—"}</div>
           <div class="cell-sub">${daysLeft > 0 ? `${daysLeft} day${daysLeft === 1 ? "" : "s"} left` : "Expired / None"}</div>
         </td>
         <td class="mono">${escapeHtml(sub?.lastApprovedUtr || "—")}</td>
@@ -1443,9 +1477,10 @@ function renderShops() {
       const shop = state.shops.find((s) => (s.shopId || s.id) === shopId);
       if (!shop) return;
       state.extendShopId = shopId;
-      els.extendShopDesc.textContent = `Add paid validity days to "${shop.shopName}" (${shop.ownerName}). Remaining active days are automatically preserved.`;
-      els.extendDaysInput.value = Number(state.appConfig.planDays) || 28;
+      els.extendShopDesc.textContent = `Activate monthly billing for "${shop.shopName}" (${shop.ownerName}). Validity always aligns cleanly to the 1st of the calendar month (IST) and stacks if already active.`;
+      els.extendMonthsInput.value = 1;
       els.extendNoteInput.value = "";
+      updateExtendExpiryPreview();
       openModal("extend-modal");
     });
   });
@@ -1477,11 +1512,28 @@ function renderShops() {
   });
 }
 
-document.querySelectorAll(".quick-days-btn").forEach((btn) => {
+function updateExtendExpiryPreview() {
+  if (!els.extendExpiryPreview) return;
+  const shopId = state.extendShopId;
+  const months = Math.max(1, Math.min(36, Math.round(Number(els.extendMonthsInput?.value) || 1)));
+  const sub = shopId ? state.subscriptions.get(shopId) : null;
+  const baseMillis = Math.max(
+    Date.now(),
+    Number(sub?.paidExpiryMillis || 0),
+    Number(sub?.trialExpiryMillis || 0)
+  );
+  const targetMillis = nextFirstOfMonthIstMillis(baseMillis, months);
+  els.extendExpiryPreview.textContent = `Will stay active until ${formatDateShortIst(targetMillis)} (12:00 AM IST)`;
+}
+
+document.querySelectorAll(".quick-months-btn").forEach((btn) => {
   btn.addEventListener("click", () => {
-    els.extendDaysInput.value = btn.dataset.days;
+    els.extendMonthsInput.value = btn.dataset.months;
+    updateExtendExpiryPreview();
   });
 });
+
+els.extendMonthsInput.addEventListener("input", updateExtendExpiryPreview);
 
 els.extendShopForm.addEventListener("submit", async (e) => {
   e.preventDefault();
@@ -1489,14 +1541,14 @@ els.extendShopForm.addEventListener("submit", async (e) => {
   const shop = state.shops.find((s) => (s.shopId || s.id) === shopId);
   if (!shop) return;
 
-  const days = Math.round(Number(els.extendDaysInput.value));
-  if (!Number.isInteger(days) || days < 1 || days > 3650) {
-    return showToast("Enter valid days between 1 and 3650.", "error");
+  const months = Math.round(Number(els.extendMonthsInput.value));
+  if (!Number.isInteger(months) || months < 1 || months > 36) {
+    return showToast("Enter valid months between 1 and 36.", "error");
   }
   const refNote = (els.extendNoteInput.value.trim() || "ADMIN_EXTENDED").slice(0, 64);
   const planPrice = Math.max(1, Math.min(100000, Math.round(Number(state.appConfig.planPriceInr) || 299)));
-  const planDays = Math.max(1, Math.min(3650, Math.round(Number(state.appConfig.planDays) || 28)));
   const now = Date.now();
+  let extendedUntilLabel = "";
 
   els.confirmExtendBtn.disabled = true;
   els.confirmExtendBtn.textContent = "Syncing...";
@@ -1516,13 +1568,15 @@ els.extendShopForm.addEventListener("submit", async (e) => {
         Number(existingSub?.paidExpiryMillis || 0),
         Number(existingSub?.trialExpiryMillis || 0)
       );
-      const newExpiryMillis = baseMillis + days * DAY_MS;
+      const newExpiryMillis = nextFirstOfMonthIstMillis(baseMillis, months);
+      const effectiveDays = Math.max(1, Math.min(3650, Math.round((newExpiryMillis - now) / DAY_MS)));
+      extendedUntilLabel = formatDateShortIst(newExpiryMillis);
 
       if (subSnap.exists()) {
         tx.update(subRef, {
           status: "ACTIVE",
           planPriceInr: planPrice,
-          planDays: planDays,
+          planDays: effectiveDays,
           paidStartMillis: Number(existingSub.paidStartMillis || 0) > 0 ? existingSub.paidStartMillis : now,
           paidExpiryMillis: newExpiryMillis,
           lastApprovedUtr: refNote,
@@ -1535,7 +1589,7 @@ els.extendShopForm.addEventListener("submit", async (e) => {
           memberUids,
           status: "ACTIVE",
           planPriceInr: planPrice,
-          planDays: planDays,
+          planDays: effectiveDays,
           trialStartMillis: now,
           trialExpiryMillis: now,
           paidStartMillis: now,
@@ -1553,7 +1607,7 @@ els.extendShopForm.addEventListener("submit", async (e) => {
         memberUids,
         type: "SUBSCRIPTION_APPROVED",
         title: "Subscription Extended by Admin",
-        message: `Admin added +${days} days to your VastraOS plan. Valid until ${formatDateShort(newExpiryMillis)}.`.slice(0, 400),
+        message: `Admin activated your VastraOS monthly plan (${months} month${months === 1 ? "" : "s"}). Valid until ${extendedUntilLabel} (1st of month).`.slice(0, 400),
         referenceId: refNote,
         read: false,
         createdAt: serverTimestamp(),
@@ -1561,7 +1615,7 @@ els.extendShopForm.addEventListener("submit", async (e) => {
     });
 
     closeModal("extend-modal");
-    showToast(`Added +${days} days to "${shop.shopName}"!`);
+    showToast(`Activated "${shop.shopName}" until ${extendedUntilLabel}!`);
   } catch (err) {
     showToast(`Failed to extend shop: ${err.message}`, "error");
   } finally {
@@ -1575,7 +1629,7 @@ async function setShopSuspended(shop, suspend) {
   const sub = state.subscriptions.get(shopId);
   const now = Date.now();
   const planPrice = Math.max(1, Math.min(100000, Math.round(Number(state.appConfig.planPriceInr) || 299)));
-  const planDays = Math.max(1, Math.min(3650, Math.round(Number(state.appConfig.planDays) || 28)));
+  const planDays = Math.max(1, Math.min(3650, Math.round(Number(state.appConfig.planDays) || 30)));
   const memberUids = (sub?.memberUids?.length ? sub.memberUids : shop.memberUids) || [shop.ownerUid];
 
   try {
@@ -1768,7 +1822,7 @@ function formatVastraMessage_(d) {
       "🏪 <b>Shop:</b> " + esc_(d.shopName || "—"),
       "👤 <b>Owner:</b> " + esc_(d.ownerName || "—"),
       "📱 <b>Mobile:</b> <code>" + esc_(d.mobileNumber || "—") + "</code>",
-      "💰 <b>Amount:</b> ₹" + esc_(d.amountInr || 299) + " (" + esc_(d.planDays || 28) + " Days)",
+      "💰 <b>Amount:</b> ₹" + esc_(d.amountInr || 299) + " (Monthly Plan — Till 1st)",
       "🧾 <b>UTR:</b> <code>" + esc_(d.utrNumber || "—") + "</code>",
       "📎 <b>Receipt:</b> " + (d.hasReceipt ? "Attached ✅" : "UTR Text Only"),
       "🕒 <b>Time:</b> " + time,

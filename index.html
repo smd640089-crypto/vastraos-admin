@@ -409,12 +409,12 @@
                   <input type="text" id="cfg-upi-name" class="input" required minlength="1" maxlength="100" placeholder="e.g. VastraOS Software Technologies" />
                 </div>
                 <div class="field">
-                  <label for="cfg-plan-price">Plan Price (&#8377; INR) *</label>
+                  <label for="cfg-plan-price">Monthly Plan Price (&#8377; INR) *</label>
                   <input type="number" id="cfg-plan-price" class="input mono" required min="1" max="100000" step="1" />
                 </div>
                 <div class="field">
-                  <label for="cfg-plan-days">Validity Cycle (Days) *</label>
-                  <input type="number" id="cfg-plan-days" class="input mono" required min="1" max="3650" step="1" />
+                  <label for="cfg-billing-cycle">Billing Cycle (Calendar IST)</label>
+                  <input type="text" id="cfg-billing-cycle" class="input" value="Monthly — Renews on 1st (IST)" readonly />
                 </div>
               </div>
 
@@ -460,8 +460,8 @@
               <div class="phone-frame">
                 <div class="phone-notch"></div>
                 <div class="phone-screen">
-                  <div class="phone-pill">VASTRAOS SOFTWARE BILLING ONLY</div>
-                  <div class="phone-price" id="preview-price-title">Pay &#8377;299 for 28 Days</div>
+                  <div class="phone-pill">VASTRAOS PLAN RENEWAL</div>
+                  <div class="phone-price" id="preview-price-title">Pay &#8377;299 &bull; Monthly Plan</div>
                   <div class="phone-payee" id="preview-payee-name">VastraOS Software Technologies</div>
                   <div class="phone-upi mono" id="preview-upi-id">UPI ID: vastraos.billing@upi</div>
                   <div class="phone-qr-box" id="preview-qr-box">
@@ -846,14 +846,16 @@
       <div class="modal-body">
         <p class="modal-sub" id="extend-shop-desc"></p>
         <div class="quick-day-chips">
-          <button type="button" class="btn btn-secondary btn-sm quick-days-btn" data-days="7">+7 Days</button>
-          <button type="button" class="btn btn-secondary btn-sm quick-days-btn" data-days="28">+28 Days</button>
-          <button type="button" class="btn btn-secondary btn-sm quick-days-btn" data-days="30">+30 Days</button>
-          <button type="button" class="btn btn-secondary btn-sm quick-days-btn" data-days="90">+90 Days</button>
+          <button type="button" class="btn btn-secondary btn-sm quick-months-btn" data-months="1">1 Month (Till 1st)</button>
+          <button type="button" class="btn btn-secondary btn-sm quick-months-btn" data-months="2">2 Months</button>
+          <button type="button" class="btn btn-secondary btn-sm quick-months-btn" data-months="3">3 Months</button>
+          <button type="button" class="btn btn-secondary btn-sm quick-months-btn" data-months="6">6 Months</button>
+          <button type="button" class="btn btn-secondary btn-sm quick-months-btn" data-months="12">12 Months</button>
         </div>
         <div class="field">
-          <label for="extend-days-input">Days to Add *</label>
-          <input type="number" id="extend-days-input" class="input mono" required min="1" max="3650" value="28" />
+          <label for="extend-months-input">Months to Activate (Expires 1st of Month IST) *</label>
+          <input type="number" id="extend-months-input" class="input mono" required min="1" max="36" value="1" />
+          <div id="extend-expiry-preview" class="muted-note" style="margin-top:6px;font-weight:600;color:var(--primary)"></div>
         </div>
         <div class="field">
           <label for="extend-note-input">Reference / Admin Note (Optional)</label>
