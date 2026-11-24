@@ -1367,6 +1367,10 @@ code, .mono {
 .modal-card {
   width: 100%;
   max-width: 470px;
+  max-height: 90vh;
+  max-height: 90dvh;
+  display: flex;
+  flex-direction: column;
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: var(--radius-xl);
@@ -1382,6 +1386,7 @@ code, .mono {
 .modal-drawer {
   max-width: 560px;
   max-height: 88vh;
+  max-height: 88dvh;
   display: flex;
   flex-direction: column;
 }
@@ -1460,10 +1465,16 @@ code, .mono {
   display: flex;
   flex-direction: column;
   gap: 14px;
+  overflow-y: auto;
+  flex: 1 1 auto;
+  min-height: 0;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
 }
 .drawer-scroll-body {
   overflow-y: auto;
-  flex: 1;
+  flex: 1 1 auto;
+  min-height: 0;
   -webkit-overflow-scrolling: touch;
 }
 .tg-pane {
@@ -1543,9 +1554,11 @@ code, .mono {
 .modal-footer {
   padding: 14px 20px;
   border-top: 1px solid var(--border);
+  background: var(--surface);
   display: flex;
   justify-content: flex-end;
   gap: 10px;
+  flex-shrink: 0;
 }
 .quick-day-chips { display: flex; gap: 8px; flex-wrap: wrap; }
 .receipt-body { align-items: center; }
@@ -2313,31 +2326,30 @@ code, .mono {
   gap: 10px;
   flex-wrap: wrap;
 }
-.apk-uploaded-pill {
+.apk-host-shortcuts {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 10px;
+  gap: 8px;
   flex-wrap: wrap;
-  padding: 10px 12px;
-  border-radius: var(--radius-sm);
-  background: var(--emerald-soft);
-  border: 1px solid var(--emerald-border);
-  color: var(--emerald);
-  font-size: 0.8rem;
-  font-weight: 700;
 }
-.store-dl-progress {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-.store-dl-progress-meta {
-  display: flex;
+.apk-host-chip {
+  display: inline-flex;
   align-items: center;
-  justify-content: space-between;
-  font-size: 0.76rem;
+  gap: 6px;
+  min-height: 34px;
+  padding: 0 12px;
+  border-radius: 999px;
+  border: 1px solid var(--border-strong);
+  background: var(--surface);
+  color: var(--text);
+  font-size: 0.78rem;
   font-weight: 700;
+  text-decoration: none;
+  transition: border-color 0.16s ease, background 0.16s ease, color 0.16s ease;
+}
+.apk-host-chip:hover {
+  border-color: var(--primary);
+  background: var(--primary-soft);
   color: var(--primary);
 }
 .hint-success {
@@ -2568,6 +2580,24 @@ code, .mono {
   .shop-mode-tabs .segmented-tab {
     font-size: 0.74rem;
     padding: 0 4px;
+  }
+  .modal-backdrop {
+    padding: 10px;
+  }
+  .modal-card {
+    max-height: 92vh;
+    max-height: 92dvh;
+    border-radius: 20px;
+  }
+  .modal-header {
+    padding: 13px 16px;
+  }
+  .modal-body {
+    padding: 14px 16px;
+    gap: 12px;
+  }
+  .modal-footer {
+    padding: 12px 16px;
   }
 }
 

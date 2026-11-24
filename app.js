@@ -12,14 +12,12 @@ import {
   getFirestore,
   collection,
   doc,
-  getDoc,
   onSnapshot,
   setDoc,
   updateDoc,
   deleteDoc,
   runTransaction,
   serverTimestamp,
-  Bytes,
 } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
 import {
   FIREBASE_CONFIG,
@@ -35,10 +33,6 @@ const DAY_MS = 86_400_000;
 const IST_OFFSET_MS = 330 * 60 * 1000; // UTC+05:30 (Asia/Kolkata)
 const MAX_QR_BASE64_LEN = 340_000; // Safely below 450,000 firestore.rules cap
 const MAX_ICON_BASE64_LEN = 160_000; // Safely below 220,000 firestore.rules cap
-const APK_CHUNK_SIZE = 750 * 1024; // 768 KB binary chunks (safely below 800 KB rule & 1 MiB doc cap)
-const MAX_DIRECT_APK_BYTES = 150 * 1024 * 1024; // 150 MB max direct in-panel APK upload
-const APK_UPLOAD_CONCURRENCY = 4;
-const APK_DOWNLOAD_CONCURRENCY = 6;
 const VASTRAOS_TABS = new Set(["overview", "approvals", "billing", "shops", "system"]);
 
 // Initialize Firebase App + Named Firestore Database
@@ -70,11 +64,6 @@ const state = {
   extendShopId: null,
   manageMode: "monthly", // "monthly" | "paid-days" | "trial-days"
   pendingReleaseIconBase64: "",
-  pendingApkUpload: null, // { uploadId, chunkCount, fileName, fileSizeBytes, isPersisted }
-  isUploadingApk: false,
-  apkUploadAborted: false,
-  activeDownloadIds: new Set(),
-  autoDownloadHandled: false,
   pendingConfirmAction: null,
   unsubscribers: [],
   publicUnsubscriber: null,
@@ -142,8 +131,6 @@ const els = {
   slotVastraPending: $("slot-vastra-pending"),
   slotVastraTrial: $("slot-vastra-trial"),
   slotReleasesLive: $("slot-releases-live"),
-  slotAppsReleases: $("slot-apps-releases"),
-  slotGamesReleases: $("slot-games-releases"),
 
   // VastraOS Overview
   kpiPending: $("kpi-pending"),
@@ -213,7 +200,7 @@ const els = {
   sysUpdateNotes: $("sys-update-notes"),
   saveSystemBtn: $("save-system-btn"),
 
-  // Global Releases & APK Upload Publisher
+  // Global Releases & Instant APK Link Publisher
   releaseForm: $("release-form"),
   releaseFormTitle: $("release-form-title"),
   releaseResetBtn: $("release-reset-btn"),
@@ -224,16 +211,6 @@ const els = {
   relFileSize: $("rel-file-size"),
   relVersionName: $("rel-version-name"),
   relVersionCode: $("rel-version-code"),
-  relApkFileInput: $("rel-apk-file-input"),
-  relApkPickBtn: $("rel-apk-pick-btn"),
-  relApkCancelBtn: $("rel-apk-cancel-btn"),
-  relApkFileStatus: $("rel-apk-file-status"),
-  relUploadProgressWrap: $("rel-upload-progress-wrap"),
-  relUploadProgressBar: $("rel-upload-progress-bar"),
-  relUploadProgressText: $("rel-upload-progress-text"),
-  relApkReadyPill: $("rel-apk-ready-pill"),
-  relApkReadyText: $("rel-apk-ready-text"),
-  relApkClearBtn: $("rel-apk-clear-btn"),
   relDownloadUrl: $("rel-download-url"),
   relUrlHint: $("rel-url-hint"),
   relIconFileInput: $("rel-icon-file-input"),
@@ -246,8 +223,6 @@ const els = {
   relSyncVastraToggle: $("rel-sync-vastra-toggle"),
   relSaveBtn: $("rel-save-btn"),
   adminReleasesList: $("admin-releases-list"),
-  futureAppsReleasesList: $("future-apps-releases-list"),
-  futureGamesReleasesList: $("future-games-releases-list"),
 
   // Shared Telegram Bot 24/7 Drawer
   heroTelegramChip: $("hero-telegram-chip"),
@@ -375,14 +350,33 @@ function formatFileSize(bytes) {
   return `${Math.max(1, Math.round(bytes / 1024))} KB`;
 }
 
+function formatFirestoreError(err) {
+  const code = String(err?.code || "").toLowerCase();
+  const msg = String(err?.message || "");
+  if (
+    code.includes("resource-exhausted") ||
+    /resource_exhausted|quota|daily write units/i.test(msg)
+  ) {
+    return "Firebase Spark daily free write quota was reached earlier. It automatically resets daily at 1:30 PM IST (link-based APK publishing now uses almost 0 quota).";
+  }
+  if (code.includes("permission-denied") || /missing or insufficient permissions/i.test(msg)) {
+    return "Permission denied — please sign out & sign back in with your authorized Sarfu Techno admin account.";
+  }
+  if (code.includes("unavailable") || /network|offline/i.test(msg)) {
+    return "Network unavailable — check your internet connection and try again.";
+  }
+  return msg || "Unexpected sync error. Please retry.";
+}
+
 /**
- * Normalizes Google Drive share URLs into 1-tap direct APK downloads
+ * Normalizes Google Drive & Dropbox share URLs into 1-tap direct APK downloads
  * and strictly enforces https:// links.
  */
 function normalizeDirectDownloadUrl(rawUrl) {
   const url = String(rawUrl || "").trim();
   if (!url) return "";
 
+  // Google Drive: /file/d/<ID>, /open?id=<ID>, /uc?id=<ID>
   const driveFileMatch = url.match(/^https:\/\/drive\.google\.com\/file\/d\/([a-zA-Z0-9_-]+)/i);
   if (driveFileMatch?.[1]) {
     return `https://drive.usercontent.google.com/download?id=${driveFileMatch[1]}&export=download&confirm=t`;
@@ -391,6 +385,19 @@ function normalizeDirectDownloadUrl(rawUrl) {
   if (driveOpenMatch?.[1]) {
     return `https://drive.usercontent.google.com/download?id=${driveOpenMatch[1]}&export=download&confirm=t`;
   }
+
+  // Dropbox: convert preview dl=0 to direct download dl=1
+  if (/^https:\/\/(?:www\.)?dropbox\.com\//i.test(url)) {
+    try {
+      const parsed = new URL(url);
+      parsed.searchParams.delete("raw");
+      parsed.searchParams.set("dl", "1");
+      return parsed.toString();
+    } catch {
+      return url;
+    }
+  }
+
   return url;
 }
 
@@ -498,8 +505,6 @@ const TAB_TITLES = {
   billing: "VastraOS Billing & Trial",
   shops: "VastraOS All Shops",
   system: "VastraOS System & Updates",
-  "future-apps": "Future Apps Slot",
-  "future-games": "Future Games Slot",
 };
 
 function syncMainViewVisibility() {
@@ -567,19 +572,6 @@ els.returnAdminBtn.addEventListener("click", () => {
     state.viewingStorefront = true;
     syncMainViewVisibility();
     window.scrollTo({ top: 0, behavior: "smooth" });
-  });
-});
-
-// Quick release shortcuts from Future Apps / Future Games slots
-document.querySelectorAll("[data-quick-release]").forEach((btn) => {
-  btn.addEventListener("click", () => {
-    const [slot, category] = String(btn.dataset.quickRelease || "APPS:APP").split(":");
-    resetReleaseForm();
-    els.relProjectSlot.value = slot || "APPS";
-    els.relCategory.value = category || "APP";
-    syncReleaseVastraToggleVisibility();
-    switchTab("releases");
-    els.relAppName.focus();
   });
 });
 
@@ -731,7 +723,6 @@ function startPublicReleasesListener() {
       renderPublicStorefront();
       renderAdminReleases();
       renderHub();
-      maybeTriggerUrlAutoDownload();
     },
     (err) => {
       if (els.publicReleasesGrid) {
@@ -769,150 +760,9 @@ function slotLabel(slot) {
   return "Sarfu Apps";
 }
 
-function padChunkIndex(i) {
-  return String(i).padStart(4, "0");
-}
-
-function isChunkedRelease(rel) {
-  return Boolean(
-    rel &&
-      rel.deliveryType === "FIRESTORE_CHUNKS" &&
-      typeof rel.uploadId === "string" &&
-      rel.uploadId.length > 0 &&
-      Number(rel.chunkCount) > 0
-  );
-}
-
-function buildStorefrontDownloadLink(releaseId) {
-  if (!window.location.origin || !window.location.origin.startsWith("https://")) return "";
-  return `${window.location.origin}${window.location.pathname}?download=${encodeURIComponent(releaseId)}`;
-}
-
-async function sleepMs(ms) {
-  return new Promise((resolve) => setTimeout(resolve, ms));
-}
-
-async function downloadChunkedApk(rel, btnEl = null, cardEl = null) {
-  if (!isChunkedRelease(rel)) return;
-  if (state.activeDownloadIds.has(rel.id)) return;
-  state.activeDownloadIds.add(rel.id);
-
-  const totalChunks = Number(rel.chunkCount);
-  const progressWrap = cardEl?.querySelector("[data-dl-progress]");
-  const progressBar = cardEl?.querySelector("[data-dl-bar]");
-  const progressLabel = cardEl?.querySelector("[data-dl-label]");
-  const progressPct = cardEl?.querySelector("[data-dl-pct]");
-  const btnSpan = btnEl?.querySelector("span");
-  const origBtnText = btnSpan?.textContent || "Download APK";
-
-  if (btnEl) btnEl.disabled = true;
-  if (btnSpan) btnSpan.textContent = "Preparing 0%...";
-  if (progressWrap) progressWrap.classList.remove("hidden");
-  if (progressBar) progressBar.style.width = "2%";
-  if (progressLabel) progressLabel.textContent = `Downloading ${rel.fileName || rel.appName}...`;
-  if (progressPct) progressPct.textContent = "0%";
-
-  try {
-    const parts = new Array(totalChunks);
-    let completed = 0;
-    let nextIdx = 0;
-
-    const worker = async () => {
-      while (true) {
-        const idx = nextIdx++;
-        if (idx >= totalChunks) return;
-
-        let lastErr = null;
-        for (let attempt = 1; attempt <= 3; attempt++) {
-          try {
-            const snap = await getDoc(
-              doc(db, "publicReleaseUploads", rel.uploadId, "chunks", padChunkIndex(idx))
-            );
-            if (!snap.exists()) {
-              throw new Error(`Missing APK part #${idx + 1}. Please re-upload this release.`);
-            }
-            const rawData = snap.data()?.data;
-            if (!rawData || typeof rawData.toUint8Array !== "function") {
-              throw new Error(`Invalid binary format in APK part #${idx + 1}.`);
-            }
-            parts[idx] = rawData.toUint8Array();
-            lastErr = null;
-            break;
-          } catch (err) {
-            lastErr = err;
-            if (attempt < 3) await sleepMs(450 * attempt);
-          }
-        }
-        if (lastErr) throw lastErr;
-
-        completed++;
-        const pct = Math.min(100, Math.round((completed / totalChunks) * 100));
-        if (progressBar) progressBar.style.width = `${pct}%`;
-        if (progressPct) progressPct.textContent = `${pct}%`;
-        if (btnSpan) btnSpan.textContent = `Downloading ${pct}%...`;
-      }
-    };
-
-    const workers = [];
-    const count = Math.min(APK_DOWNLOAD_CONCURRENCY, totalChunks);
-    for (let w = 0; w < count; w++) workers.push(worker());
-    await Promise.all(workers);
-
-    const blob = new Blob(parts, { type: "application/vnd.android.package-archive" });
-    const safeFileName =
-      (rel.fileName && rel.fileName.toLowerCase().endsWith(".apk")
-        ? rel.fileName
-        : `${slugifyId(rel.appName || "app")}-v${slugifyId(rel.versionName || "1")}.apk`
-      ).replace(/[^a-zA-Z0-9._-]/g, "_");
-
-    const blobUrl = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = blobUrl;
-    a.download = safeFileName;
-    a.style.display = "none";
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
-    setTimeout(() => URL.revokeObjectURL(blobUrl), 60_000);
-
-    showToast(`Download started! Tap ${safeFileName} on your phone to install.`);
-  } catch (err) {
-    showToast(`APK download failed: ${err.message}`, "error");
-  } finally {
-    state.activeDownloadIds.delete(rel.id);
-    if (btnEl) btnEl.disabled = false;
-    if (btnSpan) btnSpan.textContent = origBtnText;
-    if (progressWrap) progressWrap.classList.add("hidden");
-  }
-}
-
-function maybeTriggerUrlAutoDownload() {
-  if (state.autoDownloadHandled) return;
-  const params = new URLSearchParams(window.location.search);
-  const targetId = params.get("download");
-  if (!targetId) {
-    state.autoDownloadHandled = true;
-    return;
-  }
-  const rel = state.publicReleases.find((r) => r.id === targetId && r.published !== false);
-  if (!rel) return;
-  state.autoDownloadHandled = true;
-
-  if (isChunkedRelease(rel)) {
-    const card = els.publicReleasesGrid?.querySelector(`[data-release-card="${CSS.escape(rel.id)}"]`);
-    const btn = card?.querySelector(`[data-download-chunks="${CSS.escape(rel.id)}"]`);
-    downloadChunkedApk(rel, btn || null, card || null);
-  } else {
-    const safeUrl = normalizeDirectDownloadUrl(rel.downloadUrl);
-    if (isSafeHttpsUrl(safeUrl)) {
-      window.location.href = safeUrl;
-    }
-  }
-}
-
 function renderPublicStorefront() {
   const published = state.publicReleases.filter(
-    (r) => r.published !== false && (isChunkedRelease(r) || isSafeHttpsUrl(normalizeDirectDownloadUrl(r.downloadUrl)))
+    (r) => r.published !== false && isSafeHttpsUrl(normalizeDirectDownloadUrl(r.downloadUrl))
   );
 
   const appCount = published.filter((r) => (r.category || "APP") === "APP").length;
@@ -951,8 +801,7 @@ function renderPublicStorefront() {
 
   els.publicReleasesGrid.innerHTML = items
     .map((rel) => {
-      const chunked = isChunkedRelease(rel);
-      const safeUrl = chunked ? "" : normalizeDirectDownloadUrl(rel.downloadUrl);
+      const safeUrl = normalizeDirectDownloadUrl(rel.downloadUrl);
       const iconSrc = toBase64ImageSrc(rel.iconBase64);
       const initial = escapeHtml((rel.appName || "S").trim().charAt(0).toUpperCase() || "S");
       const iconCls =
@@ -991,50 +840,21 @@ function renderPublicStorefront() {
           <span>Updated ${escapeHtml(updatedMs ? formatDateShortIst(updatedMs) : "Recently")}</span>
         </div>
 
-        ${
-          chunked
-            ? `<div class="store-dl-progress hidden" data-dl-progress>
-                 <div class="store-dl-progress-meta">
-                   <span data-dl-label>Downloading APK...</span>
-                   <span class="mono" data-dl-pct>0%</span>
-                 </div>
-                 <div class="upload-progress-track">
-                   <div class="upload-progress-bar" data-dl-bar style="width:0%"></div>
-                 </div>
-               </div>`
-            : ""
-        }
-
         <div class="store-card-actions">
-          ${
-            chunked
-              ? `<button type="button" class="btn btn-primary btn-download-apk" data-download-chunks="${escapeHtml(rel.id)}">
-                   ${dlIconSvg}
-                   <span>Download APK</span>
-                 </button>`
-              : `<a
-                   href="${escapeHtml(safeUrl)}"
-                   download="${escapeHtml(fileSlug)}"
-                   target="_blank"
-                   rel="noopener noreferrer"
-                   class="btn btn-primary btn-download-apk"
-                 >
-                   ${dlIconSvg}
-                   <span>Download APK</span>
-                 </a>`
-          }
+          <a
+            href="${escapeHtml(safeUrl)}"
+            download="${escapeHtml(fileSlug)}"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="btn btn-primary btn-download-apk"
+          >
+            ${dlIconSvg}
+            <span>Download APK</span>
+          </a>
         </div>
       </article>`;
     })
     .join("");
-
-  els.publicReleasesGrid.querySelectorAll("[data-download-chunks]").forEach((btn) => {
-    btn.addEventListener("click", () => {
-      const rel = state.publicReleases.find((r) => r.id === btn.dataset.downloadChunks);
-      const card = btn.closest("[data-release-card]");
-      if (rel) downloadChunkedApk(rel, btn, card);
-    });
-  });
 }
 
 // Start public storefront stream immediately without auth
@@ -1178,12 +998,22 @@ function startAdminListeners() {
           state.appConfigLoaded = true;
           populateConfigForms();
         } else {
+          // Keep non-focused system & billing controls synced live with Firestore
+          const activeEl = document.activeElement;
+          if (activeEl !== els.sysMaintToggle) {
+            els.sysMaintToggle.checked = Boolean(state.appConfig.maintenanceMode);
+            els.maintWarningBanner.classList.toggle("hidden", !state.appConfig.maintenanceMode);
+          }
+          if (!activeEl || !els.billingForm.contains(activeEl)) {
+            els.cfgTrialDays.value = clampTrialDays(state.appConfig.trialDays);
+            updateBillingPreview();
+          }
           syncFormIndicators();
         }
         renderHub();
         renderOverview();
       },
-      (err) => showToast(`Config sync error: ${err.message}`, "error")
+      (err) => showToast(`Config sync error: ${formatFirestoreError(err)}`, "error")
     )
   );
 
@@ -1199,7 +1029,7 @@ function startAdminListeners() {
         renderOverview();
         renderUtrRequests();
       },
-      (err) => showToast(`Requests sync error: ${err.message}`, "error")
+      (err) => showToast(`Requests sync error: ${formatFirestoreError(err)}`, "error")
     )
   );
 
@@ -1215,7 +1045,7 @@ function startAdminListeners() {
         renderOverview();
         renderShops();
       },
-      (err) => showToast(`Shops sync error: ${err.message}`, "error")
+      (err) => showToast(`Shops sync error: ${formatFirestoreError(err)}`, "error")
     )
   );
 
@@ -1231,7 +1061,7 @@ function startAdminListeners() {
         renderOverview();
         renderShops();
       },
-      (err) => showToast(`Subscriptions sync error: ${err.message}`, "error")
+      (err) => showToast(`Subscriptions sync error: ${formatFirestoreError(err)}`, "error")
     )
   );
 
@@ -1276,9 +1106,9 @@ function computePortfolioMetrics() {
     }
   });
 
-  const publishedReleases = state.publicReleases.filter((r) => r.published !== false);
-  const appsSlotCount = state.publicReleases.filter((r) => r.projectSlot === "APPS").length;
-  const gamesSlotCount = state.publicReleases.filter((r) => r.projectSlot === "GAMES").length;
+  const publishedReleases = state.publicReleases.filter(
+    (r) => r.published !== false && isSafeHttpsUrl(normalizeDirectDownloadUrl(r.downloadUrl))
+  );
 
   return {
     pendingReqs,
@@ -1288,8 +1118,6 @@ function computePortfolioMetrics() {
     activeTrial,
     expiredOrSuspended,
     publishedReleasesCount: publishedReleases.length,
-    appsSlotCount,
-    gamesSlotCount,
   };
 }
 
@@ -1310,8 +1138,6 @@ function renderHub() {
   els.slotVastraPending.textContent = String(m.pendingReqs.length);
   els.slotVastraTrial.textContent = trialDays === 0 ? "Off" : `${trialDays}d`;
   els.slotReleasesLive.textContent = String(m.publishedReleasesCount);
-  els.slotAppsReleases.textContent = String(m.appsSlotCount);
-  els.slotGamesReleases.textContent = String(m.gamesSlotCount);
   els.navReleasesCount.textContent = String(state.publicReleases.length);
 }
 
@@ -1650,7 +1476,7 @@ async function approveUtrRequest(req, note, btn) {
 
     showToast(`Approved ${req.shopName}! Active until ${approvedUntilLabel}.`);
   } catch (err) {
-    showToast(`Approve failed: ${err.message}`, "error");
+    showToast(`Approve failed: ${formatFirestoreError(err)}`, "error");
     btn.disabled = false;
     btn.textContent = originalText;
   }
@@ -1714,7 +1540,7 @@ async function rejectUtrRequest(req, note, btn) {
 
     showToast(`Rejected request for ${req.shopName}.`);
   } catch (err) {
-    showToast(`Reject failed: ${err.message}`, "error");
+    showToast(`Reject failed: ${formatFirestoreError(err)}`, "error");
     btn.disabled = false;
   }
 }
@@ -1977,7 +1803,7 @@ els.billingForm.addEventListener("submit", async (e) => {
     await setDoc(doc(db, "appConfig", APP_CONFIG_DOC_ID), payload);
     showToast(`Synced! Default Free Trial = ${trialDays} day${trialDays === 1 ? "" : "s"} & UPI QR live.`);
   } catch (err) {
-    showToast(`Failed to publish: ${err.message}`, "error");
+    showToast(`Failed to publish: ${formatFirestoreError(err)}`, "error");
   } finally {
     els.saveBillingBtn.disabled = false;
     els.saveBillingBtn.textContent = "Publish Live to All Apps";
@@ -2396,7 +2222,7 @@ els.extendShopForm.addEventListener("submit", async (e) => {
     closeModal("extend-modal");
     showToast(successSummary);
   } catch (err) {
-    showToast(`Update failed: ${err.message}`, "error");
+    showToast(`Update failed: ${formatFirestoreError(err)}`, "error");
   } finally {
     els.confirmExtendBtn.disabled = false;
     els.confirmExtendBtn.textContent = "Apply Changes Now";
@@ -2416,6 +2242,8 @@ async function setShopSuspended(shop, suspend) {
     if (sub) {
       await updateDoc(subRef, {
         status: suspend ? "SUSPENDED" : computeFallbackStatus(sub, now),
+        planPriceInr: Number(sub.planPriceInr) >= 1 ? Math.round(Number(sub.planPriceInr)) : planPrice,
+        planDays: Number(sub.planDays) >= 1 ? Math.round(Number(sub.planDays)) : planDays,
         updatedAt: serverTimestamp(),
       });
     } else {
@@ -2451,7 +2279,7 @@ async function setShopSuspended(shop, suspend) {
 
     showToast(suspend ? `"${shop.shopName}" suspended.` : `"${shop.shopName}" reactivated!`);
   } catch (err) {
-    showToast(`Action failed: ${err.message}`, "error");
+    showToast(`Action failed: ${formatFirestoreError(err)}`, "error");
   }
 }
 
@@ -2509,7 +2337,7 @@ els.systemForm.addEventListener("submit", async (e) => {
           : "System & App Update controls synced live!"
       );
     } catch (err) {
-      showToast(`Failed to save system config: ${err.message}`, "error");
+      showToast(`Failed to save system config: ${formatFirestoreError(err)}`, "error");
     } finally {
       els.saveSystemBtn.disabled = false;
       els.saveSystemBtn.textContent = "Save & Sync System Controls";
@@ -2580,37 +2408,22 @@ els.relIconClearBtn.addEventListener("click", () => {
 });
 
 // ============================================================================
-// Direct In-Panel Chunked Binary APK Upload & Public Storefront Publisher
+// Instant Zero-Quota APK Link Publisher (Google Drive / MediaFire / Dropbox)
 // ============================================================================
-
-async function deleteUploadChunks(uploadId, chunkCount) {
-  if (!uploadId || !chunkCount || chunkCount <= 0) return;
-  const batchSize = 10;
-  for (let start = 0; start < chunkCount; start += batchSize) {
-    const end = Math.min(chunkCount, start + batchSize);
-    const jobs = [];
-    for (let i = start; i < end; i++) {
-      jobs.push(
-        deleteDoc(doc(db, "publicReleaseUploads", uploadId, "chunks", padChunkIndex(i))).catch(() => {})
-      );
-    }
-    await Promise.all(jobs);
-  }
-}
 
 function updateReleaseUrlHint() {
   if (!els.relUrlHint) return;
   const raw = (els.relDownloadUrl?.value || "").trim();
   els.relUrlHint.classList.remove("hint-success", "hint-warn");
 
-  if (state.pendingApkUpload && !raw) {
-    els.relUrlHint.classList.add("hint-success");
-    els.relUrlHint.textContent = `Direct uploaded APK (${state.pendingApkUpload.fileName}) will be used — no URL needed ✓`;
-    return;
-  }
   if (!raw) {
     els.relUrlHint.textContent =
-      "Leave blank when uploading an .apk directly above. External HTTPS / Google Drive links are also supported.";
+      "Supports Google Drive share links (auto-converted), Dropbox links (auto-converted to direct download), MediaFire, and direct .apk HTTPS URLs.";
+    return;
+  }
+  if (!isSafeHttpsUrl(raw)) {
+    els.relUrlHint.classList.add("hint-warn");
+    els.relUrlHint.textContent = "Link must start with https:// (paste full Google Drive, MediaFire, or Dropbox URL).";
     return;
   }
   if (/drive\.google\.com|drive\.usercontent\.google\.com/i.test(raw)) {
@@ -2618,212 +2431,29 @@ function updateReleaseUrlHint() {
     els.relUrlHint.textContent = "Google Drive link detected — auto-converted to 1-tap direct APK download ✓";
     return;
   }
-  if (/\.apk(\?|$)/i.test(raw)) {
+  if (/dropbox\.com/i.test(raw)) {
     els.relUrlHint.classList.add("hint-success");
-    els.relUrlHint.textContent = "External HTTPS APK link ready ✓";
+    els.relUrlHint.textContent = "Dropbox link detected — auto-converted to direct download (dl=1) ✓";
     return;
   }
-  els.relUrlHint.textContent = "External HTTPS link entered. Direct uploaded .apk above is optional.";
-}
-
-function updateUploadedApkUi() {
-  if (state.pendingApkUpload) {
-    const info = state.pendingApkUpload;
-    const sizeText = info.fileSizeBytes ? ` (${formatFileSize(info.fileSizeBytes)})` : "";
-    els.relApkReadyText.textContent = `✓ ${info.fileName}${sizeText} — Ready to Publish`;
-    els.relApkReadyPill.classList.remove("hidden");
-    els.relApkFileStatus.textContent = `Uploaded ✓ ${info.fileName}`;
-  } else {
-    els.relApkReadyPill.classList.add("hidden");
-    els.relApkReadyText.textContent = "";
-    if (!state.isUploadingApk) {
-      els.relApkFileStatus.textContent = "No APK uploaded yet";
-    }
+  if (/mediafire\.com/i.test(raw)) {
+    els.relUrlHint.classList.add("hint-success");
+    els.relUrlHint.textContent = "MediaFire link ready ✓";
+    return;
   }
-  updateReleaseUrlHint();
+  if (/\.apk(\?|$)/i.test(raw)) {
+    els.relUrlHint.classList.add("hint-success");
+    els.relUrlHint.textContent = "Direct HTTPS .APK link ready ✓";
+    return;
+  }
+  els.relUrlHint.textContent = "Valid HTTPS download link ready ✓";
 }
 
 if (els.relDownloadUrl) {
   els.relDownloadUrl.addEventListener("input", updateReleaseUrlHint);
 }
 
-els.relApkPickBtn.addEventListener("click", () => {
-  if (state.isUploadingApk) return;
-  els.relApkFileInput.click();
-});
-
-els.relApkCancelBtn.addEventListener("click", () => {
-  if (state.isUploadingApk) {
-    state.apkUploadAborted = true;
-    els.relApkCancelBtn.disabled = true;
-    els.relApkFileStatus.textContent = "Canceling upload & cleaning up...";
-  }
-});
-
-els.relApkClearBtn.addEventListener("click", () => {
-  const prev = state.pendingApkUpload;
-  state.pendingApkUpload = null;
-  els.relUploadProgressWrap.classList.add("hidden");
-  updateUploadedApkUi();
-  if (prev && !prev.isPersisted) {
-    deleteUploadChunks(prev.uploadId, prev.chunkCount).catch(() => {});
-  }
-  showToast("Attached APK removed from form.");
-});
-
-els.relApkFileInput.addEventListener("change", async (e) => {
-  const file = e.target.files?.[0];
-  e.target.value = "";
-  if (!file) return;
-
-  if (!file.name.toLowerCase().endsWith(".apk")) {
-    showToast("Please select a valid Android .apk file.", "error");
-    return;
-  }
-  if (file.size <= 0) {
-    showToast("Selected .apk file is empty.", "error");
-    return;
-  }
-  if (file.size > MAX_DIRECT_APK_BYTES) {
-    showToast("APK exceeds the 150 MB direct upload limit.", "error");
-    return;
-  }
-
-  // Clean up any previous unsaved upload from this session
-  if (state.pendingApkUpload && !state.pendingApkUpload.isPersisted) {
-    const stale = state.pendingApkUpload;
-    state.pendingApkUpload = null;
-    deleteUploadChunks(stale.uploadId, stale.chunkCount).catch(() => {});
-  }
-
-  const totalChunks = Math.ceil(file.size / APK_CHUNK_SIZE);
-  const uploadId = `apk_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 8)}`;
-  const cleanFileName = file.name.replace(/[^a-zA-Z0-9._ -]/g, "_").slice(0, 150);
-
-  state.isUploadingApk = true;
-  state.apkUploadAborted = false;
-  els.relApkReadyPill.classList.add("hidden");
-  els.relFileSize.value = formatFileSize(file.size);
-  if (!els.relAppName.value.trim()) {
-    els.relAppName.value =
-      els.relProjectSlot.value === "VASTRAOS"
-        ? "VastraOS POS"
-        : file.name.replace(/\.apk$/i, "").replace(/[_-]+/g, " ").trim().slice(0, 100);
-  }
-
-  els.relApkPickBtn.disabled = true;
-  els.relSaveBtn.disabled = true;
-  els.relApkCancelBtn.disabled = false;
-  els.relApkCancelBtn.classList.remove("hidden");
-  els.relUploadProgressWrap.classList.remove("hidden");
-  els.relUploadProgressBar.style.width = "1%";
-  els.relUploadProgressText.textContent = "1%";
-  els.relApkFileStatus.textContent = `Uploading ${file.name} (0/${totalChunks} parts)...`;
-
-  const uploadedIndices = [];
-  let completedChunks = 0;
-  let bytesUploaded = 0;
-  let nextIdx = 0;
-  let firstError = null;
-
-  try {
-    const worker = async () => {
-      while (true) {
-        if (state.apkUploadAborted || firstError) return;
-        const idx = nextIdx++;
-        if (idx >= totalChunks) return;
-
-        const start = idx * APK_CHUNK_SIZE;
-        const end = Math.min(file.size, start + APK_CHUNK_SIZE);
-        const arrayBuf = await file.slice(start, end).arrayBuffer();
-        const bytes = Bytes.fromUint8Array(new Uint8Array(arrayBuf));
-        const chunkRef = doc(db, "publicReleaseUploads", uploadId, "chunks", padChunkIndex(idx));
-
-        let lastErr = null;
-        for (let attempt = 1; attempt <= 3; attempt++) {
-          if (state.apkUploadAborted) return;
-          try {
-            await setDoc(chunkRef, { index: idx, data: bytes });
-            lastErr = null;
-            break;
-          } catch (err) {
-            lastErr = err;
-            if (attempt < 3) await sleepMs(500 * attempt);
-          }
-        }
-        if (lastErr) {
-          if (!firstError) firstError = lastErr;
-          return;
-        }
-
-        uploadedIndices.push(idx);
-        completedChunks++;
-        bytesUploaded += end - start;
-        const pct = Math.max(1, Math.min(100, Math.round((completedChunks / totalChunks) * 100)));
-        els.relUploadProgressBar.style.width = `${pct}%`;
-        els.relUploadProgressText.textContent = `${pct}%`;
-        els.relApkFileStatus.textContent = `Uploading ${file.name} (${completedChunks}/${totalChunks} parts • ${formatFileSize(bytesUploaded)} / ${formatFileSize(file.size)})`;
-      }
-    };
-
-    const workers = [];
-    const workerCount = Math.min(APK_UPLOAD_CONCURRENCY, totalChunks);
-    for (let w = 0; w < workerCount; w++) workers.push(worker());
-    await Promise.all(workers);
-
-    if (state.apkUploadAborted) {
-      els.relUploadProgressWrap.classList.add("hidden");
-      els.relApkFileStatus.textContent = "Upload canceled.";
-      showToast("APK upload canceled.", "error");
-      // Clean up partially uploaded chunks in background
-      Promise.all(
-        uploadedIndices.map((idx) =>
-          deleteDoc(doc(db, "publicReleaseUploads", uploadId, "chunks", padChunkIndex(idx))).catch(() => {})
-        )
-      ).catch(() => {});
-      return;
-    }
-
-    if (firstError) {
-      throw firstError;
-    }
-
-    state.pendingApkUpload = {
-      uploadId,
-      chunkCount: totalChunks,
-      fileName: cleanFileName,
-      fileSizeBytes: Math.round(file.size),
-      isPersisted: false,
-    };
-    els.relDownloadUrl.value = "";
-    els.relUploadProgressBar.style.width = "100%";
-    els.relUploadProgressText.textContent = "100%";
-    updateUploadedApkUi();
-    showToast(`${file.name} uploaded 100%! Now click 'Publish Release Live'.`);
-  } catch (err) {
-    els.relUploadProgressWrap.classList.add("hidden");
-    els.relApkFileStatus.textContent = `Upload failed: ${err.message}`;
-    showToast(`APK upload failed: ${err.message}`, "error");
-    Promise.all(
-      uploadedIndices.map((idx) =>
-        deleteDoc(doc(db, "publicReleaseUploads", uploadId, "chunks", padChunkIndex(idx))).catch(() => {})
-      )
-    ).catch(() => {});
-  } finally {
-    state.isUploadingApk = false;
-    state.apkUploadAborted = false;
-    els.relApkPickBtn.disabled = false;
-    els.relSaveBtn.disabled = false;
-    els.relApkCancelBtn.disabled = false;
-    els.relApkCancelBtn.classList.add("hidden");
-  }
-});
-
 function resetReleaseForm() {
-  if (state.pendingApkUpload && !state.pendingApkUpload.isPersisted) {
-    const stale = state.pendingApkUpload;
-    deleteUploadChunks(stale.uploadId, stale.chunkCount).catch(() => {});
-  }
   els.relEditId.value = "";
   els.releaseFormTitle.textContent = "Publish New App / Game Update";
   els.releaseResetBtn.classList.add("hidden");
@@ -2838,21 +2468,15 @@ function resetReleaseForm() {
   els.relNotes.value = "";
   els.relPublishedToggle.checked = true;
   els.relSyncVastraToggle.checked = true;
-  els.relUploadProgressWrap.classList.add("hidden");
   state.pendingReleaseIconBase64 = "";
-  state.pendingApkUpload = null;
   updateReleaseIconPreview();
-  updateUploadedApkUi();
+  updateReleaseUrlHint();
   syncReleaseVastraToggleVisibility();
 }
 
 els.releaseResetBtn.addEventListener("click", resetReleaseForm);
 
 function loadReleaseIntoForm(rel) {
-  if (state.pendingApkUpload && !state.pendingApkUpload.isPersisted) {
-    const stale = state.pendingApkUpload;
-    deleteUploadChunks(stale.uploadId, stale.chunkCount).catch(() => {});
-  }
   els.relEditId.value = rel.id;
   els.releaseFormTitle.textContent = `Edit Release: ${rel.appName}`;
   els.releaseResetBtn.classList.remove("hidden");
@@ -2863,23 +2487,13 @@ function loadReleaseIntoForm(rel) {
   els.relFileSize.value = rel.fileSizeLabel || "";
   els.relVersionName.value = rel.versionName || "";
   els.relVersionCode.value = Number(rel.versionCode || 1);
-  els.relDownloadUrl.value = isChunkedRelease(rel) ? "" : rel.downloadUrl || "";
+  els.relDownloadUrl.value = rel.downloadUrl || "";
   els.relNotes.value = rel.releaseNotes || "";
   els.relPublishedToggle.checked = rel.published !== false;
   els.relSyncVastraToggle.checked = rel.projectSlot === "VASTRAOS";
-  els.relUploadProgressWrap.classList.add("hidden");
   state.pendingReleaseIconBase64 = rel.iconBase64 || "";
-  state.pendingApkUpload = isChunkedRelease(rel)
-    ? {
-        uploadId: rel.uploadId,
-        chunkCount: Number(rel.chunkCount),
-        fileName: rel.fileName || `${rel.appName}.apk`,
-        fileSizeBytes: Math.round(Number(rel.fileSizeBytes || 0)),
-        isPersisted: true,
-      }
-    : null;
   updateReleaseIconPreview();
-  updateUploadedApkUi();
+  updateReleaseUrlHint();
   syncReleaseVastraToggleVisibility();
   switchTab("releases");
   window.scrollTo({ top: 0, behavior: "smooth" });
@@ -2888,9 +2502,6 @@ function loadReleaseIntoForm(rel) {
 els.releaseForm.addEventListener("submit", async (e) => {
   e.preventDefault();
   if (!state.user) return;
-  if (state.isUploadingApk) {
-    return showToast("Please wait for the .apk upload to finish before publishing.", "error");
-  }
 
   const editId = els.relEditId.value.trim();
   const projectSlot = els.relProjectSlot.value || "APPS";
@@ -2899,7 +2510,7 @@ els.releaseForm.addEventListener("submit", async (e) => {
   const fileSizeLabel = els.relFileSize.value.trim().slice(0, 40);
   const versionName = els.relVersionName.value.trim().slice(0, 40);
   const versionCode = Math.round(Number(els.relVersionCode.value));
-  const rawExternalUrl = normalizeDirectDownloadUrl(els.relDownloadUrl.value.trim()).slice(0, 1000);
+  const downloadUrl = normalizeDirectDownloadUrl(els.relDownloadUrl.value.trim()).slice(0, 1000);
   const releaseNotes = els.relNotes.value.trim().slice(0, 1000);
   const published = els.relPublishedToggle.checked;
   const syncVastra = projectSlot === "VASTRAOS" && els.relSyncVastraToggle.checked;
@@ -2909,10 +2520,8 @@ els.releaseForm.addEventListener("submit", async (e) => {
   if (!Number.isInteger(versionCode) || versionCode < 1 || versionCode > 100000) {
     return showToast("Version code must be between 1 and 100000.", "error");
   }
-
-  const useDirectChunks = Boolean(state.pendingApkUpload && !rawExternalUrl);
-  if (!useDirectChunks && !isSafeHttpsUrl(rawExternalUrl)) {
-    return showToast("Upload an .apk file above OR paste a valid https:// APK download link.", "error");
+  if (!isSafeHttpsUrl(downloadUrl)) {
+    return showToast("Paste a valid https:// Google Drive, MediaFire, Dropbox, or direct APK link.", "error");
   }
 
   els.relSaveBtn.disabled = true;
@@ -2924,15 +2533,14 @@ els.releaseForm.addEventListener("submit", async (e) => {
 
     const payload = {
       releaseId: docId,
-      deliveryType: useDirectChunks ? "FIRESTORE_CHUNKS" : "URL",
+      deliveryType: "URL",
       projectSlot,
       category,
       appName,
       versionName,
       versionCode,
-      downloadUrl: useDirectChunks ? "" : rawExternalUrl,
-      fileSizeLabel:
-        fileSizeLabel || (useDirectChunks ? formatFileSize(state.pendingApkUpload.fileSizeBytes) : ""),
+      downloadUrl,
+      fileSizeLabel,
       releaseNotes,
       iconBase64: state.pendingReleaseIconBase64 || "",
       published,
@@ -2941,47 +2549,20 @@ els.releaseForm.addEventListener("submit", async (e) => {
       updatedAt: serverTimestamp(),
     };
 
-    if (useDirectChunks) {
-      payload.uploadId = state.pendingApkUpload.uploadId;
-      payload.chunkCount = Math.round(Number(state.pendingApkUpload.chunkCount));
-      payload.fileName = state.pendingApkUpload.fileName.slice(0, 160);
-      payload.fileSizeBytes = Math.max(1, Math.round(Number(state.pendingApkUpload.fileSizeBytes)));
-    }
-
     await setDoc(doc(db, PUBLIC_RELEASES_COLLECTION, docId), payload);
-
-    // Mark current upload as persisted so resetReleaseForm does NOT delete it
-    if (useDirectChunks && state.pendingApkUpload) {
-      state.pendingApkUpload.isPersisted = true;
-    }
-
-    // If replacing an older chunked APK on an edited release, free old chunks in background
-    if (
-      existing &&
-      isChunkedRelease(existing) &&
-      (!useDirectChunks || existing.uploadId !== state.pendingApkUpload?.uploadId)
-    ) {
-      deleteUploadChunks(existing.uploadId, Number(existing.chunkCount)).catch(() => {});
-    }
-
-    const effectiveShareUrl = useDirectChunks
-      ? buildStorefrontDownloadLink(docId)
-      : rawExternalUrl;
 
     // Optional 1-click sync to VastraOS In-App Updater
     if (syncVastra) {
       const cfgPayload = buildFullAppConfigPayload({
         latestAppVersionCode: versionCode,
         latestAppVersionName: versionName,
-        updateUrl: (effectiveShareUrl || state.appConfig.updateUrl || "").slice(0, 500),
+        updateUrl: downloadUrl.slice(0, 500),
         updateNotes: releaseNotes.slice(0, 500),
       });
       await setDoc(doc(db, "appConfig", APP_CONFIG_DOC_ID), cfgPayload);
       els.sysLatestCode.value = versionCode;
       els.sysLatestName.value = versionName;
-      if (effectiveShareUrl) {
-        els.sysUpdateUrl.value = effectiveShareUrl.slice(0, 500);
-      }
+      els.sysUpdateUrl.value = downloadUrl.slice(0, 500);
       els.sysUpdateNotes.value = releaseNotes.slice(0, 500);
     }
 
@@ -2997,7 +2578,7 @@ els.releaseForm.addEventListener("submit", async (e) => {
           versionName,
           versionCode,
           category: categoryLabel(category),
-          downloadUrl: effectiveShareUrl,
+          downloadUrl,
           adminPanelUrl: state.appConfig.adminPanelUrl || "",
           timestampIst: formatDateTime(Date.now()) + " IST",
         }),
@@ -3011,7 +2592,7 @@ els.releaseForm.addEventListener("submit", async (e) => {
     );
     resetReleaseForm();
   } catch (err) {
-    showToast(`Failed to publish release: ${err.message}`, "error");
+    showToast(`Failed to publish release: ${formatFirestoreError(err)}`, "error");
   } finally {
     els.relSaveBtn.disabled = false;
     els.relSaveBtn.textContent = els.relEditId.value ? "Save Release Changes" : "Publish Release Live";
@@ -3029,8 +2610,7 @@ function renderReleaseAdminCards(container, releases, emptyText) {
     .map((rel) => {
       const iconSrc = toBase64ImageSrc(rel.iconBase64);
       const initial = escapeHtml((rel.appName || "S").charAt(0).toUpperCase());
-      const isLive = rel.published !== false;
-      const isDirect = isChunkedRelease(rel);
+      const isLive = rel.published !== false && isSafeHttpsUrl(normalizeDirectDownloadUrl(rel.downloadUrl));
       return `
       <div class="release-admin-card">
         <div class="release-admin-head">
@@ -3042,7 +2622,7 @@ function renderReleaseAdminCards(container, releases, emptyText) {
               <div class="mini-req-title">${escapeHtml(rel.appName)} <span class="mono">v${escapeHtml(rel.versionName)}</span></div>
               <div class="mini-req-sub">${escapeHtml(slotLabel(rel.projectSlot))} &middot; ${escapeHtml(categoryLabel(rel.category))}${
         rel.fileSizeLabel ? ` &middot; ${escapeHtml(rel.fileSizeLabel)}` : ""
-      }${isDirect ? " &middot; Direct Upload" : ""}</div>
+      }</div>
             </div>
           </div>
           <span class="pill pill-compact ${isLive ? "pill-success" : "pill-neutral"}">${isLive ? "LIVE" : "DRAFT"}</span>
@@ -3050,7 +2630,7 @@ function renderReleaseAdminCards(container, releases, emptyText) {
         <div class="release-admin-actions">
           <button type="button" class="btn btn-secondary btn-sm" data-edit-rel="${escapeHtml(rel.id)}">Edit</button>
           <button type="button" class="btn btn-secondary btn-sm" data-toggle-rel="${escapeHtml(rel.id)}">${
-        isLive ? "Hide" : "Publish"
+        rel.published !== false ? "Hide" : "Publish"
       }</button>
           <button type="button" class="btn btn-secondary btn-sm" data-copy-rel="${escapeHtml(rel.id)}">Copy APK Link</button>
           <button type="button" class="btn btn-ghost-danger btn-sm" data-del-rel="${escapeHtml(rel.id)}">Delete</button>
@@ -3077,7 +2657,7 @@ function renderReleaseAdminCards(container, releases, emptyText) {
         });
         showToast(rel.published === false ? `${rel.appName} is now LIVE!` : `${rel.appName} hidden from public store.`);
       } catch (err) {
-        showToast(`Failed to update visibility: ${err.message}`, "error");
+        showToast(`Failed to update visibility: ${formatFirestoreError(err)}`, "error");
       }
     });
   });
@@ -3086,11 +2666,9 @@ function renderReleaseAdminCards(container, releases, emptyText) {
     btn.addEventListener("click", async () => {
       const rel = state.publicReleases.find((r) => r.id === btn.dataset.copyRel);
       if (!rel) return;
-      const link = isChunkedRelease(rel)
-        ? buildStorefrontDownloadLink(rel.id)
-        : normalizeDirectDownloadUrl(rel.downloadUrl);
-      if (!link) {
-        showToast("Host this panel on HTTPS to get a shareable 1-tap download link.", "error");
+      const link = normalizeDirectDownloadUrl(rel.downloadUrl);
+      if (!isSafeHttpsUrl(link)) {
+        showToast("Edit this release and add a valid HTTPS APK link first.", "error");
         return;
       }
       try {
@@ -3108,18 +2686,15 @@ function renderReleaseAdminCards(container, releases, emptyText) {
       if (!rel) return;
       askConfirm({
         title: `Delete "${rel.appName} v${rel.versionName}"?`,
-        message: "This will immediately remove this APK from the public Sarfu Techno downloads page and free its uploaded file data.",
+        message: "This will immediately remove this APK from the public Sarfu Techno downloads page.",
         okLabel: "Delete Release",
         okClass: "btn-danger",
         onConfirm: async () => {
           try {
             await deleteDoc(doc(db, PUBLIC_RELEASES_COLLECTION, rel.id));
-            if (isChunkedRelease(rel)) {
-              await deleteUploadChunks(rel.uploadId, Number(rel.chunkCount));
-            }
-            showToast(`Deleted "${rel.appName}" release & freed storage.`);
+            showToast(`Deleted "${rel.appName}" release.`);
           } catch (err) {
-            showToast(`Delete failed: ${err.message}`, "error");
+            showToast(`Delete failed: ${formatFirestoreError(err)}`, "error");
           }
         },
       });
@@ -3131,17 +2706,7 @@ function renderAdminReleases() {
   renderReleaseAdminCards(
     els.adminReleasesList,
     state.publicReleases,
-    "No releases published yet. Upload an APK or paste a direct download link on the left to go live!"
-  );
-  renderReleaseAdminCards(
-    els.futureAppsReleasesList,
-    state.publicReleases.filter((r) => r.projectSlot === "APPS"),
-    "No Future App builds yet. Tap '+ Publish App APK' above whenever your next Android app is ready."
-  );
-  renderReleaseAdminCards(
-    els.futureGamesReleasesList,
-    state.publicReleases.filter((r) => r.projectSlot === "GAMES"),
-    "No Future Game builds yet. Tap '+ Publish Game APK' above whenever your first Android game is ready."
+    "No releases published yet. Paste a Google Drive, MediaFire, or Dropbox APK link on the left to go live in 1 second!"
   );
 }
 
@@ -3406,7 +2971,7 @@ els.telegramForm.addEventListener("submit", async (e) => {
         : "Telegram webhook cleared & synced."
     );
   } catch (err) {
-    showToast(`Failed to save Telegram settings: ${err.message}`, "error");
+    showToast(`Failed to save Telegram settings: ${formatFirestoreError(err)}`, "error");
   } finally {
     els.saveTelegramBtn.disabled = false;
     els.saveTelegramBtn.textContent = "Save & Sync";
