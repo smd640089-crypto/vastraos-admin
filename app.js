@@ -28,12 +28,20 @@ import {
   PUBLIC_RELEASES_COLLECTION,
   DEFAULT_APP_CONFIG,
 } from "./firebase-config.js";
+import { createMemeCircleController } from "./meme-circle-controller.js";
 
 const DAY_MS = 86_400_000;
 const IST_OFFSET_MS = 330 * 60 * 1000; // UTC+05:30 (Asia/Kolkata)
 const MAX_QR_BASE64_LEN = 340_000; // Safely below 450,000 firestore.rules cap
 const MAX_ICON_BASE64_LEN = 160_000; // Safely below 220,000 firestore.rules cap
 const VASTRAOS_TABS = new Set(["overview", "approvals", "billing", "shops", "system"]);
+const MEMECIRCLE_TABS = new Set([
+  "mc-overview",
+  "mc-approvals",
+  "mc-billing",
+  "mc-users",
+  "mc-system",
+]);
 
 // Initialize Firebase App + Named Firestore Database
 const firebaseApp = initializeApp(FIREBASE_CONFIG);
@@ -68,6 +76,7 @@ const state = {
   unsubscribers: [],
   publicUnsubscriber: null,
 };
+let memeCircleCtrl = null;
 
 // DOM References
 const $ = (id) => document.getElementById(id);
@@ -103,6 +112,7 @@ const els = {
   signoutBtn: $("signout-btn"),
   topbarBackHubBtn: $("topbar-back-hub-btn"),
   vastraosSubnav: $("vastraos-subnav"),
+  memecircleSubnav: $("memecircle-subnav"),
   subnavPendingBadge: $("subnav-pending-badge"),
   pageTitle: $("page-title"),
   topbarMaintChip: $("topbar-maint-chip"),
@@ -220,6 +230,8 @@ const els = {
   relNotes: $("rel-notes"),
   relPublishedToggle: $("rel-published-toggle"),
   relSyncVastraRow: $("rel-sync-vastra-row"),
+  relSyncTitle: $("rel-sync-title"),
+  relSyncHelp: $("rel-sync-help"),
   relSyncVastraToggle: $("rel-sync-vastra-toggle"),
   relSaveBtn: $("rel-save-btn"),
   adminReleasesList: $("admin-releases-list"),
@@ -505,6 +517,11 @@ const TAB_TITLES = {
   billing: "VastraOS Billing & Trial",
   shops: "VastraOS All Shops",
   system: "VastraOS System & Updates",
+  "mc-overview": "Meme Circle Overview",
+  "mc-approvals": "Meme Circle UTR Approvals",
+  "mc-billing": "Meme Circle Billing & Trial",
+  "mc-users": "Meme Circle Users",
+  "mc-system": "Meme Circle System & Updates",
 };
 
 function syncMainViewVisibility() {
@@ -527,7 +544,9 @@ function switchTab(tab) {
   if (target) target.classList.add("active");
 
   const inVastra = VASTRAOS_TABS.has(safeTab);
+  const inMemeCircle = MEMECIRCLE_TABS.has(safeTab);
   els.vastraosSubnav.classList.toggle("hidden", !inVastra);
+  if (els.memecircleSubnav) els.memecircleSubnav.classList.toggle("hidden", !inMemeCircle);
   els.topbarBackHubBtn.classList.toggle("hidden", safeTab === "hub");
 
   document.querySelectorAll(".sidebar-nav [data-tab], .project-subnav [data-tab]").forEach((btn) => {
@@ -537,7 +556,9 @@ function switchTab(tab) {
   document.querySelectorAll(".mobile-nav [data-tab]").forEach((btn) => {
     const t = btn.dataset.tab;
     const isActive =
-      t === safeTab || (t === "overview" && (safeTab === "approvals" || safeTab === "billing" || safeTab === "system"));
+      t === safeTab ||
+      (t === "overview" && inVastra) ||
+      (t === "mc-overview" && inMemeCircle);
     btn.classList.toggle("active", isActive);
   });
 
@@ -756,6 +777,7 @@ function categoryLabel(cat) {
 
 function slotLabel(slot) {
   if (slot === "VASTRAOS") return "VastraOS";
+  if (slot === "MEME_CIRCLE") return "Meme Circle";
   if (slot === "GAMES") return "Sarfu Games";
   return "Sarfu Apps";
 }
@@ -978,10 +1000,12 @@ function stopAdminListeners() {
     } catch {}
   });
   state.unsubscribers = [];
+  memeCircleCtrl?.stopListeners();
 }
 
 function startAdminListeners() {
   stopAdminListeners();
+  memeCircleCtrl?.startListeners();
 
   // 1. Live appConfig/vastraos_billing
   const cfgRef = doc(db, "appConfig", APP_CONFIG_DOC_ID);
@@ -1123,15 +1147,28 @@ function computePortfolioMetrics() {
 
 function renderHub() {
   const m = computePortfolioMetrics();
+  const mc = memeCircleCtrl?.getMetrics() || {
+    totalRevenue: 0,
+    approvedReqs: [],
+    pendingReqs: [],
+    activePaid: 0,
+    activeTrial: 0,
+  };
   const trialDays = clampTrialDays(state.appConfig.trialDays);
 
-  els.hubTotalEarnings.textContent = formatInr(m.totalRevenue);
-  els.hubEarningsSub.textContent = `${m.approvedReqs.length} approved payment${
-    m.approvedReqs.length === 1 ? "" : "s"
-  } across all active projects`;
-  els.hubMetricPending.textContent = String(m.pendingReqs.length);
-  els.hubMetricPaid.textContent = String(m.activePaid);
-  els.hubMetricTrial.textContent = String(m.activeTrial);
+  const combinedRevenue = m.totalRevenue + mc.totalRevenue;
+  const combinedApproved = m.approvedReqs.length + mc.approvedReqs.length;
+  const combinedPending = m.pendingReqs.length + mc.pendingReqs.length;
+  const combinedPaid = m.activePaid + mc.activePaid;
+  const combinedTrial = m.activeTrial + mc.activeTrial;
+
+  els.hubTotalEarnings.textContent = formatInr(combinedRevenue);
+  els.hubEarningsSub.textContent = `${combinedApproved} approved payment${
+    combinedApproved === 1 ? "" : "s"
+  } (VastraOS ${formatInr(m.totalRevenue)} • Meme Circle ${formatInr(mc.totalRevenue)})`;
+  els.hubMetricPending.textContent = String(combinedPending);
+  els.hubMetricPaid.textContent = String(combinedPaid);
+  els.hubMetricTrial.textContent = String(combinedTrial);
   els.hubMetricReleases.textContent = String(m.publishedReleasesCount);
 
   els.slotVastraShops.textContent = String(state.shops.length);
@@ -1606,6 +1643,7 @@ function syncFormIndicators() {
   els.hubTgDot.className = dotCls;
   els.hubTgLabel.textContent = tgLive ? "Global Telegram 24/7" : "Setup Telegram";
   els.navTgDot.className = dotCls;
+  memeCircleCtrl?.syncIndicators();
 }
 
 function updateBillingPreview() {
@@ -2363,8 +2401,15 @@ els.systemForm.addEventListener("submit", async (e) => {
 // ============================================================================
 
 function syncReleaseVastraToggleVisibility() {
-  const isVastra = els.relProjectSlot.value === "VASTRAOS";
-  els.relSyncVastraRow.classList.toggle("hidden", !isVastra);
+  const slot = els.relProjectSlot.value;
+  const syncable = slot === "VASTRAOS" || slot === "MEME_CIRCLE";
+  els.relSyncVastraRow.classList.toggle("hidden", !syncable);
+  if (els.relSyncTitle) {
+    els.relSyncTitle.textContent =
+      slot === "MEME_CIRCLE"
+        ? "Also Sync to Meme Circle In-App Updater"
+        : "Also Sync to VastraOS In-App Updater";
+  }
 }
 
 els.relProjectSlot.addEventListener("change", () => {
@@ -2373,6 +2418,9 @@ els.relProjectSlot.addEventListener("change", () => {
   } else if (els.relProjectSlot.value === "VASTRAOS") {
     els.relCategory.value = "APP";
     if (!els.relAppName.value.trim()) els.relAppName.value = "VastraOS POS";
+  } else if (els.relProjectSlot.value === "MEME_CIRCLE") {
+    els.relCategory.value = "APP";
+    if (!els.relAppName.value.trim()) els.relAppName.value = "Meme Circle";
   }
   syncReleaseVastraToggleVisibility();
 });
@@ -2490,7 +2538,7 @@ function loadReleaseIntoForm(rel) {
   els.relDownloadUrl.value = rel.downloadUrl || "";
   els.relNotes.value = rel.releaseNotes || "";
   els.relPublishedToggle.checked = rel.published !== false;
-  els.relSyncVastraToggle.checked = rel.projectSlot === "VASTRAOS";
+  els.relSyncVastraToggle.checked = rel.projectSlot === "VASTRAOS" || rel.projectSlot === "MEME_CIRCLE";
   state.pendingReleaseIconBase64 = rel.iconBase64 || "";
   updateReleaseIconPreview();
   updateReleaseUrlHint();
@@ -2514,6 +2562,7 @@ els.releaseForm.addEventListener("submit", async (e) => {
   const releaseNotes = els.relNotes.value.trim().slice(0, 1000);
   const published = els.relPublishedToggle.checked;
   const syncVastra = projectSlot === "VASTRAOS" && els.relSyncVastraToggle.checked;
+  const syncMemeCircle = projectSlot === "MEME_CIRCLE" && els.relSyncVastraToggle.checked;
 
   if (!appName) return showToast("App or Game name is required.", "error");
   if (!versionName) return showToast("Version name is required (e.g. 1.2.0).", "error");
@@ -2544,14 +2593,14 @@ els.releaseForm.addEventListener("submit", async (e) => {
       releaseNotes,
       iconBase64: state.pendingReleaseIconBase64 || "",
       published,
-      featured: projectSlot === "VASTRAOS",
+      featured: projectSlot === "VASTRAOS" || projectSlot === "MEME_CIRCLE",
       createdAt: existing?.createdAt || serverTimestamp(),
       updatedAt: serverTimestamp(),
     };
 
     await setDoc(doc(db, PUBLIC_RELEASES_COLLECTION, docId), payload);
 
-    // Optional 1-click sync to VastraOS In-App Updater
+    // Optional 1-click sync to VastraOS or Meme Circle In-App Updater
     if (syncVastra) {
       const cfgPayload = buildFullAppConfigPayload({
         latestAppVersionCode: versionCode,
@@ -2564,6 +2613,13 @@ els.releaseForm.addEventListener("submit", async (e) => {
       els.sysLatestName.value = versionName;
       els.sysUpdateUrl.value = downloadUrl.slice(0, 500);
       els.sysUpdateNotes.value = releaseNotes.slice(0, 500);
+    } else if (syncMemeCircle) {
+      await memeCircleCtrl.syncReleaseUpdate({
+        versionCode,
+        versionName,
+        downloadUrl,
+        releaseNotes,
+      });
     }
 
     // Fire optional shared Telegram notification on new live release
@@ -2965,9 +3021,16 @@ els.telegramForm.addEventListener("submit", async (e) => {
       notifyOnUtrSubmit: notifyUtrSubmit,
     });
     await setDoc(doc(db, "appConfig", APP_CONFIG_DOC_ID), payload);
+    // Automatically mirror shared Telegram webhook to Meme Circle config as well
+    await memeCircleCtrl.syncTelegramSettings({
+      telegramWebhookUrl: webhookUrl,
+      adminPanelUrl: adminUrl,
+      notifyOnNewAccount: notifyNewAccount,
+      notifyOnUtrSubmit: notifyUtrSubmit,
+    });
     showToast(
       webhookUrl
-        ? "Shared Telegram 24/7 webhook synced live across all projects!"
+        ? "Shared Telegram 24/7 webhook synced live across VastraOS & Meme Circle!"
         : "Telegram webhook cleared & synced."
     );
   } catch (err) {
@@ -2977,3 +3040,37 @@ els.telegramForm.addEventListener("submit", async (e) => {
     els.saveTelegramBtn.textContent = "Save & Sync";
   }
 });
+
+// Mount Meme Circle Control Deck Controller
+memeCircleCtrl = createMemeCircleController({
+  db,
+  getUser: () => state.user,
+  getVastraConfig: () => state.appConfig,
+  showToast,
+  escapeHtml,
+  toBase64ImageSrc,
+  toMillis,
+  formatDateTime,
+  formatDateShortIst,
+  formatFirestoreError,
+  normalizeDirectDownloadUrl,
+  formatInr,
+  computeEffectiveStatus,
+  statusPillHtml,
+  computeFallbackStatus,
+  compressImageToRawBase64,
+  switchTab,
+  openModal,
+  closeModal,
+  askConfirm,
+  openTelegramDrawer,
+  openReceiptLightbox: (src, meta) => {
+    els.receiptModalImg.src = src;
+    els.receiptModalMeta.textContent = meta;
+    openModal("receipt-modal");
+  },
+  onPortfolioChanged: () => {
+    renderHub();
+  },
+});
+renderHub();

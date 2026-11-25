@@ -2156,7 +2156,7 @@ code, .mono {
 
 .project-slots-grid {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 16px;
 }
 .project-slot-card {
@@ -2206,9 +2206,13 @@ code, .mono {
   background: linear-gradient(135deg, #6D28D9, #9333EA);
   box-shadow: 0 8px 18px rgba(109, 40, 217, 0.28);
 }
+.slot-icon-memecircle {
+  background: linear-gradient(135deg, #065F46 0%, #10B981 55%, #22C55E 100%);
+  box-shadow: 0 8px 20px rgba(16, 185, 129, 0.34);
+}
 .slot-icon-releases {
-  background: linear-gradient(135deg, #059669, #10B981);
-  box-shadow: 0 8px 18px rgba(5, 150, 105, 0.25);
+  background: linear-gradient(135deg, #0284C7, #0EA5E9);
+  box-shadow: 0 8px 18px rgba(2, 132, 199, 0.25);
 }
 .slot-icon-apps {
   background: linear-gradient(135deg, #0284C7, #38BDF8);
@@ -2544,6 +2548,92 @@ code, .mono {
 .table-wrap {
   width: 100%;
   overflow-x: auto;
+}
+
+/* ===================================================================== */
+/* MEME CIRCLE — Neon Emerald Studio Accent & Prompt Modal Styles        */
+/* ===================================================================== */
+.project-slot-card.slot-memecircle:hover {
+  border-color: rgba(16, 185, 129, 0.52);
+  box-shadow: 0 12px 28px rgba(16, 185, 129, 0.14);
+}
+.slot-card-footer-mc {
+  color: #059669;
+}
+[data-theme="dark"] .slot-card-footer-mc {
+  color: #34D399;
+}
+.mc-revenue-hero {
+  background: linear-gradient(135deg, #064E3B 0%, #047857 48%, #0F766E 100%);
+  box-shadow: 0 18px 42px rgba(4, 120, 87, 0.28);
+}
+.mc-revenue-hero::before {
+  background: radial-gradient(circle at 86% 18%, rgba(52, 211, 153, 0.36), transparent 52%),
+              radial-gradient(circle at 12% 92%, rgba(163, 230, 53, 0.22), transparent 50%);
+}
+.project-subnav-mc .subnav-pill.active {
+  background: linear-gradient(135deg, #059669, #10B981);
+  border-color: #059669;
+  color: #fff;
+}
+.phone-screen-mc {
+  background: linear-gradient(180deg, #0A0F1A 0%, #0F172A 100%);
+  color: #F8FAFC;
+  border-color: rgba(34, 255, 136, 0.35);
+}
+.phone-screen-mc .phone-pill {
+  background: rgba(34, 255, 136, 0.14);
+  color: #4ADE80;
+  border: 1px solid rgba(34, 255, 136, 0.35);
+}
+.phone-screen-mc .phone-price {
+  color: #FFFFFF;
+}
+.phone-screen-mc .phone-payee {
+  color: #CBD5E1;
+}
+.phone-screen-mc .phone-upi {
+  background: rgba(255, 255, 255, 0.08);
+  color: #86EFAC;
+  border-color: rgba(134, 239, 172, 0.25);
+}
+.phone-screen-mc .phone-instructions {
+  color: #CBD5E1;
+}
+.phone-screen-mc .phone-fake-btn {
+  background: linear-gradient(135deg, #10B981, #22C55E);
+  color: #052E16;
+  font-weight: 800;
+}
+.prompt-code-box {
+  width: 100%;
+  min-height: 300px;
+  max-height: 46vh;
+  resize: vertical;
+  font-family: "JetBrains Mono", monospace;
+  font-size: 0.77rem;
+  line-height: 1.55;
+  padding: 13px 14px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-strong);
+  background: var(--bg);
+  color: var(--text);
+}
+.prompt-steps-banner {
+  padding: 11px 13px;
+  border-radius: var(--radius-md);
+  background: var(--emerald-soft);
+  border: 1px solid var(--emerald-border);
+  color: var(--text);
+  font-size: 0.82rem;
+  line-height: 1.5;
+}
+.hero-action-btn-neon {
+  background: rgba(34, 255, 136, 0.22);
+  border-color: rgba(134, 239, 172, 0.48);
+}
+.hero-action-btn-neon:hover {
+  background: rgba(34, 255, 136, 0.34);
 }
 
 @media (max-width: 1024px) {

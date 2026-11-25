@@ -18,7 +18,13 @@ export const ALLOWED_ADMIN_EMAIL = "smd640089@gmail.com";
 export const AUTHORIZED_ADMIN_LABEL = "Sarfu Techno";
 
 export const APP_CONFIG_DOC_ID = "vastraos_billing";
+export const MC_APP_CONFIG_DOC_ID = "memecircle_billing";
 export const PUBLIC_RELEASES_COLLECTION = "publicReleases";
+
+export const MC_USERS_COLLECTION = "mcUsers";
+export const MC_SUBSCRIPTIONS_COLLECTION = "mcSubscriptions";
+export const MC_REQUESTS_COLLECTION = "mcSubscriptionRequests";
+export const MC_NOTIFICATIONS_COLLECTION = "mcNotifications";
 
 export const DEFAULT_APP_CONFIG = {
   ownerUpiId: "vastraos.billing@upi",
@@ -42,3 +48,27 @@ export const DEFAULT_APP_CONFIG = {
   notifyOnNewAccount: true,
   notifyOnUtrSubmit: true,
 };
+
+export const DEFAULT_MC_APP_CONFIG = {
+  ownerUpiId: "vastraos.billing@upi",
+  ownerUpiName: "Sarfu Techno",
+  ownerUpiQrBase64: "",
+  planPriceInr: 30,
+  planDays: 10,
+  trialDays: 1,
+  instructions:
+    "Pay ₹30 via any UPI app to unlock 10 days of Meme Circle Pro (custom images, custom sound effects & 1080p HD video export). Enter your 12-digit UTR below for fast Admin approval.",
+  maintenanceMode: false,
+  maintenanceMessage:
+    "Meme Circle is undergoing quick maintenance. Please check back in a few minutes.",
+  latestAppVersionCode: 1,
+  latestAppVersionName: "1.0",
+  minSupportedVersionCode: 1,
+  updateUrl: "",
+  updateNotes: "",
+  telegramWebhookUrl: "",
+  adminPanelUrl: "",
+  notifyOnNewAccount: true,
+  notifyOnUtrSubmit: true,
+};
+
