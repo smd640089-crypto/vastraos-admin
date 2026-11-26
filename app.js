@@ -28,20 +28,12 @@ import {
   PUBLIC_RELEASES_COLLECTION,
   DEFAULT_APP_CONFIG,
 } from "./firebase-config.js";
-import { createMemeCircleController } from "./meme-circle-controller.js";
 
 const DAY_MS = 86_400_000;
 const IST_OFFSET_MS = 330 * 60 * 1000; // UTC+05:30 (Asia/Kolkata)
 const MAX_QR_BASE64_LEN = 340_000; // Safely below 450,000 firestore.rules cap
 const MAX_ICON_BASE64_LEN = 160_000; // Safely below 220,000 firestore.rules cap
 const VASTRAOS_TABS = new Set(["overview", "approvals", "billing", "shops", "system"]);
-const MEMECIRCLE_TABS = new Set([
-  "mc-overview",
-  "mc-approvals",
-  "mc-billing",
-  "mc-users",
-  "mc-system",
-]);
 
 // Initialize Firebase App + Named Firestore Database
 const firebaseApp = initializeApp(FIREBASE_CONFIG);
@@ -76,7 +68,6 @@ const state = {
   unsubscribers: [],
   publicUnsubscriber: null,
 };
-let memeCircleCtrl = null;
 
 // DOM References
 const $ = (id) => document.getElementById(id);
@@ -112,7 +103,6 @@ const els = {
   signoutBtn: $("signout-btn"),
   topbarBackHubBtn: $("topbar-back-hub-btn"),
   vastraosSubnav: $("vastraos-subnav"),
-  memecircleSubnav: $("memecircle-subnav"),
   subnavPendingBadge: $("subnav-pending-badge"),
   pageTitle: $("page-title"),
   topbarMaintChip: $("topbar-maint-chip"),
@@ -510,18 +500,13 @@ document.querySelectorAll(".theme-toggle-btn").forEach((btn) => {
 // ============================================================================
 
 const TAB_TITLES = {
-  hub: "Sarfu Hub",
+  hub: "My Shop Hub",
   releases: "App & Game Releases",
-  overview: "VastraOS Overview",
-  approvals: "VastraOS UTR Approvals",
-  billing: "VastraOS Billing & Trial",
-  shops: "VastraOS All Shops",
-  system: "VastraOS System & Updates",
-  "mc-overview": "Meme Circle Overview",
-  "mc-approvals": "Meme Circle UTR Approvals",
-  "mc-billing": "Meme Circle Billing & Trial",
-  "mc-users": "Meme Circle Users",
-  "mc-system": "Meme Circle System & Updates",
+  overview: "My Shop Overview",
+  approvals: "My Shop UTR Approvals",
+  billing: "My Shop Billing & Trial",
+  shops: "My Shop All Shops",
+  system: "My Shop System & Updates",
 };
 
 function syncMainViewVisibility() {
@@ -544,9 +529,7 @@ function switchTab(tab) {
   if (target) target.classList.add("active");
 
   const inVastra = VASTRAOS_TABS.has(safeTab);
-  const inMemeCircle = MEMECIRCLE_TABS.has(safeTab);
   els.vastraosSubnav.classList.toggle("hidden", !inVastra);
-  if (els.memecircleSubnav) els.memecircleSubnav.classList.toggle("hidden", !inMemeCircle);
   els.topbarBackHubBtn.classList.toggle("hidden", safeTab === "hub");
 
   document.querySelectorAll(".sidebar-nav [data-tab], .project-subnav [data-tab]").forEach((btn) => {
@@ -555,10 +538,7 @@ function switchTab(tab) {
 
   document.querySelectorAll(".mobile-nav [data-tab]").forEach((btn) => {
     const t = btn.dataset.tab;
-    const isActive =
-      t === safeTab ||
-      (t === "overview" && inVastra) ||
-      (t === "mc-overview" && inMemeCircle);
+    const isActive = t === safeTab || (t === "overview" && inVastra);
     btn.classList.toggle("active", isActive);
   });
 
@@ -776,8 +756,7 @@ function categoryLabel(cat) {
 }
 
 function slotLabel(slot) {
-  if (slot === "VASTRAOS") return "VastraOS";
-  if (slot === "MEME_CIRCLE") return "Meme Circle";
+  if (slot === "VASTRAOS") return "My Shop";
   if (slot === "GAMES") return "Sarfu Games";
   return "Sarfu Apps";
 }
@@ -815,7 +794,7 @@ function renderPublicStorefront() {
   if (items.length === 0) {
     els.publicReleasesGrid.innerHTML = `<div class="panel empty-state" style="grid-column:1/-1">${
       published.length === 0
-        ? "No official releases published yet. Check back shortly for the latest VastraOS &amp; Sarfu Techno APK updates."
+        ? "No official releases published yet. Check back shortly for the latest My Shop &amp; Sarfu Techno APK updates."
         : "No apps or games match your search filter."
     }</div>`;
     return;
@@ -940,7 +919,7 @@ els.signoutBtn.addEventListener("click", async () => {
   stopAdminListeners();
   state.viewingStorefront = false;
   await signOut(auth);
-  showToast("Signed out of Sarfu Admin safely.");
+  showToast("Signed out of My Shop Admin safely.");
 });
 
 getRedirectResult(auth).catch((err) => {
@@ -971,7 +950,7 @@ onAuthStateChanged(auth, async (user) => {
     syncMainViewVisibility();
     openModal("admin-login-modal");
     showAuthError(
-      `Access denied. Only the authorized ${AUTHORIZED_ADMIN_LABEL} owner account can enter Sarfu Admin.`
+      `Access denied. Only the authorized ${AUTHORIZED_ADMIN_LABEL} owner account can enter My Shop Admin.`
     );
     return;
   }
@@ -982,7 +961,7 @@ onAuthStateChanged(auth, async (user) => {
   state.viewingStorefront = false;
   els.adminDisplayName.textContent = AUTHORIZED_ADMIN_LABEL;
   els.adminEmailLabel.textContent = "Authorized Owner";
-  els.adminAvatar.textContent = "S";
+  els.adminAvatar.textContent = "M";
 
   syncMainViewVisibility();
   switchTab(state.activeTab || "hub");
@@ -1000,12 +979,10 @@ function stopAdminListeners() {
     } catch {}
   });
   state.unsubscribers = [];
-  memeCircleCtrl?.stopListeners();
 }
 
 function startAdminListeners() {
   stopAdminListeners();
-  memeCircleCtrl?.startListeners();
 
   // 1. Live appConfig/vastraos_billing
   const cfgRef = doc(db, "appConfig", APP_CONFIG_DOC_ID);
@@ -1147,28 +1124,15 @@ function computePortfolioMetrics() {
 
 function renderHub() {
   const m = computePortfolioMetrics();
-  const mc = memeCircleCtrl?.getMetrics() || {
-    totalRevenue: 0,
-    approvedReqs: [],
-    pendingReqs: [],
-    activePaid: 0,
-    activeTrial: 0,
-  };
   const trialDays = clampTrialDays(state.appConfig.trialDays);
 
-  const combinedRevenue = m.totalRevenue + mc.totalRevenue;
-  const combinedApproved = m.approvedReqs.length + mc.approvedReqs.length;
-  const combinedPending = m.pendingReqs.length + mc.pendingReqs.length;
-  const combinedPaid = m.activePaid + mc.activePaid;
-  const combinedTrial = m.activeTrial + mc.activeTrial;
-
-  els.hubTotalEarnings.textContent = formatInr(combinedRevenue);
-  els.hubEarningsSub.textContent = `${combinedApproved} approved payment${
-    combinedApproved === 1 ? "" : "s"
-  } (VastraOS ${formatInr(m.totalRevenue)} • Meme Circle ${formatInr(mc.totalRevenue)})`;
-  els.hubMetricPending.textContent = String(combinedPending);
-  els.hubMetricPaid.textContent = String(combinedPaid);
-  els.hubMetricTrial.textContent = String(combinedTrial);
+  els.hubTotalEarnings.textContent = formatInr(m.totalRevenue);
+  els.hubEarningsSub.textContent = `${m.approvedReqs.length} approved renewal${
+    m.approvedReqs.length === 1 ? "" : "s"
+  } across My Shop`;
+  els.hubMetricPending.textContent = String(m.pendingReqs.length);
+  els.hubMetricPaid.textContent = String(m.activePaid);
+  els.hubMetricTrial.textContent = String(m.activeTrial);
   els.hubMetricReleases.textContent = String(m.publishedReleasesCount);
 
   els.slotVastraShops.textContent = String(state.shops.length);
@@ -1643,12 +1607,11 @@ function syncFormIndicators() {
   els.hubTgDot.className = dotCls;
   els.hubTgLabel.textContent = tgLive ? "Global Telegram 24/7" : "Setup Telegram";
   els.navTgDot.className = dotCls;
-  memeCircleCtrl?.syncIndicators();
 }
 
 function updateBillingPreview() {
-  const upiId = els.cfgUpiId.value.trim() || "vastraos.billing@upi";
-  const upiName = els.cfgUpiName.value.trim() || "VastraOS Software Technologies";
+  const upiId = els.cfgUpiId.value.trim() || "myshop.billing@upi";
+  const upiName = els.cfgUpiName.value.trim() || "My Shop Software Technologies";
   const price = Math.max(1, Math.round(Number(els.cfgPlanPrice.value) || 299));
   const trialDays = clampTrialDays(els.cfgTrialDays.value);
   const nextFirstLabel = formatDateShortIst(nextFirstOfMonthIstMillis(Date.now(), 1));
@@ -2049,7 +2012,7 @@ function updateExtendExpiryPreview() {
     if (days === 0) {
       els.extendExpiryPreview.classList.add("preview-danger");
       els.extendExpiryPreview.textContent =
-        "0 paid days: Will immediately EXPIRE paid plan and lock the shop's VastraOS app (unless active trial remains).";
+        "0 paid days: Will immediately EXPIRE paid plan and lock the shop's My Shop app (unless active trial remains).";
     } else {
       const targetMillis = now + days * DAY_MS;
       els.extendExpiryPreview.textContent = `Paid Days Adjusted: Active for ${days} day${days === 1 ? "" : "s"} — expires ${formatDateShortIst(targetMillis)} IST`;
@@ -2152,7 +2115,7 @@ els.extendShopForm.addEventListener("submit", async (e) => {
           lastApprovedUtr: refNote,
         };
         notifTitle = "Subscription Extended by Admin";
-        notifMsg = `Admin activated your VastraOS monthly plan (${months} month${months === 1 ? "" : "s"}). Valid until ${label} (1st of month).`;
+        notifMsg = `Admin activated your My Shop monthly plan (${months} month${months === 1 ? "" : "s"}). Valid until ${label} (1st of month).`;
         successSummary = `Activated "${shop.shopName}" until ${label}!`;
       } else if (mode === "paid-days") {
         const days = Math.round(Number(els.paidExactDaysInput.value));
@@ -2172,7 +2135,7 @@ els.extendShopForm.addEventListener("submit", async (e) => {
           };
           notifType = "SUBSCRIPTION_EXPIRED";
           notifTitle = "Subscription Validity Updated";
-          notifMsg = "Your VastraOS paid subscription validity was updated by Admin. Please renew to continue full access.";
+          notifMsg = "Your My Shop paid subscription validity was updated by Admin. Please renew to continue full access.";
           successSummary = `Paid plan expired immediately for "${shop.shopName}".`;
         } else {
           const newExpiryMillis = now + days * DAY_MS;
@@ -2186,7 +2149,7 @@ els.extendShopForm.addEventListener("submit", async (e) => {
             lastApprovedUtr: refNote,
           };
           notifTitle = "Subscription Days Updated";
-          notifMsg = `Admin updated your VastraOS paid subscription to ${days} day${days === 1 ? "" : "s"} remaining (valid until ${label}).`;
+          notifMsg = `Admin updated your My Shop paid subscription to ${days} day${days === 1 ? "" : "s"} remaining (valid until ${label}).`;
           successSummary = `Updated "${shop.shopName}" paid validity to ${days}d (till ${label}).`;
         }
       } else {
@@ -2204,7 +2167,7 @@ els.extendShopForm.addEventListener("submit", async (e) => {
           };
           notifType = paidStillActive ? "SUBSCRIPTION_APPROVED" : "SUBSCRIPTION_EXPIRED";
           notifTitle = "Free Trial Ended";
-          notifMsg = "Your VastraOS free trial period was updated by Admin. Subscribe anytime to continue.";
+          notifMsg = "Your My Shop free trial period was updated by Admin. Subscribe anytime to continue.";
           successSummary = `Ended free trial for "${shop.shopName}".`;
         } else {
           const newTrialExp = now + days * DAY_MS;
@@ -2215,7 +2178,7 @@ els.extendShopForm.addEventListener("submit", async (e) => {
             trialExpiryMillis: newTrialExp,
           };
           notifTitle = "Free Trial Updated by Admin";
-          notifMsg = `Admin set your VastraOS free trial to ${days} day${days === 1 ? "" : "s"} remaining (ends ${label}).`;
+          notifMsg = `Admin set your My Shop free trial to ${days} day${days === 1 ? "" : "s"} remaining (ends ${label}).`;
           successSummary = `Updated "${shop.shopName}" free trial to ${days}d (till ${label}).`;
         }
       }
@@ -2308,8 +2271,8 @@ async function setShopSuspended(shop, suspend) {
       type: suspend ? "SUBSCRIPTION_EXPIRED" : "SUBSCRIPTION_APPROVED",
       title: suspend ? "Account Suspended by Admin" : "Account Reactivated",
       message: suspend
-        ? "Your VastraOS shop access has been paused by Admin. Please contact support."
-        : "Your VastraOS shop access has been restored by Admin.",
+        ? "Your My Shop access has been paused by Admin. Please contact support."
+        : "Your My Shop access has been restored by Admin.",
       referenceId: shopId,
       read: false,
       createdAt: serverTimestamp(),
@@ -2386,7 +2349,7 @@ els.systemForm.addEventListener("submit", async (e) => {
     askConfirm({
       title: "Enable Maintenance Mode?",
       message:
-        "This will immediately lock all online VastraOS Android users behind the Maintenance Screen until you turn it back off.",
+        "This will immediately lock all online My Shop Android users behind the Maintenance Screen until you turn it back off.",
       okLabel: "Enable Maintenance Mode",
       okClass: "btn-danger",
       onConfirm: doSave,
@@ -2397,18 +2360,15 @@ els.systemForm.addEventListener("submit", async (e) => {
 });
 
 // ============================================================================
-// Global Releases & APK Upload Publisher (Firebase Storage + Direct Link)
+// Global Releases & APK Upload Publisher (Direct Link)
 // ============================================================================
 
 function syncReleaseVastraToggleVisibility() {
   const slot = els.relProjectSlot.value;
-  const syncable = slot === "VASTRAOS" || slot === "MEME_CIRCLE";
+  const syncable = slot === "VASTRAOS";
   els.relSyncVastraRow.classList.toggle("hidden", !syncable);
   if (els.relSyncTitle) {
-    els.relSyncTitle.textContent =
-      slot === "MEME_CIRCLE"
-        ? "Also Sync to Meme Circle In-App Updater"
-        : "Also Sync to VastraOS In-App Updater";
+    els.relSyncTitle.textContent = "Also Sync to My Shop In-App Updater";
   }
 }
 
@@ -2417,10 +2377,7 @@ els.relProjectSlot.addEventListener("change", () => {
     els.relCategory.value = "GAME";
   } else if (els.relProjectSlot.value === "VASTRAOS") {
     els.relCategory.value = "APP";
-    if (!els.relAppName.value.trim()) els.relAppName.value = "VastraOS POS";
-  } else if (els.relProjectSlot.value === "MEME_CIRCLE") {
-    els.relCategory.value = "APP";
-    if (!els.relAppName.value.trim()) els.relAppName.value = "Meme Circle";
+    if (!els.relAppName.value.trim()) els.relAppName.value = "My Shop";
   }
   syncReleaseVastraToggleVisibility();
 });
@@ -2538,7 +2495,7 @@ function loadReleaseIntoForm(rel) {
   els.relDownloadUrl.value = rel.downloadUrl || "";
   els.relNotes.value = rel.releaseNotes || "";
   els.relPublishedToggle.checked = rel.published !== false;
-  els.relSyncVastraToggle.checked = rel.projectSlot === "VASTRAOS" || rel.projectSlot === "MEME_CIRCLE";
+  els.relSyncVastraToggle.checked = rel.projectSlot === "VASTRAOS";
   state.pendingReleaseIconBase64 = rel.iconBase64 || "";
   updateReleaseIconPreview();
   updateReleaseUrlHint();
@@ -2562,7 +2519,6 @@ els.releaseForm.addEventListener("submit", async (e) => {
   const releaseNotes = els.relNotes.value.trim().slice(0, 1000);
   const published = els.relPublishedToggle.checked;
   const syncVastra = projectSlot === "VASTRAOS" && els.relSyncVastraToggle.checked;
-  const syncMemeCircle = projectSlot === "MEME_CIRCLE" && els.relSyncVastraToggle.checked;
 
   if (!appName) return showToast("App or Game name is required.", "error");
   if (!versionName) return showToast("Version name is required (e.g. 1.2.0).", "error");
@@ -2593,14 +2549,14 @@ els.releaseForm.addEventListener("submit", async (e) => {
       releaseNotes,
       iconBase64: state.pendingReleaseIconBase64 || "",
       published,
-      featured: projectSlot === "VASTRAOS" || projectSlot === "MEME_CIRCLE",
+      featured: projectSlot === "VASTRAOS",
       createdAt: existing?.createdAt || serverTimestamp(),
       updatedAt: serverTimestamp(),
     };
 
     await setDoc(doc(db, PUBLIC_RELEASES_COLLECTION, docId), payload);
 
-    // Optional 1-click sync to VastraOS or Meme Circle In-App Updater
+    // Optional 1-click sync to My Shop In-App Updater
     if (syncVastra) {
       const cfgPayload = buildFullAppConfigPayload({
         latestAppVersionCode: versionCode,
@@ -2613,13 +2569,6 @@ els.releaseForm.addEventListener("submit", async (e) => {
       els.sysLatestName.value = versionName;
       els.sysUpdateUrl.value = downloadUrl.slice(0, 500);
       els.sysUpdateNotes.value = releaseNotes.slice(0, 500);
-    } else if (syncMemeCircle) {
-      await memeCircleCtrl.syncReleaseUpdate({
-        versionCode,
-        versionName,
-        downloadUrl,
-        releaseNotes,
-      });
     }
 
     // Fire optional shared Telegram notification on new live release
@@ -2786,8 +2735,8 @@ function buildAppsScriptCode() {
       : "");
 
   return `// =====================================================================
-// Sarfu Admin — Shared Multi-Project 24/7 Telegram Relay (Google Apps Script)
-// Powers VastraOS + ALL future Sarfu Techno Apps & Games from one webhook.
+// My Shop Admin — 24/7 Telegram Relay (Google Apps Script)
+// Powers My Shop + future Sarfu Techno Apps from one webhook.
 // Keep this script private in your Google account. Never share BOT_TOKEN.
 // =====================================================================
 
@@ -2797,7 +2746,7 @@ var DEFAULT_ADMIN_PANEL_URL = ${jsStringLiteral(fallbackAdminUrl)};
 
 function doGet() {
   return ContentService
-    .createTextOutput("Sarfu Admin Multi-Project Telegram Webhook is active 24/7.")
+    .createTextOutput("My Shop Admin 24/7 Telegram Webhook is active.")
     .setMimeType(ContentService.MimeType.TEXT);
 }
 
@@ -2809,7 +2758,7 @@ function doPost(e) {
       ? data.adminPanelUrl
       : DEFAULT_ADMIN_PANEL_URL;
 
-    var text = formatSarfuMessage_(data);
+    var text = formatMyShopMessage_(data);
     sendTelegram_(text, adminUrl);
 
     return ContentService
@@ -2829,9 +2778,9 @@ function esc_(v) {
     .replace(/>/g, "&gt;");
 }
 
-function formatSarfuMessage_(d) {
+function formatMyShopMessage_(d) {
   var ev = String(d.event || "");
-  var project = esc_(d.projectName || "VastraOS");
+  var project = esc_(d.projectName || "My Shop");
   var time = esc_(d.timestampIst || Utilities.formatDate(new Date(), "Asia/Kolkata", "dd MMM yyyy, hh:mm a") + " IST");
 
   if (ev === "NEW_UTR_SUBMITTED" || ev === "NEW_PAYMENT_SUBMITTED") {
@@ -2847,7 +2796,7 @@ function formatSarfuMessage_(d) {
       "📎 <b>Receipt:</b> " + (d.hasReceipt ? "Attached ✅" : "UTR Text Only"),
       "🕒 <b>Time:</b> " + time,
       "",
-      "Tap below to verify &amp; approve in Sarfu Admin."
+      "Tap below to verify &amp; approve in My Shop Admin."
     ].join("\\n");
   }
 
@@ -2895,10 +2844,10 @@ function formatSarfuMessage_(d) {
   }
 
   return [
-    "✅ <b>Sarfu Admin Telegram Bot Connected!</b>",
+    "✅ <b>My Shop Admin Telegram Bot Connected!</b>",
     "📦 <b>Project:</b> " + project,
     "",
-    "Your shared 24/7 webhook relay is working for VastraOS and all future Apps &amp; Games.",
+    "Your 24/7 webhook relay is working for My Shop and future Apps.",
     "🕒 <b>Time:</b> " + time
   ].join("\\n");
 }
@@ -2913,7 +2862,7 @@ function sendTelegram_(htmlText, adminUrl) {
   if (adminUrl && adminUrl.indexOf("https://") === 0) {
     payload.reply_markup = {
       inline_keyboard: [[
-        { text: "🔗 Open Sarfu Admin", url: adminUrl }
+        { text: "🔗 Open My Shop Admin", url: adminUrl }
       ]]
     };
   }
@@ -2983,7 +2932,7 @@ els.tgTestBtn.addEventListener("click", async () => {
       headers: { "Content-Type": "text/plain;charset=utf-8" },
       body: JSON.stringify({
         event: "TEST_NOTIFICATION",
-        projectName: "Sarfu Admin (All Projects)",
+        projectName: "My Shop Admin",
         adminPanelUrl: adminUrl,
         timestampIst: formatDateTime(Date.now()) + " IST",
       }),
@@ -3008,7 +2957,7 @@ els.telegramForm.addEventListener("submit", async (e) => {
     return showToast("Webhook URL must start with https://", "error");
   }
   if (adminUrl && !adminUrl.startsWith("https://")) {
-    return showToast("Sarfu Admin URL must start with https://", "error");
+    return showToast("My Shop Admin URL must start with https://", "error");
   }
 
   els.saveTelegramBtn.disabled = true;
@@ -3021,16 +2970,9 @@ els.telegramForm.addEventListener("submit", async (e) => {
       notifyOnUtrSubmit: notifyUtrSubmit,
     });
     await setDoc(doc(db, "appConfig", APP_CONFIG_DOC_ID), payload);
-    // Automatically mirror shared Telegram webhook to Meme Circle config as well
-    await memeCircleCtrl.syncTelegramSettings({
-      telegramWebhookUrl: webhookUrl,
-      adminPanelUrl: adminUrl,
-      notifyOnNewAccount: notifyNewAccount,
-      notifyOnUtrSubmit: notifyUtrSubmit,
-    });
     showToast(
       webhookUrl
-        ? "Shared Telegram 24/7 webhook synced live across VastraOS & Meme Circle!"
+        ? "Telegram 24/7 webhook synced live for My Shop!"
         : "Telegram webhook cleared & synced."
     );
   } catch (err) {
@@ -3041,36 +2983,4 @@ els.telegramForm.addEventListener("submit", async (e) => {
   }
 });
 
-// Mount Meme Circle Control Deck Controller
-memeCircleCtrl = createMemeCircleController({
-  db,
-  getUser: () => state.user,
-  getVastraConfig: () => state.appConfig,
-  showToast,
-  escapeHtml,
-  toBase64ImageSrc,
-  toMillis,
-  formatDateTime,
-  formatDateShortIst,
-  formatFirestoreError,
-  normalizeDirectDownloadUrl,
-  formatInr,
-  computeEffectiveStatus,
-  statusPillHtml,
-  computeFallbackStatus,
-  compressImageToRawBase64,
-  switchTab,
-  openModal,
-  closeModal,
-  askConfirm,
-  openTelegramDrawer,
-  openReceiptLightbox: (src, meta) => {
-    els.receiptModalImg.src = src;
-    els.receiptModalMeta.textContent = meta;
-    openModal("receipt-modal");
-  },
-  onPortfolioChanged: () => {
-    renderHub();
-  },
-});
 renderHub();

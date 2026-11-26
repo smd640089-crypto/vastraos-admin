@@ -3,13 +3,13 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <title>Sarfu Techno — Official App &amp; Game Downloads • Sarfu Admin</title>
-  <meta name="description" content="Download official latest Android APK updates for VastraOS and Sarfu Techno apps &amp; games, and access the Sarfu Admin multi-project owner console." />
+  <title>Sarfu Techno — Official App &amp; Game Downloads • My Shop Admin</title>
+  <meta name="description" content="Download official latest Android APK updates for My Shop and Sarfu Techno apps &amp; games, and access the My Shop Admin owner console." />
   <meta name="theme-color" content="#6D28D9" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet" />
-  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%236D28D9'/%3E%3Cpath d='M32 14L48 23V41L32 50L16 41V23L32 14ZM32 22.5L23.5 27.3V36.7L32 41.5L40.5 36.7V27.3L32 22.5Z' fill='%23fff'/%3E%3C/svg%3E" />
+  <link rel="icon" type="image/png" href="./my-shop-icon.png" />
   <link rel="stylesheet" href="./styles.css" />
   <script>
     (function () {
@@ -58,7 +58,7 @@
           </button>
 
           <button type="button" id="return-admin-btn" class="btn btn-emerald btn-sm hidden">
-            Back to Sarfu Admin
+            Back to My Shop Admin
           </button>
 
           <button type="button" id="open-admin-login-btn" class="btn btn-primary btn-sm">
@@ -82,7 +82,7 @@
           </div>
           <h1>Download Latest Apps &amp; Games</h1>
           <p class="store-hero-sub">
-            Get verified, up-to-date Android APKs for VastraOS and upcoming Sarfu Techno apps &amp; games — direct 1-tap download with no sign-in required.
+            Get verified, up-to-date Android APKs for My Shop and Sarfu Techno apps &amp; games — direct 1-tap download with no sign-in required.
           </p>
         </div>
         <div class="store-hero-stats">
@@ -123,22 +123,20 @@
   </main>
 
   <!-- ===================================================================== -->
-  <!-- SARFU ADMIN LOGIN MODAL (Authorized Admin: Sarfu Techno)              -->
+  <!-- MY SHOP ADMIN LOGIN MODAL (Authorized Admin: Sarfu Techno)            -->
   <!-- ===================================================================== -->
   <div id="admin-login-modal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="admin-login-title">
     <section class="auth-card auth-modal-card">
       <button type="button" class="icon-btn modal-close auth-modal-close" data-close-modal="admin-login-modal" aria-label="Close login modal">&times;</button>
       <div class="auth-badge">RESTRICTED OWNER CONSOLE</div>
       <div class="auth-logo-wrap">
-        <div class="brand-mark brand-mark-lg" aria-hidden="true">
-          <svg viewBox="0 0 32 32" fill="none">
-            <path d="M16 4.5 26 10.2v11.6L16 27.5 6 21.8V10.2L16 4.5Zm0 4.6-6 3.4v7l6 3.4 6-3.4v-7l-6-3.4Z" fill="currentColor"/>
-          </svg>
+        <div class="brand-mark brand-mark-lg brand-mark-img">
+          <img src="./my-shop-icon.png" alt="My Shop logo" />
         </div>
       </div>
-      <h1 id="admin-login-title">Sarfu Admin</h1>
+      <h1 id="admin-login-title">My Shop Admin</h1>
       <p class="auth-subtitle">
-        Unified owner console for VastraOS POS, Meme Circle, live APK releases, and shared 24/7 Telegram alerts.
+        Owner console for My Shop POS, live APK releases, and 24/7 Telegram alerts.
       </p>
 
       <div id="auth-error-box" class="alert-box alert-danger hidden" role="alert"></div>
@@ -175,21 +173,19 @@
   </div>
 
   <!-- ===================================================================== -->
-  <!-- SARFU ADMIN — UNIFIED MULTI-PROJECT OWNER SHELL                       -->
+  <!-- MY SHOP ADMIN — OWNER CONSOLE SHELL                                   -->
   <!-- ===================================================================== -->
   <div id="app-shell" class="app-shell hidden">
     <!-- Desktop Sidebar -->
-    <aside class="sidebar" aria-label="Sarfu Admin navigation">
+    <aside class="sidebar" aria-label="My Shop Admin navigation">
       <div class="sidebar-header">
         <div class="brand-inline">
-          <div class="brand-mark" aria-hidden="true">
-            <svg viewBox="0 0 32 32" fill="none">
-              <path d="M16 4.5 26 10.2v11.6L16 27.5 6 21.8V10.2L16 4.5Zm0 4.6-6 3.4v7l6 3.4 6-3.4v-7l-6-3.4Z" fill="currentColor"/>
-            </svg>
+          <div class="brand-mark brand-mark-img">
+            <img src="./my-shop-icon.png" alt="My Shop logo" />
           </div>
           <div>
-            <div class="brand-title">Sarfu Admin</div>
-            <div class="brand-sub">Sarfu Techno Hub</div>
+            <div class="brand-title">My Shop</div>
+            <div class="brand-sub">Admin Console</div>
           </div>
         </div>
       </div>
@@ -204,7 +200,7 @@
               <polyline points="9 22 9 12 15 12 15 22"></polyline>
             </svg>
           </span>
-          <span class="nav-label">Sarfu Hub</span>
+          <span class="nav-label">My Shop Hub</span>
         </button>
 
         <button type="button" class="nav-item" data-tab="releases">
@@ -230,7 +226,7 @@
           <span id="nav-tg-dot" class="status-dot-amber" title="Telegram status"></span>
         </button>
 
-        <div class="nav-section-label">VASTRAOS PROJECT</div>
+        <div class="nav-section-label">MY SHOP APP</div>
 
         <button type="button" class="nav-item" data-tab="overview">
           <span class="nav-icon" aria-hidden="true">
@@ -241,7 +237,7 @@
               <rect x="14" y="14" width="7" height="7" rx="1.5"></rect>
             </svg>
           </span>
-          <span class="nav-label">VastraOS Overview</span>
+          <span class="nav-label">My Shop Overview</span>
         </button>
 
         <button type="button" class="nav-item" data-tab="approvals">
@@ -298,73 +294,6 @@
           <span id="nav-maint-dot" class="status-dot-danger hidden" title="Maintenance Mode ON"></span>
         </button>
 
-        <div class="nav-section-label">MEME CIRCLE PROJECT</div>
-
-        <button type="button" class="nav-item" data-tab="mc-overview">
-          <span class="nav-icon" aria-hidden="true">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <circle cx="12" cy="14" r="7"></circle>
-              <path d="M9.5 3h5"></path>
-              <path d="M10.5 3v4.3"></path>
-              <path d="M13.5 3v4.3"></path>
-            </svg>
-          </span>
-          <span class="nav-label">Meme Circle</span>
-        </button>
-
-        <button type="button" class="nav-item" data-tab="mc-approvals">
-          <span class="nav-icon" aria-hidden="true">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
-              <path d="m9 12 2 2 4-4"></path>
-            </svg>
-          </span>
-          <span class="nav-label">MC UTR Approvals</span>
-          <span id="mc-nav-pending-badge" class="nav-badge hidden">0</span>
-        </button>
-
-        <button type="button" class="nav-item" data-tab="mc-billing">
-          <span class="nav-icon" aria-hidden="true">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <rect x="3" y="3" width="7" height="7" rx="1"></rect>
-              <rect x="14" y="3" width="7" height="7" rx="1"></rect>
-              <rect x="3" y="14" width="7" height="7" rx="1"></rect>
-              <path d="M14 14h3v3h-3zM20 14v3h-3M14 20h3M20 20h.01"></path>
-            </svg>
-          </span>
-          <span class="nav-label">MC Billing &amp; Trial</span>
-        </button>
-
-        <button type="button" class="nav-item" data-tab="mc-users">
-          <span class="nav-icon" aria-hidden="true">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
-              <circle cx="9" cy="7" r="4"></circle>
-              <path d="M22 21v-2a4 4 0 0 0-3-3.87"></path>
-              <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
-            </svg>
-          </span>
-          <span class="nav-label">All MC Users</span>
-          <span id="mc-nav-users-count" class="nav-count">0</span>
-        </button>
-
-        <button type="button" class="nav-item" data-tab="mc-system">
-          <span class="nav-icon" aria-hidden="true">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <line x1="4" y1="21" x2="4" y2="14"></line>
-              <line x1="4" y1="10" x2="4" y2="3"></line>
-              <line x1="12" y1="21" x2="12" y2="12"></line>
-              <line x1="12" y1="8" x2="12" y2="3"></line>
-              <line x1="20" y1="21" x2="20" y2="16"></line>
-              <line x1="20" y1="12" x2="20" y2="3"></line>
-              <line x1="1" y1="14" x2="7" y2="14"></line>
-              <line x1="9" y1="8" x2="15" y2="8"></line>
-              <line x1="17" y1="16" x2="23" y2="16"></line>
-            </svg>
-          </span>
-          <span class="nav-label">MC System &amp; Updates</span>
-          <span id="mc-nav-maint-dot" class="status-dot-danger hidden" title="Meme Circle Maintenance Mode ON"></span>
-        </button>
       </nav>
 
       <div class="sidebar-footer">
@@ -385,16 +314,14 @@
     <div class="workspace">
       <header class="topbar">
         <div class="topbar-left">
-          <button type="button" id="topbar-back-hub-btn" class="btn btn-secondary btn-sm hidden" title="Return to Sarfu Hub">
+          <button type="button" id="topbar-back-hub-btn" class="btn btn-secondary btn-sm hidden" title="Return to My Shop Hub">
             &larr; Hub
           </button>
-          <div id="topbar-brand-dot" class="mobile-brand-dot" aria-hidden="true">
-            <svg viewBox="0 0 32 32" fill="none">
-              <path d="M16 4.5 26 10.2v11.6L16 27.5 6 21.8V10.2L16 4.5Zm0 4.6-6 3.4v7l6 3.4 6-3.4v-7l-6-3.4Z" fill="currentColor"/>
-            </svg>
+          <div id="topbar-brand-dot" class="mobile-brand-dot">
+            <img src="./my-shop-icon.png" alt="My Shop" />
           </div>
           <div class="topbar-title-group">
-            <h2 id="page-title">Sarfu Hub</h2>
+            <h2 id="page-title">My Shop Hub</h2>
             <div class="topbar-pills">
               <span id="live-status-chip" class="pill pill-success pill-compact">
                 <span class="pulse-dot"></span>
@@ -432,7 +359,7 @@
         </div>
       </header>
 
-      <!-- VastraOS Sub-Navigation Bar (visible when inside VastraOS project tabs) -->
+      <!-- My Shop Sub-Navigation Bar (visible when inside My Shop project tabs) -->
       <div id="vastraos-subnav" class="project-subnav hidden">
         <div class="project-subnav-inner">
           <button type="button" class="subnav-pill active" data-tab="overview">Overview</button>
@@ -443,29 +370,18 @@
         </div>
       </div>
 
-      <!-- Meme Circle Sub-Navigation Bar (visible when inside Meme Circle project tabs) -->
-      <div id="memecircle-subnav" class="project-subnav project-subnav-mc hidden">
-        <div class="project-subnav-inner">
-          <button type="button" class="subnav-pill active" data-tab="mc-overview">Overview</button>
-          <button type="button" class="subnav-pill" data-tab="mc-approvals">UTR Approvals <span id="mc-subnav-pending-badge" class="subnav-badge hidden">0</span></button>
-          <button type="button" class="subnav-pill" data-tab="mc-billing">Billing &amp; Trial</button>
-          <button type="button" class="subnav-pill" data-tab="mc-users">All Users</button>
-          <button type="button" class="subnav-pill" data-tab="mc-system">System &amp; Updates</button>
-        </div>
-      </div>
-
       <main class="content-area">
         <!-- =============================================================== -->
-        <!-- TAB 0: SARFU HUB (Earnings ON TOP -> Clickable Project Slots)   -->
+        <!-- TAB 0: MY SHOP HUB (Earnings ON TOP -> Control Decks)           -->
         <!-- =============================================================== -->
         <section id="tab-hub" class="tab-panel active">
           <!-- TOP: UNIFIED TOTAL EARNINGS HERO -->
           <section class="revenue-hero hub-earnings-hero anim-rise">
             <div class="revenue-hero-top">
               <div>
-                <div class="hero-eyebrow">SARFU TECHNO &bull; TOTAL EARNINGS (ALL PROJECTS)</div>
+                <div class="hero-eyebrow">MY SHOP &bull; APPROVED SUBSCRIPTION EARNINGS</div>
                 <div class="hero-value" id="hub-total-earnings">&#8377;0</div>
-                <div class="hero-sub" id="hub-earnings-sub">0 approved payments across all active projects</div>
+                <div class="hero-sub" id="hub-earnings-sub">0 approved renewals across My Shop</div>
               </div>
               <button type="button" id="hub-telegram-chip" class="hero-status-chip" title="Open Shared Global Telegram 24/7 Engine">
                 <span id="hub-tg-dot" class="status-dot-amber"></span>
@@ -522,23 +438,21 @@
           <div class="section-heading-row">
             <div>
               <h3 class="section-heading">Active Controls</h3>
-              <p class="panel-desc">Control VastraOS POS, Meme Circle subscriptions &amp; trials, maintenance switches, and instant public APK releases.</p>
+              <p class="panel-desc">Control My Shop POS subscriptions, free trials, maintenance switches, and instant public APK releases.</p>
             </div>
           </div>
 
           <div class="project-slots-grid">
-            <!-- SLOT 1: VastraOS (Active Full Control) -->
+            <!-- SLOT 1: My Shop (Active Full Control) -->
             <button type="button" class="project-slot-card slot-active anim-rise" style="--delay: 40ms" data-goto-tab="overview">
               <div class="slot-card-top">
-                <div class="slot-icon slot-icon-vastra" aria-hidden="true">
-                  <svg viewBox="0 0 32 32" fill="none">
-                    <path d="M16 6a3 3 0 0 0-2.94 3.6h1.96a1.1 1.1 0 1 1 1.88.78l-1.4 1.3a2 2 0 0 0-.65 1.48v.84L6.2 19.6a2 2 0 0 0 1.1 3.68h17.4a2 2 0 0 0 1.1-3.68L17.15 14v-.65l1.28-1.18A3 3 0 0 0 16 6zm0 10.2 6.8 4.4H9.2l6.8-4.4z" fill="currentColor"/>
-                  </svg>
+                <div class="slot-icon slot-icon-vastra">
+                  <img src="./my-shop-icon.png" alt="My Shop icon" />
                 </div>
                 <span class="pill pill-success pill-compact">LIVE ACTIVE</span>
               </div>
               <div class="slot-card-body">
-                <h4>VastraOS POS</h4>
+                <h4>My Shop</h4>
                 <p>Garment store POS &amp; inventory — live UTR approvals, UPI QR, dynamic trial days, shop day controls &amp; maintenance.</p>
               </div>
               <div class="slot-mini-stats">
@@ -547,43 +461,12 @@
                 <span><strong id="slot-vastra-trial">7d</strong> Trial</span>
               </div>
               <div class="slot-card-footer">
-                <span>Open VastraOS Control</span>
+                <span>Open My Shop Control</span>
                 <span aria-hidden="true">&rarr;</span>
               </div>
             </button>
 
-            <!-- SLOT 2: Meme Circle (Active Full Control) -->
-            <button type="button" class="project-slot-card slot-memecircle anim-rise" style="--delay: 60ms" data-goto-tab="mc-overview">
-              <div class="slot-card-top">
-                <div class="slot-icon slot-icon-memecircle" aria-hidden="true">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round">
-                    <circle cx="12" cy="14" r="7"></circle>
-                    <path d="M9.5 3h5"></path>
-                    <path d="M10.5 3v4.2"></path>
-                    <path d="M13.5 3v4.2"></path>
-                    <circle cx="10" cy="15" r="1.4" fill="currentColor"></circle>
-                    <circle cx="14.2" cy="13.2" r="1.8" fill="currentColor"></circle>
-                  </svg>
-                </div>
-                <span class="pill pill-success pill-compact">LIVE ACTIVE</span>
-              </div>
-              <div class="slot-card-body">
-                <h4>Meme Circle</h4>
-                <p>Viral 9:16 Neon Flask Merge &amp; 1080p Reel creator — 1-day trial, &#8377;30 / 10-day UPI UTR approvals, user day control &amp; build prompt.</p>
-              </div>
-              <div class="slot-mini-stats">
-                <span><strong id="slot-mc-users">0</strong> Users</span>
-                <span><strong id="slot-mc-pending">0</strong> Pending</span>
-                <span><strong id="slot-mc-plan">&#8377;30/10d</strong></span>
-                <span><strong id="slot-mc-trial">1d</strong> Trial</span>
-              </div>
-              <div class="slot-card-footer slot-card-footer-mc">
-                <span>Open Meme Circle Control</span>
-                <span aria-hidden="true">&rarr;</span>
-              </div>
-            </button>
-
-            <!-- SLOT 3: App & Game Releases Publisher (Active Global Storefront) -->
+            <!-- SLOT 2: App & Game Releases Publisher (Active Global Storefront) -->
             <button type="button" class="project-slot-card slot-releases anim-rise" style="--delay: 80ms" data-goto-tab="releases">
               <div class="slot-card-top">
                 <div class="slot-icon slot-icon-releases" aria-hidden="true">
@@ -612,14 +495,14 @@
         </section>
 
         <!-- =============================================================== -->
-        <!-- TAB 1: VASTRAOS OVERVIEW                                        -->
+        <!-- TAB 1: MY SHOP OVERVIEW                                         -->
         <!-- =============================================================== -->
         <section id="tab-overview" class="tab-panel">
           <!-- Executive Revenue Hero Card -->
           <section class="revenue-hero anim-rise">
             <div class="revenue-hero-top">
               <div>
-                <div class="hero-eyebrow">VASTRAOS APPROVED SUBSCRIPTION REVENUE</div>
+                <div class="hero-eyebrow">MY SHOP APPROVED SUBSCRIPTION REVENUE</div>
                 <div class="hero-value" id="kpi-revenue">&#8377;0</div>
                 <div class="hero-sub" id="kpi-revenue-sub">0 approved renewals</div>
               </div>
@@ -733,8 +616,8 @@
             <section class="panel anim-rise" style="--delay: 220ms">
               <div class="panel-header">
                 <div>
-                  <h3>Live VastraOS Configuration Snapshot</h3>
-                  <p class="panel-desc">Currently synced to all signed-in VastraOS Android apps</p>
+                  <h3>Live My Shop Configuration Snapshot</h3>
+                  <p class="panel-desc">Currently synced to all signed-in My Shop Android apps</p>
                 </div>
                 <button type="button" class="btn btn-ghost btn-sm" data-goto-tab="billing">Edit &rarr;</button>
               </div>
@@ -770,19 +653,19 @@
             <form id="billing-form" class="panel">
               <div class="panel-header">
                 <div>
-                  <h3>VastraOS Billing, Free Trial &amp; UPI QR</h3>
-                  <p class="panel-desc">Changes publish instantly to all VastraOS Android apps. Adjust default Free Trial days anytime.</p>
+                  <h3>My Shop Billing, Free Trial &amp; UPI QR</h3>
+                  <p class="panel-desc">Changes publish instantly to all My Shop Android apps. Adjust default Free Trial days anytime.</p>
                 </div>
               </div>
 
               <div class="form-grid">
                 <div class="field">
                   <label for="cfg-upi-id">Owner UPI ID *</label>
-                  <input type="text" id="cfg-upi-id" class="input mono" required minlength="3" maxlength="100" placeholder="e.g. vastraos.billing@okicici" />
+                  <input type="text" id="cfg-upi-id" class="input mono" required minlength="3" maxlength="100" placeholder="e.g. myshop.billing@okicici" />
                 </div>
                 <div class="field">
                   <label for="cfg-upi-name">Beneficiary / Payee Name *</label>
-                  <input type="text" id="cfg-upi-name" class="input" required minlength="1" maxlength="100" placeholder="e.g. VastraOS Software Technologies" />
+                  <input type="text" id="cfg-upi-name" class="input" required minlength="1" maxlength="100" placeholder="e.g. My Shop Software Technologies" />
                 </div>
                 <div class="field">
                   <label for="cfg-plan-price">Monthly Plan Price (&#8377; INR) *</label>
@@ -824,7 +707,7 @@
                 <div id="qr-dropzone" class="dropzone">
                   <input type="file" id="qr-file-input" accept="image/*" class="sr-only" />
                   <div id="qr-upload-preview-wrap" class="qr-upload-preview hidden">
-                    <img id="qr-upload-preview-img" alt="Uploaded VastraOS UPI QR" />
+                    <img id="qr-upload-preview-img" alt="Uploaded My Shop UPI QR" />
                   </div>
                   <div class="dropzone-body">
                     <div class="dropzone-title">Drop UPI QR image here or browse</div>
@@ -856,11 +739,11 @@
               <div class="phone-frame">
                 <div class="phone-notch"></div>
                 <div class="phone-screen">
-                  <div class="phone-pill">VASTRAOS PLAN RENEWAL</div>
+                  <div class="phone-pill">MY SHOP PLAN RENEWAL</div>
                   <div class="phone-price" id="preview-price-title">Pay &#8377;299 &bull; Monthly Plan</div>
                   <div class="phone-trial-badge" id="preview-trial-label">New shops get 7-day free trial</div>
-                  <div class="phone-payee" id="preview-payee-name">VastraOS Software Technologies</div>
-                  <div class="phone-upi mono" id="preview-upi-id">UPI ID: vastraos.billing@upi</div>
+                  <div class="phone-payee" id="preview-payee-name">My Shop Software Technologies</div>
+                  <div class="phone-upi mono" id="preview-upi-id">UPI ID: myshop.billing@upi</div>
                   <div class="phone-qr-box" id="preview-qr-box">
                     <img id="preview-qr-img" class="hidden" alt="Preview QR" />
                     <div id="preview-qr-empty" class="phone-qr-empty">
@@ -932,7 +815,7 @@
                   <span class="integration-trigger-title">Shared Global Telegram Bot (All Projects)</span>
                   <span id="tg-trigger-status-pill" class="pill pill-warning pill-compact">Not Configured</span>
                 </div>
-                <div class="integration-trigger-sub">Unified webhook for Sign-In &amp; Payment alerts across VastraOS, future Apps &amp; Games</div>
+                <div class="integration-trigger-sub">Unified webhook for Sign-In &amp; Payment alerts across My Shop &amp; future Apps</div>
               </div>
             </div>
             <span class="integration-chevron" aria-hidden="true">
@@ -947,7 +830,7 @@
               <div class="panel-header">
                 <div>
                   <h3>Maintenance Mode Control</h3>
-                  <p class="panel-desc">Instantly pause all live VastraOS apps during server or database maintenance.</p>
+                  <p class="panel-desc">Instantly pause all live My Shop apps during server or database maintenance.</p>
                 </div>
                 <label class="switch">
                   <input type="checkbox" id="sys-maint-toggle" />
@@ -956,19 +839,19 @@
               </div>
 
               <div id="maint-warning-banner" class="alert-box alert-danger hidden">
-                <strong>Maintenance Mode is ON:</strong> All online VastraOS Android users will see the maintenance lock screen immediately upon saving.
+                <strong>Maintenance Mode is ON:</strong> All online My Shop Android users will see the maintenance lock screen immediately upon saving.
               </div>
 
               <div class="field">
                 <label for="sys-maint-msg">Maintenance Message (Shown in App)</label>
-                <textarea id="sys-maint-msg" class="input textarea" rows="3" maxlength="400" placeholder="e.g. VastraOS is upgrading servers. We will be back in 15 minutes."></textarea>
+                <textarea id="sys-maint-msg" class="input textarea" rows="3" maxlength="400" placeholder="e.g. My Shop is upgrading servers. We will be back in 15 minutes."></textarea>
               </div>
             </section>
 
             <section class="panel">
               <div class="panel-header">
                 <div>
-                  <h3>VastraOS In-App Version &amp; Force Update</h3>
+                  <h3>My Shop In-App Version &amp; Force Update</h3>
                   <p class="panel-desc">Current Android APK build is <code>versionCode = 1</code> (<code>v1.0</code>). Set minimum version higher to force an update.</p>
                 </div>
               </div>
@@ -1028,8 +911,7 @@
                 <div class="field">
                   <label for="rel-project-slot">Project *</label>
                   <select id="rel-project-slot" class="input">
-                    <option value="VASTRAOS">VastraOS POS</option>
-                    <option value="MEME_CIRCLE">Meme Circle</option>
+                    <option value="VASTRAOS">My Shop</option>
                     <option value="APPS">Other Android App</option>
                     <option value="GAMES">Android Game</option>
                   </select>
@@ -1044,7 +926,7 @@
                 </div>
                 <div class="field">
                   <label for="rel-app-name">App / Game Name *</label>
-                  <input type="text" id="rel-app-name" class="input" required maxlength="100" placeholder="e.g. VastraOS POS" />
+                  <input type="text" id="rel-app-name" class="input" required maxlength="100" placeholder="e.g. My Shop" />
                 </div>
                 <div class="field">
                   <label for="rel-file-size">File Size Label (Optional)</label>
@@ -1117,8 +999,8 @@
 
                 <div class="tg-toggle-row" id="rel-sync-vastra-row">
                   <div>
-                    <div class="tg-toggle-title" id="rel-sync-title">Also Sync to VastraOS In-App Updater</div>
-                    <div class="field-help" id="rel-sync-help">Updates Latest Version &amp; APK link so existing app users get the in-app Update prompt</div>
+                    <div class="tg-toggle-title" id="rel-sync-title">Also Sync to My Shop In-App Updater</div>
+                    <div class="field-help" id="rel-sync-help">Updates Latest Version &amp; APK link so existing My Shop users get the in-app Update prompt</div>
                   </div>
                   <label class="switch switch-primary">
                     <input type="checkbox" id="rel-sync-vastra-toggle" checked />
@@ -1146,399 +1028,6 @@
           </div>
         </section>
 
-        <!-- =============================================================== -->
-        <!-- TAB 7: MEME CIRCLE OVERVIEW                                     -->
-        <!-- =============================================================== -->
-        <section id="tab-mc-overview" class="tab-panel">
-          <section class="revenue-hero mc-revenue-hero anim-rise">
-            <div class="revenue-hero-top">
-              <div>
-                <div class="hero-eyebrow">MEME CIRCLE &bull; APPROVED SUBSCRIPTION REVENUE</div>
-                <div class="hero-value" id="mc-kpi-revenue">&#8377;0</div>
-                <div class="hero-sub" id="mc-kpi-revenue-sub">0 approved 10-day renewals</div>
-              </div>
-              <button type="button" id="mc-hero-prompt-chip" class="hero-status-chip" data-open-mc-prompt="true" title="Copy 1-Click Master Build Prompt for New AI Studio Project">
-                <span class="status-dot-emerald"></span>
-                <span>Build Prompt Ready</span>
-              </button>
-            </div>
-            <div class="hero-quick-actions">
-              <button type="button" class="hero-action-btn hero-action-btn-neon" data-open-mc-prompt="true">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                  <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-                  <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-                </svg>
-                <span>Copy Build Prompt</span>
-              </button>
-              <button type="button" class="hero-action-btn" data-goto-tab="mc-approvals">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                  <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
-                  <path d="m9 12 2 2 4-4"></path>
-                </svg>
-                <span>Review UTRs</span>
-              </button>
-              <button type="button" class="hero-action-btn" data-goto-tab="mc-billing">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                  <rect x="3" y="3" width="7" height="7" rx="1"></rect>
-                  <rect x="14" y="3" width="7" height="7" rx="1"></rect>
-                  <rect x="3" y="14" width="7" height="7" rx="1"></rect>
-                  <path d="M14 14h3v3h-3zM20 14v3h-3"></path>
-                </svg>
-                <span>Billing &amp; Trial</span>
-              </button>
-              <button type="button" class="hero-action-btn" data-goto-tab="mc-users">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                  <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
-                  <circle cx="9" cy="7" r="4"></circle>
-                </svg>
-                <span>Manage Users</span>
-              </button>
-            </div>
-          </section>
-
-          <div class="kpi-bento-grid">
-            <button type="button" class="kpi-card kpi-amber kpi-interactive anim-rise" style="--delay: 40ms" data-mc-kpi-jump="mc-approvals:PENDING">
-              <div class="kpi-card-head">
-                <span class="kpi-icon-badge kpi-icon-amber" aria-hidden="true">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <circle cx="12" cy="12" r="10"></circle>
-                    <polyline points="12 6 12 12 16 14"></polyline>
-                  </svg>
-                </span>
-                <span class="kpi-arrow" aria-hidden="true">&rsaquo;</span>
-              </div>
-              <div class="kpi-value" id="mc-kpi-pending">0</div>
-              <div class="kpi-label">Pending UTRs</div>
-              <div class="kpi-sub">Awaiting verification</div>
-            </button>
-
-            <button type="button" class="kpi-card kpi-emerald kpi-interactive anim-rise" style="--delay: 80ms" data-mc-kpi-jump="mc-users:ACTIVE">
-              <div class="kpi-card-head">
-                <span class="kpi-icon-badge kpi-icon-emerald" aria-hidden="true">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
-                    <polyline points="22 4 12 14.01 9 11.01"></polyline>
-                  </svg>
-                </span>
-                <span class="kpi-arrow" aria-hidden="true">&rsaquo;</span>
-              </div>
-              <div class="kpi-value" id="mc-kpi-active-paid">0</div>
-              <div class="kpi-label">Active Paid</div>
-              <div class="kpi-sub" id="mc-kpi-paid-sub">&#8377;30 / 10-day rolling plan</div>
-            </button>
-
-            <button type="button" class="kpi-card kpi-violet kpi-interactive anim-rise" style="--delay: 120ms" data-mc-kpi-jump="mc-users:TRIAL">
-              <div class="kpi-card-head">
-                <span class="kpi-icon-badge kpi-icon-violet" aria-hidden="true">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"></path>
-                  </svg>
-                </span>
-                <span class="kpi-arrow" aria-hidden="true">&rsaquo;</span>
-              </div>
-              <div class="kpi-value" id="mc-kpi-active-trial">0</div>
-              <div class="kpi-label">Active Trials</div>
-              <div class="kpi-sub" id="mc-kpi-trial-sub">1-day default trial</div>
-            </button>
-
-            <button type="button" class="kpi-card kpi-rose kpi-interactive anim-rise" style="--delay: 160ms" data-mc-kpi-jump="mc-users:EXPIRED">
-              <div class="kpi-card-head">
-                <span class="kpi-icon-badge kpi-icon-rose" aria-hidden="true">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <circle cx="12" cy="12" r="10"></circle>
-                    <line x1="15" y1="9" x2="9" y2="15"></line>
-                    <line x1="9" y1="9" x2="15" y2="15"></line>
-                  </svg>
-                </span>
-                <span class="kpi-arrow" aria-hidden="true">&rsaquo;</span>
-              </div>
-              <div class="kpi-value" id="mc-kpi-expired">0</div>
-              <div class="kpi-label">Expired / Paused</div>
-              <div class="kpi-sub">Locked till &#8377;30 renewal</div>
-            </button>
-          </div>
-
-          <div class="overview-grid">
-            <section class="panel anim-rise" style="--delay: 190ms">
-              <div class="panel-header">
-                <div>
-                  <h3>Pending Meme Circle UTRs</h3>
-                  <p class="panel-desc">Latest &#8377;30 / 10-day subscription requests waiting for verification</p>
-                </div>
-                <button type="button" class="btn btn-ghost btn-sm" data-goto-tab="mc-approvals">View All &rarr;</button>
-              </div>
-              <div id="mc-overview-pending-list" class="stack-list"></div>
-            </section>
-
-            <section class="panel anim-rise" style="--delay: 220ms">
-              <div class="panel-header">
-                <div>
-                  <h3>Live Meme Circle Config Snapshot</h3>
-                  <p class="panel-desc">Synced atomically from <code>appConfig/memecircle_billing</code></p>
-                </div>
-                <button type="button" class="btn btn-ghost btn-sm" data-goto-tab="mc-billing">Edit &rarr;</button>
-              </div>
-              <div id="mc-overview-config-summary" class="config-summary-list"></div>
-            </section>
-          </div>
-        </section>
-
-        <!-- =============================================================== -->
-        <!-- TAB 8: MEME CIRCLE UTR APPROVALS                                -->
-        <!-- =============================================================== -->
-        <section id="tab-mc-approvals" class="tab-panel">
-          <div class="toolbar">
-            <div class="filter-pills" id="mc-utr-filter-pills">
-              <button type="button" class="filter-pill active" data-mc-filter="PENDING">Pending <span id="mc-count-req-pending">0</span></button>
-              <button type="button" class="filter-pill" data-mc-filter="APPROVED">Approved <span id="mc-count-req-approved">0</span></button>
-              <button type="button" class="filter-pill" data-mc-filter="REJECTED">Rejected <span id="mc-count-req-rejected">0</span></button>
-              <button type="button" class="filter-pill" data-mc-filter="ALL">All <span id="mc-count-req-all">0</span></button>
-            </div>
-            <div class="search-wrap">
-              <input type="search" id="mc-utr-search-input" class="input" placeholder="Search UTR, user name, mobile, or UID..." />
-            </div>
-          </div>
-          <div id="mc-utr-requests-list" class="request-grid"></div>
-        </section>
-
-        <!-- =============================================================== -->
-        <!-- TAB 9: MEME CIRCLE BILLING, TRIAL DAYS & UPI QR                 -->
-        <!-- =============================================================== -->
-        <section id="tab-mc-billing" class="tab-panel">
-          <div class="billing-grid">
-            <form id="mc-billing-form" class="panel">
-              <div class="panel-header">
-                <div>
-                  <h3>Meme Circle Billing, 1-Day Trial &amp; UPI QR</h3>
-                  <p class="panel-desc">Live remote pricing (default &#8377;30 / 10 days), default trial days, and UPI QR synced to Meme Circle.</p>
-                </div>
-              </div>
-
-              <div class="form-grid">
-                <div class="field">
-                  <label for="mc-cfg-upi-id">Owner UPI ID *</label>
-                  <input type="text" id="mc-cfg-upi-id" class="input mono" required minlength="3" maxlength="100" placeholder="e.g. vastraos.billing@upi" />
-                </div>
-                <div class="field">
-                  <label for="mc-cfg-upi-name">Beneficiary / Payee Name *</label>
-                  <input type="text" id="mc-cfg-upi-name" class="input" required minlength="1" maxlength="100" placeholder="e.g. Sarfu Techno" />
-                </div>
-                <div class="field">
-                  <label for="mc-cfg-plan-price">Plan Price (&#8377; INR) *</label>
-                  <input type="number" id="mc-cfg-plan-price" class="input mono" required min="1" max="100000" step="1" value="30" />
-                </div>
-                <div class="field">
-                  <label for="mc-cfg-plan-days">Paid Plan Validity (Days) *</label>
-                  <input type="number" id="mc-cfg-plan-days" class="input mono" required min="1" max="3650" step="1" value="10" />
-                </div>
-              </div>
-
-              <div class="trial-control-box">
-                <div class="trial-control-head">
-                  <div>
-                    <label for="mc-cfg-trial-days">Default New User Free Trial (Days) *</label>
-                    <div class="field-help">Default is 1 full day. Set 0 to disable free trial or increase anytime (0&ndash;90 days).</div>
-                  </div>
-                </div>
-                <div class="trial-control-row">
-                  <input type="number" id="mc-cfg-trial-days" class="input mono" required min="0" max="90" step="1" value="1" style="max-width:130px" />
-                  <div class="quick-day-chips">
-                    <button type="button" class="btn btn-secondary btn-sm mc-cfg-trial-chip" data-mc-trial-days="0">0d (Off)</button>
-                    <button type="button" class="btn btn-secondary btn-sm mc-cfg-trial-chip" data-mc-trial-days="1">1 Day</button>
-                    <button type="button" class="btn btn-secondary btn-sm mc-cfg-trial-chip" data-mc-trial-days="3">3 Days</button>
-                    <button type="button" class="btn btn-secondary btn-sm mc-cfg-trial-chip" data-mc-trial-days="7">7 Days</button>
-                  </div>
-                </div>
-              </div>
-
-              <div class="field">
-                <label for="mc-cfg-instructions">Payment Instructions (Shown in Meme Circle Paywall) *</label>
-                <textarea id="mc-cfg-instructions" class="input textarea" rows="3" required minlength="1" maxlength="600" placeholder="Pay Rs 30 via UPI and enter your 12-digit UTR..."></textarea>
-              </div>
-
-              <div class="field">
-                <label>Meme Circle UPI QR Image (Auto-Compressed)</label>
-                <div id="mc-qr-dropzone" class="dropzone">
-                  <input type="file" id="mc-qr-file-input" accept="image/*" class="sr-only" />
-                  <div id="mc-qr-upload-preview-wrap" class="qr-upload-preview hidden">
-                    <img id="mc-qr-upload-preview-img" alt="Uploaded Meme Circle UPI QR" />
-                  </div>
-                  <div class="dropzone-body">
-                    <div class="dropzone-title">Drop UPI QR image here or browse</div>
-                    <div class="dropzone-sub" id="mc-qr-size-hint">PNG/JPG auto-resized to &le;512px &amp; saved as raw Base64</div>
-                    <div class="dropzone-actions">
-                      <button type="button" id="mc-qr-pick-btn" class="btn btn-secondary btn-sm">Choose QR Image</button>
-                      <button type="button" id="mc-qr-copy-vastra-btn" class="btn btn-secondary btn-sm">Reuse VastraOS QR</button>
-                      <button type="button" id="mc-qr-clear-btn" class="btn btn-ghost-danger btn-sm hidden">Remove QR</button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <div class="panel-footer">
-                <span class="muted-note" id="mc-billing-last-updated">Not saved yet</span>
-                <button type="submit" id="mc-save-billing-btn" class="btn btn-emerald">Publish Live to Meme Circle</button>
-              </div>
-            </form>
-
-            <aside class="panel preview-panel">
-              <div class="panel-header">
-                <div>
-                  <h3>Live Meme Circle Paywall Preview</h3>
-                  <p class="panel-desc">Exactly how users see your &#8377;30 / 10-day unlock card</p>
-                </div>
-              </div>
-              <div class="phone-frame">
-                <div class="phone-notch"></div>
-                <div class="phone-screen phone-screen-mc">
-                  <div class="phone-pill">MEME CIRCLE PRO UNLOCK</div>
-                  <div class="phone-price" id="mc-preview-price-title">Pay &#8377;30 &bull; 10 Days</div>
-                  <div class="phone-trial-badge" id="mc-preview-trial-label">New users get 1-day free trial</div>
-                  <div class="phone-payee" id="mc-preview-payee-name">Sarfu Techno</div>
-                  <div class="phone-upi mono" id="mc-preview-upi-id">UPI ID: vastraos.billing@upi</div>
-                  <div class="phone-qr-box">
-                    <img id="mc-preview-qr-img" class="hidden" alt="Meme Circle Preview QR" />
-                    <div id="mc-preview-qr-empty" class="phone-qr-empty">
-                      <span>No QR Uploaded</span>
-                      <small>Users will see UPI ID fallback</small>
-                    </div>
-                  </div>
-                  <p class="phone-instructions" id="mc-preview-instructions"></p>
-                  <div class="phone-fake-btn">Submit 12-Digit UTR to Unlock 1080p &amp; Custom Media</div>
-                </div>
-              </div>
-            </aside>
-          </div>
-        </section>
-
-        <!-- =============================================================== -->
-        <!-- TAB 10: MEME CIRCLE ALL USERS                                   -->
-        <!-- =============================================================== -->
-        <section id="tab-mc-users" class="tab-panel">
-          <div class="toolbar">
-            <div class="filter-pills" id="mc-user-filter-pills">
-              <button type="button" class="filter-pill active" data-mc-user-filter="ALL">All <span id="mc-count-user-all">0</span></button>
-              <button type="button" class="filter-pill" data-mc-user-filter="ACTIVE">Active Paid <span id="mc-count-user-active">0</span></button>
-              <button type="button" class="filter-pill" data-mc-user-filter="TRIAL">Trial <span id="mc-count-user-trial">0</span></button>
-              <button type="button" class="filter-pill" data-mc-user-filter="PAYMENT_PENDING">Pending <span id="mc-count-user-pending">0</span></button>
-              <button type="button" class="filter-pill" data-mc-user-filter="EXPIRED">Expired <span id="mc-count-user-expired">0</span></button>
-              <button type="button" class="filter-pill" data-mc-user-filter="SUSPENDED">Suspended <span id="mc-count-user-suspended">0</span></button>
-            </div>
-            <div class="search-wrap">
-              <input type="search" id="mc-user-search-input" class="input" placeholder="Search name, mobile number, email, or UID..." />
-            </div>
-          </div>
-
-          <div class="panel table-panel">
-            <div class="table-wrap">
-              <table class="data-table">
-                <thead>
-                  <tr>
-                    <th>User &amp; UID</th>
-                    <th>Mobile &amp; Email</th>
-                    <th>Status</th>
-                    <th>Plan / Trial Expiry</th>
-                    <th>Last UTR</th>
-                    <th class="text-right">Controls</th>
-                  </tr>
-                </thead>
-                <tbody id="mc-users-table-body"></tbody>
-              </table>
-            </div>
-            <div id="mc-users-empty-state" class="empty-state hidden">No Meme Circle users registered yet.</div>
-          </div>
-        </section>
-
-        <!-- =============================================================== -->
-        <!-- TAB 11: MEME CIRCLE SYSTEM, MAINTENANCE & FORCE UPDATES         -->
-        <!-- =============================================================== -->
-        <section id="tab-mc-system" class="tab-panel">
-          <button type="button" class="integration-trigger-card" data-open-telegram="true">
-            <div class="integration-trigger-left">
-              <div class="telegram-icon-badge" aria-hidden="true">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="m22 2-7 20-4-9-9-4Z"></path>
-                  <path d="M22 2 11 13"></path>
-                </svg>
-              </div>
-              <div class="integration-trigger-text">
-                <div class="integration-trigger-title-row">
-                  <span class="integration-trigger-title">Shared Global Telegram Bot (Auto-Synced to Meme Circle)</span>
-                  <span id="mc-tg-trigger-status-pill" class="pill pill-warning pill-compact">Not Configured</span>
-                </div>
-                <div class="integration-trigger-sub">Meme Circle new signups &amp; &#8377;30 UTR payments route to your same Sarfu Telegram Bot</div>
-              </div>
-            </div>
-            <span class="integration-chevron" aria-hidden="true">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                <polyline points="9 18 15 12 9 6"></polyline>
-              </svg>
-            </span>
-          </button>
-
-          <form id="mc-system-form" class="system-grid">
-            <section class="panel">
-              <div class="panel-header">
-                <div>
-                  <h3>Meme Circle Maintenance Mode</h3>
-                  <p class="panel-desc">Independent of VastraOS — pause only Meme Circle users during updates without affecting VastraOS shops.</p>
-                </div>
-                <label class="switch">
-                  <input type="checkbox" id="mc-sys-maint-toggle" />
-                  <span class="slider"></span>
-                </label>
-              </div>
-
-              <div id="mc-maint-warning-banner" class="alert-box alert-danger hidden">
-                <strong>Meme Circle Maintenance is ON:</strong> Online Meme Circle users will see the maintenance screen immediately upon saving.
-              </div>
-
-              <div class="field">
-                <label for="mc-sys-maint-msg">Maintenance Message (Shown in Meme Circle)</label>
-                <textarea id="mc-sys-maint-msg" class="input textarea" rows="3" maxlength="400" placeholder="e.g. Meme Circle is upgrading 1080p export servers. Back in 10 minutes!"></textarea>
-              </div>
-            </section>
-
-            <section class="panel">
-              <div class="panel-header">
-                <div>
-                  <h3>Meme Circle In-App Version &amp; Force Update</h3>
-                  <p class="panel-desc">Push optional or mandatory APK updates directly to all Meme Circle users.</p>
-                </div>
-              </div>
-
-              <div class="form-grid">
-                <div class="field">
-                  <label for="mc-sys-latest-code">Latest Version Code *</label>
-                  <input type="number" id="mc-sys-latest-code" class="input mono" required min="1" max="100000" step="1" value="1" />
-                </div>
-                <div class="field">
-                  <label for="mc-sys-latest-name">Latest Version Name *</label>
-                  <input type="text" id="mc-sys-latest-name" class="input mono" required maxlength="40" value="1.0" placeholder="e.g. 1.1" />
-                </div>
-                <div class="field">
-                  <label for="mc-sys-min-code">Minimum Supported Version Code *</label>
-                  <input type="number" id="mc-sys-min-code" class="input mono" required min="1" max="100000" step="1" value="1" />
-                  <small class="field-help">Forces update if &gt; installed versionCode</small>
-                </div>
-                <div class="field">
-                  <label for="mc-sys-update-url">Meme Circle APK Download URL</label>
-                  <input type="url" id="mc-sys-update-url" class="input" maxlength="500" placeholder="https://..." />
-                </div>
-              </div>
-
-              <div class="field">
-                <label for="mc-sys-update-notes">Release Notes / What's New</label>
-                <textarea id="mc-sys-update-notes" class="input textarea" rows="3" maxlength="500" placeholder="e.g. Smoother 1080p 60fps export &amp; new meme sound effects!"></textarea>
-              </div>
-            </section>
-
-            <div class="system-save-bar">
-              <span class="muted-note">Published atomically to <code>appConfig/memecircle_billing</code></span>
-              <button type="submit" id="mc-save-system-btn" class="btn btn-emerald">Save Meme Circle Controls</button>
-            </div>
-          </form>
-        </section>
       </main>
     </div>
 
@@ -1563,21 +1052,8 @@
             <rect x="14" y="14" width="7" height="7" rx="1.5"></rect>
           </svg>
         </span>
-        <small>VastraOS</small>
+        <small>My Shop</small>
         <span id="mobile-pending-badge" class="mobile-badge hidden">0</span>
-      </button>
-
-      <button type="button" class="mobile-nav-item" data-tab="mc-overview">
-        <span class="mobile-nav-icon" aria-hidden="true">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <circle cx="12" cy="14" r="7"></circle>
-            <path d="M9.5 3h5"></path>
-            <path d="M10.5 3v4.3"></path>
-            <path d="M13.5 3v4.3"></path>
-          </svg>
-        </span>
-        <small>Meme</small>
-        <span id="mc-mobile-pending-badge" class="mobile-badge hidden">0</span>
       </button>
 
       <button type="button" class="mobile-nav-item" data-tab="releases">
@@ -1624,7 +1100,7 @@
               <h3 id="tg-modal-title">Shared Telegram Bot (All Projects)</h3>
               <span id="tg-status-pill" class="pill pill-warning pill-compact">Not Configured</span>
             </div>
-            <p class="drawer-sub">One unified 24/7 webhook for Sign-Ins, Payments &amp; Releases across VastraOS + future Apps &amp; Games</p>
+            <p class="drawer-sub">One unified 24/7 webhook for Sign-Ins, Payments &amp; Releases across My Shop &amp; future Apps</p>
           </div>
         </div>
         <button type="button" class="icon-btn modal-close" data-close-modal="telegram-modal" aria-label="Close Telegram settings">&times;</button>
@@ -1654,11 +1130,11 @@
               maxlength="500"
               placeholder="https://script.google.com/macros/s/AKfycb.../exec"
             />
-            <small class="field-help">Used across VastraOS and all future Sarfu Techno apps &amp; games. Must start with <code>https://</code>.</small>
+            <small class="field-help">Used across My Shop and future Sarfu Techno apps. Must start with <code>https://</code>.</small>
           </div>
 
           <div class="field">
-            <label for="tg-admin-url">Sarfu Admin Live URL (Inline Button Link)</label>
+            <label for="tg-admin-url">My Shop Admin Live URL (Inline Button Link)</label>
             <input
               type="url"
               id="tg-admin-url"
@@ -1666,14 +1142,14 @@
               maxlength="500"
               placeholder="https://your-username.github.io/..."
             />
-            <small class="field-help">Auto-detected from this site. Opens Sarfu Admin directly when tapped in Telegram.</small>
+            <small class="field-help">Auto-detected from this site. Opens My Shop Admin directly when tapped in Telegram.</small>
           </div>
 
           <div class="tg-toggle-list">
             <div class="tg-toggle-row">
               <div>
-                <div class="tg-toggle-title">New Sign-In / Account / Shop Alerts (All Projects)</div>
-                <div class="field-help">Instant Telegram message tagged with the project name</div>
+                <div class="tg-toggle-title">New Sign-In / Account / Shop Alerts</div>
+                <div class="field-help">Instant Telegram message tagged with My Shop</div>
               </div>
               <label class="switch switch-primary">
                 <input type="checkbox" id="tg-notify-new-account" checked />
@@ -1683,8 +1159,8 @@
 
             <div class="tg-toggle-row">
               <div>
-                <div class="tg-toggle-title">Payment / UTR Submission Alerts (All Projects)</div>
-                <div class="field-help">Instant alert with Project, User, Amount &amp; UTR reference</div>
+                <div class="tg-toggle-title">Payment / UTR Submission Alerts</div>
+                <div class="field-help">Instant alert with Shop, Owner, Amount &amp; UTR reference</div>
               </div>
               <label class="switch switch-primary">
                 <input type="checkbox" id="tg-notify-utr-submit" checked />
@@ -1702,7 +1178,7 @@
         <!-- Pane 2: Private Multi-Project Apps Script Generator -->
         <div class="tg-pane" data-tg-pane="script">
           <div class="alert-box alert-privacy">
-            <strong>100% Private &amp; Multi-Project Ready:</strong> Your Bot Token &amp; Chat ID stay only in your browser to generate <code>Code.gs</code>. Every alert from VastraOS or any future App/Game automatically includes its <strong>Project Badge</strong>.
+            <strong>100% Private &amp; Multi-Project Ready:</strong> Your Bot Token &amp; Chat ID stay only in your browser to generate <code>Code.gs</code>. Every alert from My Shop or any future App automatically includes its <strong>Project Badge</strong>.
           </div>
 
           <div class="field">
@@ -1861,108 +1337,6 @@
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-close-modal="confirm-modal">Cancel</button>
         <button type="button" id="confirm-modal-ok" class="btn btn-danger">Confirm</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- ===================================================================== -->
-  <!-- MODAL: Meme Circle 3-Mode User Plan Manager (10-Day Cycles / ± / Trial) -->
-  <!-- ===================================================================== -->
-  <div id="mc-manage-modal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="mc-manage-modal-title">
-    <form id="mc-manage-user-form" class="modal-card">
-      <div class="modal-header">
-        <h3 id="mc-manage-modal-title">Manage Meme Circle User Plan</h3>
-        <button type="button" class="icon-btn modal-close" data-close-modal="mc-manage-modal" aria-label="Close">&times;</button>
-      </div>
-      <div class="modal-body">
-        <p class="modal-sub" id="mc-manage-user-desc"></p>
-        <div id="mc-manage-current-summary" class="shop-current-box"></div>
-
-        <div class="segmented-tabs shop-mode-tabs" id="mc-manage-tabs" role="tablist">
-          <button type="button" class="segmented-tab active" data-mc-manage-mode="cycles" role="tab">Plan Cycles</button>
-          <button type="button" class="segmented-tab" data-mc-manage-mode="paid-days" role="tab">Paid Days &plusmn;</button>
-          <button type="button" class="segmented-tab" data-mc-manage-mode="trial-days" role="tab">Trial Days</button>
-        </div>
-
-        <div class="manage-pane active" data-mc-manage-pane="cycles">
-          <div class="quick-day-chips">
-            <button type="button" class="btn btn-secondary btn-sm mc-quick-cycle-btn" data-mc-cycles="1">+1 Cycle (10d)</button>
-            <button type="button" class="btn btn-secondary btn-sm mc-quick-cycle-btn" data-mc-cycles="2">+2 Cycles (20d)</button>
-            <button type="button" class="btn btn-secondary btn-sm mc-quick-cycle-btn" data-mc-cycles="3">+3 Cycles (30d)</button>
-            <button type="button" class="btn btn-secondary btn-sm mc-quick-cycle-btn" data-mc-cycles="6">+6 Cycles (60d)</button>
-          </div>
-          <div class="field">
-            <label for="mc-manage-cycles-input">Paid Plan Cycles to Add (Rolling from current expiry)</label>
-            <input type="number" id="mc-manage-cycles-input" class="input mono" min="1" max="36" value="1" />
-          </div>
-        </div>
-
-        <div class="manage-pane" data-mc-manage-pane="paid-days">
-          <div class="quick-day-chips">
-            <button type="button" class="btn btn-ghost-danger btn-sm mc-paid-delta-btn" data-mc-delta="-7">-7 Days</button>
-            <button type="button" class="btn btn-ghost-danger btn-sm mc-paid-delta-btn" data-mc-delta="-3">-3 Days</button>
-            <button type="button" class="btn btn-ghost-danger btn-sm mc-paid-delta-btn" data-mc-delta="-1">-1 Day</button>
-            <button type="button" class="btn btn-secondary btn-sm mc-paid-delta-btn" data-mc-delta="1">+1 Day</button>
-            <button type="button" class="btn btn-secondary btn-sm mc-paid-delta-btn" data-mc-delta="5">+5 Days</button>
-            <button type="button" class="btn btn-secondary btn-sm mc-paid-delta-btn" data-mc-delta="10">+10 Days</button>
-            <button type="button" class="btn btn-danger btn-sm" id="mc-paid-expire-now-btn">Expire Now (0d)</button>
-          </div>
-          <div class="field">
-            <label for="mc-paid-exact-days-input">Remaining Paid Days From Today (0 = Lock / Expired)</label>
-            <input type="number" id="mc-paid-exact-days-input" class="input mono" min="0" max="3650" value="10" />
-          </div>
-        </div>
-
-        <div class="manage-pane" data-mc-manage-pane="trial-days">
-          <div class="quick-day-chips">
-            <button type="button" class="btn btn-danger btn-sm mc-trial-quick-btn" data-mc-trial="0">End Trial (0d)</button>
-            <button type="button" class="btn btn-secondary btn-sm mc-trial-quick-btn" data-mc-trial="1">1 Day</button>
-            <button type="button" class="btn btn-secondary btn-sm mc-trial-quick-btn" data-mc-trial="3">3 Days</button>
-            <button type="button" class="btn btn-secondary btn-sm mc-trial-quick-btn" data-mc-trial="7">7 Days</button>
-            <button type="button" class="btn btn-secondary btn-sm mc-trial-quick-btn" data-mc-trial="14">14 Days</button>
-          </div>
-          <div class="field">
-            <label for="mc-trial-exact-days-input">Remaining Free Trial Days From Today (0&ndash;90)</label>
-            <input type="number" id="mc-trial-exact-days-input" class="input mono" min="0" max="90" value="1" />
-          </div>
-        </div>
-
-        <div id="mc-manage-expiry-preview" class="preview-callout"></div>
-
-        <div class="field">
-          <label for="mc-manage-note-input">Reference / Admin Note (Optional)</label>
-          <input type="text" id="mc-manage-note-input" class="input" maxlength="64" placeholder="e.g. ADMIN_GRANTED or Cash Rs 30" />
-        </div>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-close-modal="mc-manage-modal">Cancel</button>
-        <button type="submit" id="mc-confirm-manage-btn" class="btn btn-emerald">Apply Changes Now</button>
-      </div>
-    </form>
-  </div>
-
-  <!-- ===================================================================== -->
-  <!-- MODAL: 1-Click Copy Master Build Prompt for Standalone Meme Circle    -->
-  <!-- ===================================================================== -->
-  <div id="mc-build-prompt-modal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="mc-prompt-modal-title">
-    <div class="modal-card modal-lg">
-      <div class="modal-header">
-        <h3 id="mc-prompt-modal-title">Meme Circle — 1-Click Master Build Prompt</h3>
-        <button type="button" class="icon-btn modal-close" data-close-modal="mc-build-prompt-modal" aria-label="Close">&times;</button>
-      </div>
-      <div class="modal-body">
-        <div class="prompt-steps-banner">
-          <strong>How to build Meme Circle safely without touching VastraOS:</strong>
-          Copy the prompt below &rarr; open a <strong>New AI Studio Project</strong> &rarr; paste &amp; build! Your Firebase project ID, named Firestore database, zero-trust collections, &#8377;30/10-day paywall, 1-day trial, and Telegram alerts are already pre-filled and live.
-        </div>
-        <div class="field">
-          <label for="mc-master-prompt-textarea">Pre-Wired Master Build Prompt (Auto-Synced With Your Current Meme Circle Settings)</label>
-          <textarea id="mc-master-prompt-textarea" class="prompt-code-box" readonly></textarea>
-        </div>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-close-modal="mc-build-prompt-modal">Close</button>
-        <button type="button" id="mc-copy-prompt-btn" class="btn btn-emerald">Copy Master Build Prompt</button>
       </div>
     </div>
   </div>

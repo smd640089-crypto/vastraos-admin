@@ -1,5 +1,5 @@
 /* ==========================================================================
-   VastraOS Admin Panel — Executive Light & Dark Design System (VastraOS Purple)
+   My Shop Admin Console — Executive Light & Dark Design System (Deep Purple)
    ========================================================================== */
 
 :root {
@@ -290,7 +290,19 @@ code, .mono {
   flex-shrink: 0;
 }
 .brand-mark svg { width: 22px; height: 22px; }
-.brand-mark-lg { width: 62px; height: 62px; border-radius: 18px; }
+.brand-mark-img {
+  background: #F2E7FE;
+  padding: 0;
+  overflow: hidden;
+  border: 1px solid var(--primary-border);
+}
+.brand-mark-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.brand-mark-lg { width: 64px; height: 64px; border-radius: 18px; }
 .brand-mark-lg svg { width: 36px; height: 36px; }
 .brand-title { font-size: 1.05rem; font-weight: 800; line-height: 1.15; }
 .brand-sub { font-size: 0.74rem; color: var(--text-muted); font-weight: 600; }
@@ -595,16 +607,19 @@ code, .mono {
 }
 .mobile-brand-dot {
   display: none;
-  width: 34px;
-  height: 34px;
-  border-radius: 10px;
-  background: linear-gradient(135deg, #6D28D9, #9333EA);
+  width: 36px;
+  height: 36px;
+  border-radius: 11px;
+  background: #F2E7FE;
   color: #fff;
   place-items: center;
   flex-shrink: 0;
-  box-shadow: 0 5px 12px rgba(109, 40, 217, 0.28);
+  overflow: hidden;
+  border: 1px solid var(--primary-border);
+  box-shadow: 0 5px 12px rgba(109, 40, 217, 0.22);
 }
 .mobile-brand-dot svg { width: 19px; height: 19px; }
+.mobile-brand-dot img { width: 100%; height: 100%; object-fit: cover; display: block; }
 
 .topbar-title-group {
   display: flex;
@@ -1677,7 +1692,7 @@ code, .mono {
   /* Floating Frosted-Glass Navigation Dock */
   .mobile-nav {
     display: grid;
-    grid-template-columns: repeat(5, 1fr);
+    grid-template-columns: repeat(4, 1fr);
     gap: 4px;
     position: fixed;
     left: 12px;
@@ -2156,7 +2171,7 @@ code, .mono {
 
 .project-slots-grid {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 16px;
 }
 .project-slot-card {
@@ -2190,25 +2205,29 @@ code, .mono {
   gap: 10px;
 }
 .slot-icon {
-  width: 48px;
-  height: 48px;
-  border-radius: 14px;
+  width: 52px;
+  height: 52px;
+  border-radius: 15px;
   color: #fff;
   display: grid;
   place-items: center;
   flex-shrink: 0;
+  overflow: hidden;
 }
 .slot-icon svg {
   width: 24px;
   height: 24px;
 }
 .slot-icon-vastra {
-  background: linear-gradient(135deg, #6D28D9, #9333EA);
-  box-shadow: 0 8px 18px rgba(109, 40, 217, 0.28);
+  background: #F2E7FE;
+  border: 1px solid var(--primary-border);
+  box-shadow: 0 8px 18px rgba(109, 40, 217, 0.22);
 }
-.slot-icon-memecircle {
-  background: linear-gradient(135deg, #065F46 0%, #10B981 55%, #22C55E 100%);
-  box-shadow: 0 8px 20px rgba(16, 185, 129, 0.34);
+.slot-icon-vastra img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
 }
 .slot-icon-releases {
   background: linear-gradient(135deg, #0284C7, #0EA5E9);
@@ -2550,91 +2569,6 @@ code, .mono {
   overflow-x: auto;
 }
 
-/* ===================================================================== */
-/* MEME CIRCLE — Neon Emerald Studio Accent & Prompt Modal Styles        */
-/* ===================================================================== */
-.project-slot-card.slot-memecircle:hover {
-  border-color: rgba(16, 185, 129, 0.52);
-  box-shadow: 0 12px 28px rgba(16, 185, 129, 0.14);
-}
-.slot-card-footer-mc {
-  color: #059669;
-}
-[data-theme="dark"] .slot-card-footer-mc {
-  color: #34D399;
-}
-.mc-revenue-hero {
-  background: linear-gradient(135deg, #064E3B 0%, #047857 48%, #0F766E 100%);
-  box-shadow: 0 18px 42px rgba(4, 120, 87, 0.28);
-}
-.mc-revenue-hero::before {
-  background: radial-gradient(circle at 86% 18%, rgba(52, 211, 153, 0.36), transparent 52%),
-              radial-gradient(circle at 12% 92%, rgba(163, 230, 53, 0.22), transparent 50%);
-}
-.project-subnav-mc .subnav-pill.active {
-  background: linear-gradient(135deg, #059669, #10B981);
-  border-color: #059669;
-  color: #fff;
-}
-.phone-screen-mc {
-  background: linear-gradient(180deg, #0A0F1A 0%, #0F172A 100%);
-  color: #F8FAFC;
-  border-color: rgba(34, 255, 136, 0.35);
-}
-.phone-screen-mc .phone-pill {
-  background: rgba(34, 255, 136, 0.14);
-  color: #4ADE80;
-  border: 1px solid rgba(34, 255, 136, 0.35);
-}
-.phone-screen-mc .phone-price {
-  color: #FFFFFF;
-}
-.phone-screen-mc .phone-payee {
-  color: #CBD5E1;
-}
-.phone-screen-mc .phone-upi {
-  background: rgba(255, 255, 255, 0.08);
-  color: #86EFAC;
-  border-color: rgba(134, 239, 172, 0.25);
-}
-.phone-screen-mc .phone-instructions {
-  color: #CBD5E1;
-}
-.phone-screen-mc .phone-fake-btn {
-  background: linear-gradient(135deg, #10B981, #22C55E);
-  color: #052E16;
-  font-weight: 800;
-}
-.prompt-code-box {
-  width: 100%;
-  min-height: 300px;
-  max-height: 46vh;
-  resize: vertical;
-  font-family: "JetBrains Mono", monospace;
-  font-size: 0.77rem;
-  line-height: 1.55;
-  padding: 13px 14px;
-  border-radius: var(--radius-md);
-  border: 1px solid var(--border-strong);
-  background: var(--bg);
-  color: var(--text);
-}
-.prompt-steps-banner {
-  padding: 11px 13px;
-  border-radius: var(--radius-md);
-  background: var(--emerald-soft);
-  border: 1px solid var(--emerald-border);
-  color: var(--text);
-  font-size: 0.82rem;
-  line-height: 1.5;
-}
-.hero-action-btn-neon {
-  background: rgba(34, 255, 136, 0.22);
-  border-color: rgba(134, 239, 172, 0.48);
-}
-.hero-action-btn-neon:hover {
-  background: rgba(34, 255, 136, 0.34);
-}
 
 @media (max-width: 1024px) {
   .releases-layout,
